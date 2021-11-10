@@ -1,0 +1,32 @@
+{
+    "login": {
+        "_": "Логин",
+        "password": "Пароль",
+        "errors": {
+            "login_message": "Please input your username!",
+            "password_message":  "Please input your password!",
+            "password_blank": "Password is blank",
+            "user_name_blank": "User name is blank",
+            "no_such_user": "No such user",
+            "site_access": "Site access denied"
+        }
+    },
+    "oracleError": {
+        "ORA-01017": "Wrong combination of login and password",
+        "ORA-01005": "Wrong password",
+        "ORA-28000": "The account is blocked. Please contact the administrator",
+        "ORA-28001": "Password expired"
+    },
+    "security": {
+        "error": {
+            "403": "Access denied"
+        }
+    },
+    "common": {
+        "loading": "Loading..."
+    },
+    "errors": {
+        "invalidJSON": "invalid JSON"
+    },
+    "test": "Тестовая строка"
+}

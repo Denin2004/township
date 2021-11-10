@@ -1,0 +1,115 @@
+{
+    "login": {
+        "_": "Login",
+        "password": "Password",
+        "errors": {
+            "login_message": "Username",
+            "password_message":  "Password",
+            "password_blank": "Password is blank",
+            "user_name_blank": "Login is blank",
+            "no_such_user": "No such user",
+            "site_access": "Site access denied"
+        },
+        "version": "Version",
+        "logout": "Logout",
+        "relogin": "relogin"
+    },
+    "oracle_error": {
+        "ORA-01017": "Wrong combination of login and password",
+        "ORA-01005": "Wrong password",
+        "ORA-28000": "The account is blocked. Please contact the administrator",
+        "ORA-28001": "Password expired",
+        "ORA-24960": "Wrong credentials"
+    },
+    "security": {
+        "error": {
+            "403": "Forbidden"
+        }
+    },
+    "common": {
+        "loading": "Loading...",
+        "all": "All",
+        "selected": "Selected",
+        "select_all": "Select all",
+        "close_menu": "Close menu",
+        "details": "Details",
+        "close": "Close"
+    },
+    "machine": {
+        "s": "Machines",
+        "_": "Machine",
+        "actions": "Actions",
+        "position": "Position",
+        "now_playing": "Now playing",
+        "statuses": "Statuses",
+        "occupied": "Occupied",
+        "top_payouts_24": "Top EGM payouts (last 24 hours)"
+    },
+    "player": {
+        "s": "Players",
+        "registered": "Registered",
+        "registered_today": "Registered today",
+        "checkin": "Checked in",
+        "now_playing": "Now playing",
+        "loyalty_points": "Loyalty points",
+        "drop": "Drop"
+    },
+    "cashback": {
+        "available": "Available cashback"
+    },
+    "ticket": {
+        "s": "Tickets",
+        "promo": "Tickets promo"
+    },
+    "card": {
+        "promo_on": "Promo on cards",
+        "cashable_on": "Cashable on cards"
+    },
+    "credit": {
+        "in": "Credit in" ,
+        "s": "Credits"
+    },
+    "location": {
+        "_": "Location",
+        "all": "All locations",
+        "net_win_7": "Location Net Win last 7 days",
+        "occupancy_24": "Location occupancy last 24 hours",
+        "errors": {
+            "no_available": "No available locations"
+        }
+    },
+    "errorPage": {
+        "error": "Error",
+        "body": "Please contact administrator",
+        "403": "Forbidden"
+    },
+    "ajaxErrors": {
+        "500": "Internal server error",
+        "403": "Access denied"
+    },
+    "cage": {
+        "current_balance": "Current cage balance"
+    },
+    "games": {
+        "favorite_30": "Top favorite games (last 30 days)",
+        "top_total_bet_30": "Top games by total bet (last 30 days)"
+    },
+    "currency": {
+        "_": "Currency"
+    },
+    "widget": {
+        "s": "Widgets"
+    },
+    "systemMonitor": {
+        "alerts": "System alerts"
+    },
+    "date": {
+        "_": "Date"
+    },
+    "json": {
+        "empty": "Empty JSON",
+        "errors": {
+            "invalid": "invalid JSON"
+        }
+    }
+}

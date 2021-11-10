@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Octavian 3.0</title>
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('webApp') }}
+        {% endblock %}
+    </head>
+    <body>
+        <div id="root"></div>
+        <script type="text/javascript">
+            window.mfwApp = {
+                locale: "{{ locale }}",
+                numeral: {{ numeral|json_encode|raw }}
+            }
+        </script>
+        {{ encore_entry_script_tags('webApp') }}
+    </body>
+</html>
