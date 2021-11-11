@@ -11,19 +11,10 @@
             "site_access": "Site access denied"
         }
     },
-    "oracleError": {
-        "ORA-01017": "Wrong combination of login and password",
-        "ORA-01005": "Wrong password",
-        "ORA-28000": "The account is blocked. Please contact the administrator",
-        "ORA-28001": "Password expired"
-    },
     "security": {
         "error": {
             "403": "Access denied"
         }
-    },
-    "common": {
-        "loading": "Loading..."
     },
     "errors": {
         "invalidJSON": "invalid JSON"

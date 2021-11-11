@@ -1,17 +1,17 @@
 import React, {Component} from 'react';
-import { Switch, Route, withRouter } from 'react-router-dom';
-
-import { withCookies } from 'react-cookie';
+import { Routes, Route } from 'react-router-dom';
 
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 import {ConfigProvider, message} from 'antd';
 
-import Login from '@app/components/mobile/Login';
-//import Main from '@app/components/Main';
+import withRouter from '@app/hooks/withRouter';
 
-import locales from '@app/locales';
+import Login from '@app/web/js/Login';
+import Main from '@app/web/js/Main';
+
+import locales from '@app/web/js/locales';
 
 import moment from 'moment-timezone';
 
@@ -39,10 +39,8 @@ i18n.use(initReactI18next) // passes i18n down to react-i18next
 class App extends Component {
     constructor(props){
         super(props);
-        this.setLocale = this.setLocale.bind(this);
-        this.mainPage = this.mainPage.bind(this);
         this.state = {
-            locale: this.props.cookies.get('locale') ? this.props.cookies.get('locale') : locales.default
+            locale: locales.default
         };
         if (this.state.locale != locales.default) {
             moment.locale(locales[this.state.locale].moment);
@@ -51,10 +49,6 @@ class App extends Component {
             window.mfwApp.formats.datetime = window.mfwApp.formats.date + ' ' + window.mfwApp.formats.time;
             i18n.changeLanguage(this.state.locale);
         }
-    }
-
-    componentDidMount() {
-
     }
     
     setLocale(locale) {
@@ -67,32 +61,18 @@ class App extends Component {
         this.props.cookies.set('locale', locale, { path: '/' });
         this.setState({locale: locale});
     }
-    
-    mainPage() {
-        return (
-            <Main setLocale={this.setLocale}/>
-        );
-    }
 
     render() {
         return (
             <ConfigProvider locale={locales[this.state.locale].antd}> 
-                <Switch>
-                    <Route path="/login" component={Login} />
-                </Switch>
-            </ConfigProvider>
-        )
-        
-        
-        return (
-            <ConfigProvider locale={locales[this.state.locale].antd}> 
-                <Switch>
-                    <Route path="/login" component={Login} />
-                    <Route component={this.mainPage} />
-                </Switch>
+                <Routes>
+                    <Route path="/login" element={<Login/>} />
+                    <Route element={<Main/>} />
+                </Routes>
             </ConfigProvider>
         )
     }
 }
 
-export default withRouter(withCookies(App));
+export default App;
+//export default withRouter(App); ???

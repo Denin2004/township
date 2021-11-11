@@ -1,17 +1,17 @@
 import React, {Component} from 'react';
-import { Switch, Route, withRouter } from 'react-router-dom';
-import { withCookies } from 'react-cookie';
+import { Routes, Route} from 'react-router-dom';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-import { LocaleProvider } from 'antd-mobile';
+import { ConfigProvider } from 'antd-mobile';
 
 import moment from 'moment-timezone';
 
-import Login from '@app/components/mobile/Login';
-import Pages from '@app/components/mobile/Pages';
-import ErrorPage from '@app/components/mobile/ErrorPage';
-import locales from '@app/components/mobile/locales';
+import withRouter from '@app/hooks/withRouter';
+import Login from '@app/mobile/js/Login';
+import Pages from '@app/mobile/js/Main';
+import ErrorPage from '@app/mobile/js/ErrorPage';
+import locales from '@app/mobile/js/locales';
 
 moment.tz.setDefault('Etc/GMT0');
 moment.locale(locales[locales.default].moment);
@@ -78,16 +78,16 @@ class App extends Component {
 
     render() {
         return (
-            <LocaleProvider locale={locales[this.state.locale].antd}> 
-                <Switch>
-                    <Route path="/login" component={this.loginPage} />
-                    <Route path="/logout" component={this.loginPage} />
+            <ConfigProvider locale={locales[this.state.locale].antd} > 
+                <Routes>
+                    <Route path="/login" component={Login} />
+                    <Route path="/logout" component={Login} />
                     <Route path="/error/:code" component={ErrorPage} />
-                    <Route component={Pages} />
-                </Switch>
-            </LocaleProvider>
+                    <Route component={Main} />
+                </Routes>
+            </ConfigProvider>
         )
     }
 }
 
-export default withRouter(withCookies(App));
+export default withRouter(App);

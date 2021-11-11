@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import {Form, Button, Input, Modal, message} from 'antd';
+
 import { withTranslation } from 'react-i18next';
 import axios from 'axios';
 
@@ -34,9 +35,10 @@ class Login extends Component {
     };    
 
     render() {
+        console.log('llllsss');
         return (
             this.state.redirect ? (
-                <Redirect to={this.state.redirect}/>
+                <Navigate to={this.state.redirect}/>
             ) : (
                 <Modal visible={true} closable={false} footer={null}>
                     <Form labelCol={{span: 8 }}

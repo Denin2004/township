@@ -1,15 +1,13 @@
 import React, {Component} from 'react';
-import { Redirect } from 'react-router-dom';
-import { withCookies } from 'react-cookie';
+import { Navigate } from 'react-router-dom';
 
 import { createForm } from 'rc-form';
 
-import { List, InputItem, Toast, Button, WhiteSpace, Flex } from 'antd-mobile';
+/*import { List, InputItem, Toast, Button, WhiteSpace, Flex } from 'antd-mobile';*/
 
+import withRouter from '@app/hooks/withRouter';
 import { withTranslation } from 'react-i18next';
 import axios from 'axios';
-
-import locales from '@app/components/mobile/locales';
 
 class Login extends Component {
     constructor(props){
@@ -71,14 +69,22 @@ class Login extends Component {
     };
     
     render() {
-        const locale = this.props.cookies.get('locale') ? this.props.cookies.get('locale') : locales.default;
+        return (
+            this.state.redirect ? (
+                <Navigate to={this.state.redirect}/>
+            ) : (
+                <React.Fragment>Login form</React.Fragment>
+            )
+        );
+/*        
+        
+    
         return (
             this.state.redirect ? (
                 <Redirect to={this.state.redirect}/>
             ) : (
                 <React.Fragment>
                     <List className="mfw-login-content">
-                        <img className="mfw-logo" src="/logo.svg"/>
                         <InputItem
                            {...this.props.form.getFieldProps(
                                 '_username',
@@ -114,61 +120,10 @@ class Login extends Component {
                            clear>{this.props.t('login.password')}</InputItem>
                         <List.Item extra={<Button type="primary" size="small" inline onClick={this.login}>{this.props.t('login._')}</Button>}>&nbsp;</List.Item>
                     </List>
-                    <div className="mfw-vesion">{this.props.t('login.version')} {window.mfwApp.version}</div>
                 </React.Fragment>
             )
-        );
-        
-        
-        return (
-            this.state.redirect ? (
-                <Redirect to={this.state.redirect}/>
-            ) : (
-                <div>
-                    <WhiteSpace size="lg"/>
-                    <List>
-                        <InputItem
-                           {...this.props.form.getFieldProps(
-                                '_username',
-                                {
-                                    rules: [
-                                        {
-                                            required: true,
-                                            message: this.props.t('login.errors.login_message')
-                                        }
-                                    ]
-                                }
-                            )}
-                            type="text"
-                           placeholder={this.props.t('login.errors.login_message')}
-                           error={this.state.errors._username}
-                           clear>{this.props.t('login._')}</InputItem>
-                        <InputItem
-                           {...this.props.form.getFieldProps(
-                                '_password',
-                                {
-                                    rules: [
-                                        {
-                                            required: true,
-                                            message: this.props.t('login.errors.password_message')
-                                        }
-                                    ]
-                                }
-                            )}
-                           type="password"
-                           error={this.state.errors._password}
-                           placeholder={this.props.t('login.errors.password_message')}
-                           onKeyDown={(e) => {if (e.key == 'Enter'){this.login()}}}
-                           clear>{this.props.t('login.password')}</InputItem>
-                        <List.Item>
-                            <Button type="primary" size="small" inline onClick={this.login}>{this.props.t('login._')}</Button>
-                        </List.Item>
-                    </List>
-                    <div className="mfw-vesion">{this.props.t('login.version')} {window.mfwApp.version}</div>
-                </div>
-            )
-        )
+        );*/
     }
 }
 
-export default withTranslation()(createForm()(withCookies(Login)));
+export default withTranslation()(createForm()(Login));

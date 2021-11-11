@@ -1,3 +1,27 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+login:
+    path:  /login
+    controller: App\Controller\Application::index
+
+login_check:
+    path:  /login_check
+
+logout:
+    path: /logout
+    
+appConfig:
+    path: /config
+    controller: App\Controller\Application::config
+    methods: GET
+    
+appDashboard:
+    path: /
+    controller: App\Controller\MainPage::index
+    methods: GET
+    
+error403:
+    path: /error/403
+    controller: App\Controller\MainPage::index
+    
+error500:
+    path: /error/500
+    controller: App\Controller\MainPage::index    
