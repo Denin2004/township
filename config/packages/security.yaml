@@ -5,23 +5,41 @@ security:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        users_in_memory: { memory: null }
+        app_provider:
+            id: app.user.provider
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        main:
-            lazy: true
-            provider: users_in_memory
+        app_provider:
+            pattern: /.*
+            form_login:
+                login_path: /login
+                check_path: /login_check
+                provider: app_provider
+                failure_handler: app.auth.handler
+                success_handler: app.auth.handler
 
+            logout:
+                path: /logout
+                target: /login
+            access_denied_handler: app.access.denied.controller
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
+    encoders:
+        App\Services\Security\WebUser: 
+            algorithm: bcrypt
+            cost: 12
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login_check, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/error403, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/*, roles: IS_AUTHENTICATED_REMEMBERED }        
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }

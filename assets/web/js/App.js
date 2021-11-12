@@ -67,7 +67,7 @@ class App extends Component {
             <ConfigProvider locale={locales[this.state.locale].antd}> 
                 <Routes>
                     <Route path="/login" element={<Login/>} />
-                    <Route element={<Main/>} />
+                    <Route path="/" element={<Main/>} />
                 </Routes>
             </ConfigProvider>
         )

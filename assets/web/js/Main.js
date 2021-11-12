@@ -9,7 +9,6 @@ class Main extends Component {
     }
     
     render() {
-        console.log('!!!!');
         return (
           <div>{this.props.t('test')}</div>
         )

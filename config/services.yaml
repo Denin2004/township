@@ -18,15 +18,60 @@ services:
         resource: '../src/'
         exclude:
             - '../src/DependencyInjection/'
-            - '../src/Entity/'
             - '../src/Kernel.php'
             - '../src/Tests/'
+    App\Entity\:
+        resource: '../src/Entity'
+        tags: ['controller.service_arguments']
             
     App\Services\SiteConfig\SiteConfig:
         class: App\Services\SiteConfig\SiteConfig
         arguments: ['%kernel.project_dir%', '@session', '%kernel.default_locale%']
         public: true
             
+    db_connection:
+        class: Doctrine\DBAL\Connection
+        factory: Doctrine\DBAL\DriverManager::getConnection
+        arguments:
+            $params:
+                driver: 'pdo_pgsql'
+                host:     "%env(resolve:DATABASE_HOST)%"
+                port:     "%env(resolve:DATABASE_PORT)%"
+                dbname:   "%env(resolve:DATABASE_NAME)%"
+                user:     "%env(resolve:DATABASE_USER)%"
+                password: "%env(resolve:DATABASE_PSW)%"
+                charset:  UTF8
+
+    app.dbprovider:
+        class: App\Services\DbProvider
+        arguments: ['@db_connection', '@security.token_storage', '@App\Services\SiteConfig\SiteConfig']
+
+    App\Entity\Entity:
+        class: App\Entity\Entity
+        arguments: ['@app.dbprovider']
+
+    app.auth.handler:
+        class: App\Services\Security\AuthenticationHandler
+        arguments: ['@router', '@session']
+
+    app.security.access:
+        class: App\Services\Security\Access
+        arguments: ['@app.dbprovider', '@twig', '@App\Entity\UACEntity']
+
+    app.user.provider:
+        class: App\Services\Security\UserProvider
+        arguments: ['@request_stack', '@security.password_encoder', '@App\Entity\UACEntity']
+
+    app.access.denied.controller:
+        class: App\Services\Security\DeniedHandler
+        arguments: ['@service_container', '@router']
+
+    app.voter:
+        class: App\Services\Security\RouteVoter
+        tags: [security.voter]
+        # small performance boost
+        public: false
+
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

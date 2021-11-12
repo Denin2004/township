@@ -35,7 +35,6 @@ class Login extends Component {
     };    
 
     render() {
-        console.log('llllsss');
         return (
             this.state.redirect ? (
                 <Navigate to={this.state.redirect}/>
