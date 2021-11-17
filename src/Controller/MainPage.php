@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Mobile_Detect;
 
 use App\Services\SiteConfig\SiteConfig;
+use App\Entity\Charges;
 
 class MainPage extends AbstractController
 {
@@ -20,11 +21,11 @@ class MainPage extends AbstractController
     /**
      * @Route("/admin/{reactRouting}", name="default", defaults={"reactRouting": null})
      */
-    public function index(SiteConfig $config)
+    public function index(SiteConfig $config, Charges $charges)
     {
         $detect = new Mobile_Detect;
         $mode = $detect->isMobile() ? 'mobile' : 'web';
-        $this->readExcel();
+        $this->readExcel($charges);
         return $this->render(
             'base.'.$mode.'.html.twig',
             [
@@ -33,7 +34,7 @@ class MainPage extends AbstractController
         );
     }
 
-    private function readExcel()
+    private function readExcel(Charges $charges)
     {
         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('/var/www/html/township/templates/billing.xlsx');
         $billIndex = 0;
@@ -43,17 +44,18 @@ class MainPage extends AbstractController
             $billNum = $this->sheet->getCell('F'.(self::BLANK_START+self::BLANK_HEIGHT*$billIndex))->getValue();
             if ($billNum != null) {
                 $queryData = [
-                    'dayAmount' => 0,
-                    'nightAmount' => 0,
+                    'billNum' => $billNum,
                     'month' => 0,
                     'year' => 0,
                     'land_id' => 0,
                     'dayStart' => 0,
                     'dayEnd' => 0,
+                    'dayRate' => 0,
+                    'dayAmount' => 0,
                     'nightStart' => 0,
                     'nightEnd' => 0,
-                    'dayRate' => 0,
-                    'nightRate' => 0
+                    'nightRate' => 0,
+                    'nightAmount' => 0,
 
                 ];
                 $queryData['dayAmount'] = $this->getFloat([
@@ -80,7 +82,7 @@ class MainPage extends AbstractController
                         break;
                     }
                     $queryData['month'] = intval($dt->format('m'));
-                    $queryData['year'] = intval($dt->format('Y'));
+                    $queryData['year'] = intval($dt->format('Y'))   ;
                     $words = explode('.', $this->sheet->getCell('A'.(self::BLANK_START+3+self::BLANK_HEIGHT*$billIndex))->getValue());
                     if (!isset($words[2])or(intval($words[2]) == 0)) {
                         $this->lastError = 'error.wrong_land '.'A'.(self::BLANK_START+3+self::BLANK_HEIGHT*$billIndex).' '.$billNum;
@@ -129,7 +131,8 @@ class MainPage extends AbstractController
                         'allowNull' => false,
                         'error' => 'error.amount'
                     ]);
-                    dump($queryData);
+                    $charges->addElectricityBill($queryData);
+
                 }
                 $billIndex++;
             }
