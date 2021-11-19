@@ -1,7 +1,11 @@
 {
-    "login": {
-        "_": "Логин",
+    "account": {
+        "login": "Логин",
         "password": "Пароль",
+        "logout": "Выйти",
+        "change_password": "Сменить пароль",
+        "s": "Аккаунты",
+        "manager": "Управление",
         "errors": {
             "login_message": "Please input your username!",
             "password_message":  "Please input your password!",

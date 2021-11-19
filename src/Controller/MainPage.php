@@ -25,7 +25,7 @@ class MainPage extends AbstractController
     {
         $detect = new Mobile_Detect;
         $mode = $detect->isMobile() ? 'mobile' : 'web';
-        $this->readExcel($charges);
+//        $this->readExcel($charges);
         return $this->render(
             'base.'.$mode.'.html.twig',
             [

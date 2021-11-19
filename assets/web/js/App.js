@@ -9,7 +9,7 @@ import {ConfigProvider, message} from 'antd';
 import withRouter from '@app/hooks/withRouter';
 
 import Login from '@app/web/js/Login';
-import Main from '@app/web/js/Main';
+import Pages from '@app/web/js/Pages';
 
 import locales from '@app/web/js/locales';
 
@@ -67,7 +67,7 @@ class App extends Component {
             <ConfigProvider locale={locales[this.state.locale].antd}> 
                 <Routes>
                     <Route path="/login" element={<Login/>} />
-                    <Route path="/" element={<Main/>} />
+                    <Route path="*" element={<Pages/>} />
                 </Routes>
             </ConfigProvider>
         )

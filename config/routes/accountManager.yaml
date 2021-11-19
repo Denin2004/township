@@ -1,0 +1,15 @@
+accMngrCount:
+    path: /count
+    controller: App\Controller\AccountManager\Main::count
+    methods: [GET]
+    
+accMngrPage:
+    path: /page
+    controller: App\Controller\Application::index
+    methods: [GET]
+    
+accMngrAccounts:
+    path: /accounts
+    controller: App\Controller\AccountManager\Main::accounts
+    methods: [GET]
+    

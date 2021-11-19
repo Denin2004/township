@@ -29,4 +29,12 @@ class UACEntity extends Entity
         );
         return count($res) == 0 ? ['security' => []] : $res[0];
     }
+
+    public function usersCount()
+    {
+        $res = $this->provider->fetchAll(
+            'select count(*) cnt from uac.users'
+        );
+        return count($res) == 0 ? -1 : $res[0]['cnt'];
+    }
 }
