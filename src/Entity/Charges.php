@@ -7,7 +7,7 @@ class Charges extends Entity
 {
     public function addElectricityBill($data)
     {
-        $this->provider->db()->executeQuery(
+        $this->provider->executeQuery(
             'insert into charges.electricity (
                 land_id,
                 month,

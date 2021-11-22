@@ -6,6 +6,8 @@
         "change_password": "Сменить пароль",
         "s": "Аккаунты",
         "manager": "Управление",
+        "role": "Роль",
+        "edit": "Редактирование аккаунта",
         "errors": {
             "login_message": "Please input your username!",
             "password_message":  "Please input your password!",
@@ -22,6 +24,19 @@
     },
     "errors": {
         "invalidJSON": "invalid JSON"
+    },
+    "land": {
+        "_": "Участок",
+        "s": "Участки"
+    },
+    "modal": {
+        "save": "Сохранить",
+        "cancel": "Отмена"
+    },
+    "form": {
+        "errors": {
+            "noData": "Неправильный формат данных формы"
+        }
     },
     "test": "Тестовая строка"
 }

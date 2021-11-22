@@ -58,7 +58,7 @@ class Pages extends Component {
     }
 
     render() {
-        return <Layout theme="light" style={{ minHeight: '100vh' }}>
+        return <Layout theme="light" className="min-height-100vh">
             {this.state.loading ? (
                 <Layout.Content className="d-flex justify-content-center align-items-center">
                     <Spin/>

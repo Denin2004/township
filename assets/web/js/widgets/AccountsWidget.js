@@ -14,7 +14,7 @@ class AccountsWidgets extends Component {
             count: 0
         }
     }
-    
+
     componentDidMount() {
         axios.get(
             window.mfwApp.urls.accountManager.count,
@@ -49,15 +49,15 @@ class AccountsWidgets extends Component {
             }
         });
     }
-    
-    
+
+
     render() {
         return <Card title={<Link to={window.mfwApp.urls.accountManager.page}>{this.props.t('account.manager')}</Link>}>
             {this.state.loading ? (
                 <div className="d-flex justify-content-center align-items-center">
                     <Spin/>
                 </div>
-            ) : (            
+            ) : (
                 <Descriptions layout="horizontal">
                     <Descriptions.Item label={this.props.t('account.s')}>{this.state.count}</Descriptions.Item>
                 </Descriptions>

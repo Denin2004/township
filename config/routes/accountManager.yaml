@@ -12,4 +12,17 @@ accMngrAccounts:
     path: /accounts
     controller: App\Controller\AccountManager\Main::accounts
     methods: [GET]
-    
+
+accMngrEdit:
+    path: /edit/{id}
+    controller: App\Controller\AccountManager\Main::edit
+    requirements:
+        id: \d+
+    defaults: 
+        id: -1
+    methods: [GET]
+
+accMngrPost:
+    path: /post
+    controller: App\Controller\AccountManager\Main::post
+    methods: [POST]
