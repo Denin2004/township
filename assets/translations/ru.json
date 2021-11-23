@@ -4,6 +4,7 @@
         "password": "Пароль",
         "logout": "Выйти",
         "change_password": "Сменить пароль",
+        "password_changed": "Пароль изменен",
         "s": "Аккаунты",
         "manager": "Управление",
         "role": "Роль",
@@ -13,7 +14,7 @@
             "password_message":  "Please input your password!",
             "password_blank": "Password is blank",
             "user_name_blank": "User name is blank",
-            "no_such_user": "No such user",
+            "no_such_user": "Пользователь не найден",
             "site_access": "Site access denied"
         }
     },

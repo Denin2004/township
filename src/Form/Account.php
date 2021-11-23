@@ -2,6 +2,8 @@
 namespace App\Form;
 
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 use App\Form\React\ReactForm;
 use App\Form\React\ReactTextType;
@@ -14,7 +16,8 @@ use App\Entity\Lands;
 class Account extends ReactForm
 {
 
-    protected $myACP;
+    protected $uacDB;
+    protected $landsDB;
 
     public function __construct(UACEntity $uacDB, Lands $landsDB)
     {
@@ -25,8 +28,22 @@ class Account extends ReactForm
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('login', ReactTextType::class)
-            ->add('id', ReactHiddenType::class)
+            ->add('id', ReactHiddenType::class);
+        if ($options['request'] == true) {
+            $builder->add(
+                'role_id',
+                IntegerType::class
+            )
             ->add(
+                'land_ids',
+                CollectionType::class,
+                [
+                    'entry_type' => IntegerType::class,
+                    'allow_add' => true
+                ]
+            );
+        } else {
+            $builder->add(
                 'role_id',
                 ReactChoiceType::class,
                 [
@@ -42,5 +59,6 @@ class Account extends ReactForm
                     'multiple' => true
                 ]
             );
+        }
     }
 }

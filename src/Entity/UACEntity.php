@@ -38,38 +38,47 @@ class UACEntity extends Entity
         return count($res) == 0 ? -1 : $res[0]['cnt'];
     }
 
-    public function accounts()
+    public function accounts($account_id = -1)
     {
         $res = $this->provider->fetchAll(
-            'select users.id, users.login, roles.name role_name,
+            'select users.id, users.login, users.role_id,
+                roles.name role_name,
                 lands.num, lands.id land_id
                 from uac.users users
                 left join uac.roles roles on (users.role_id=roles.id)
                 left join lands.user_lands user_lands on (user_lands.user_id=users.id)
-                left join lands.lands lands on (lands.id=user_lands.land_id)
-            order by users.id'
+                left join lands.lands lands on (lands.id=user_lands.land_id)'.($account_id == -1 ? '': 'where (users.id=:id)').'
+            order by users.id',
+            [
+                'id' => $account_id
+            ]
         );
         $id = -1;
-        $landsNames = [50, 63];
+        $landNames = [];
+        $landIDs = [];
         foreach ($res as $key => $row) {
             if ($id != $row['id']) {
                 if ($id != -1) {
-                    $res[$keyRec]['lands'] = $landsNames;
-                    $landsNames = [];
+                    $res[$keyRec]['lands'] = $landNames;
+                    $res[$keyRec]['land_ids'] = $landIDs;
+                    $landNames = [];
+                    $landIDs = [];
                 }
                 $id = $row['id'];
                 $keyRec = $key;
                 $res[$keyRec]['lands'] = [];
             }
             if ($row['land_id'] != '') {
-                $landsNames[] = $row['num'];
+                $landNames[] = $row['num'];
+                $landIDs[] = $row['land_id'];
             }
             if ($keyRec != $key) {
                 unset($res[$key]);
             }
         }
         if ($id != -1) {
-            $res[$keyRec]['lands'] = $landsNames;
+            $res[$keyRec]['lands'] = $landNames;
+            $res[$keyRec]['land_ids'] = $landIDs;
         }
         return array_values($res);
     }
@@ -88,10 +97,10 @@ class UACEntity extends Entity
         if (count($res) == 0) {
             return false;
         }
-        $res[0]['land_ids'] = ['4', '6'];
+        $res[0]['land_ids'] = [];
         foreach ($res as $key => $row) {
             if ($row['land_id'] != '') {
-                $res[0]['land_ids'] = $row['land_id'];
+                $res[0]['land_ids'][] = $row['land_id'];
             }
         }
         return $res[0];
@@ -105,5 +114,32 @@ class UACEntity extends Entity
             $res[$row['name']] = $row['id'];
         }
         return $res;
+    }
+
+    public function accountPost($params)
+    {
+        $stmt = $this->provider->db()->executeQuery(
+            'select uac.user_post(?::integer,?::character varying,?::integer,array[?]::integer[])',
+            [
+                $params['id'],
+                $params['login'],
+                $params['role_id'],
+                $params['land_ids']
+            ],
+            [
+                \Doctrine\DBAL\ParameterType::INTEGER,
+                \Doctrine\DBAL\ParameterType::STRING,
+                \Doctrine\DBAL\ParameterType::INTEGER,
+                \Doctrine\DBAL\Connection::PARAM_INT_ARRAY
+            ]
+        );
+    }
+
+    public function setPassword($params)
+    {
+        $this->provider->executeQuery(
+            'update uac.users set psw=:password where id=:id',
+            $params
+        );
     }
 }

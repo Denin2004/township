@@ -13,16 +13,30 @@ accMngrAccounts:
     controller: App\Controller\AccountManager\Main::accounts
     methods: [GET]
 
-accMngrEdit:
-    path: /edit/{id}
-    controller: App\Controller\AccountManager\Main::edit
+accMngrAccountForm:
+    path: /account/form/{id}
+    controller: App\Controller\AccountManager\Main::accountForm
     requirements:
         id: \d+
     defaults: 
         id: -1
     methods: [GET]
 
-accMngrPost:
-    path: /post
-    controller: App\Controller\AccountManager\Main::post
+accMngrAccountPost:
+    path: /account/post
+    controller: App\Controller\AccountManager\Main::accountPost
+    methods: [POST]
+
+accMngrPasswordForm:
+    path: /password/form/{id}
+    controller: App\Controller\AccountManager\Main::passwordForm
+    requirements:
+        id: \d+
+    defaults: 
+        id: -1
+    methods: [GET]
+
+accMngrSetPassword:
+    path: /password/set
+    controller: App\Controller\AccountManager\Main::passwordSet
     methods: [POST]

@@ -13,13 +13,14 @@ class AccountManager extends Component {
             loading: true,
             errorCode: 0,
             accounts: [],
-            form: false,
+            accountForm: false,
+            passwordForm: false,
             columns: [
                 {
                     title: this.props.t('account.login'),
                     dataIndex: 'login',
                     render: (text, record) => {
-                        return <a onClick={() => {this.editAccount(record.id)}}>{text}</a>
+                        return <a onClick={() => {this.accountForm(record.id)}}>{text}</a>
                     }
                 },
                 {
@@ -38,17 +39,26 @@ class AccountManager extends Component {
                 {
                     title: this.props.t('account.role'),
                     dataIndex: 'role_name'
+                },
+                {
+                    title: '',
+                    dataIndex: 'id',
+                    render: (id) => {
+                        return <a onClick={() => {this.passwordForm(id)}}>{this.props.t('account.change_password')}</a>
+                    }
                 }
             ]
         };
-        this.editAccount = this.editAccount.bind(this);
-        this.post = this.post.bind(this);
+        this.accountForm = this.accountForm.bind(this);
+        this.accountPost = this.accountPost.bind(this);
+        this.passwordForm = this.passwordForm.bind(this);
+        this.passwordPost = this.passwordPost.bind(this);
     }
 
-    editAccount(id)
+    accountForm(id)
     {
         axios.get(
-            window.mfwApp.urls.accountManager.edit+'/'+id,
+            window.mfwApp.urls.accountManager.accountForm+'/'+id,
             {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
@@ -56,9 +66,10 @@ class AccountManager extends Component {
             }
         ).then(res => {
             if (res.data.success) {
+                this.props.form.resetFields();
                 this.setState({
                     loading: false,
-                    form: res.data.form
+                    accountForm: res.data.form
                 });
             } else {
                 message.error(this.props.t(res.data.error));
@@ -80,29 +91,92 @@ class AccountManager extends Component {
             }
         });
     }
-
-    post() {
+    
+    accountPost() {
         this.props.form
             .validateFields()
             .then(values => {
-                console.log(values);
                 axios({
                     method: 'post',
-                    url: window.mfwApp.urls.accountManager.post,
+                    url: window.mfwApp.urls.accountManager.accountPost,
                     data: values,
                     headers: {'Content-Type': 'application/json','X-Requested-With': 'XMLHttpRequest'}
                 }).then(res => {
                     if (res.data.success) {
                         this.setState(state => {
                             const postRowIndex = this.state.accounts.findIndex(function(account){return account.id*1 === res.data.account.id*1});
+                            var acc = [...state.accounts];
                             if (postRowIndex == -1) {
-
                                 return state;
                             }
-                            state.accounts[postRowIndex] = res.data.account;
-                            state.form = false;
+                            res.data.account.id = res.data.account.id*1;
+                            acc[postRowIndex] = res.data.account;
+                            state.accounts = acc;
+                            state.accountForm = false;
                             return state;
                         })
+                    } else {
+                        message.error(this.props.t(res.data.error));
+                    }
+                }).catch(error => {
+                    message.error(error.toString());
+                });
+            })
+            .catch(info => {
+                message.error(this.props.t('common.errors.validate'));
+            });
+    }
+    
+    passwordForm(id)
+    {
+        axios.get(
+            window.mfwApp.urls.accountManager.passwordForm+'/'+id,
+            {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }
+        ).then(res => {
+            if (res.data.success) {
+                this.props.form.resetFields();
+                this.setState({
+                    loading: false,
+                    passwordForm: res.data.form
+                });
+            } else {
+                message.error(this.props.t(res.data.error));
+                this.setState({
+                    loading: false
+                });
+            }
+        }).catch(error => {
+            if (error.response) {
+                this.setState({
+                    loading: false,
+                    errorCode: error.response.status
+                });
+            } else {
+                message.error(error.toString());
+                this.setState({
+                    loading: false
+                });
+            }
+        });
+    }
+    
+    passwordPost() {
+        this.props.form
+            .validateFields()
+            .then(values => {
+                axios({
+                    method: 'post',
+                    url: window.mfwApp.urls.accountManager.setPassword,
+                    data: values,
+                    headers: {'Content-Type': 'application/json','X-Requested-With': 'XMLHttpRequest'}
+                }).then(res => {
+                    if (res.data.success) {
+                        this.setState({passwordForm: false});
+                        message.success(this.props.t('account.password_changed'));
                     } else {
                         message.error(this.props.t(res.data.error));
                     }
@@ -159,44 +233,73 @@ class AccountManager extends Component {
             ) : (
             <React.Fragment>
                 <Table rowKey="id" columns={this.state.columns} dataSource={this.state.accounts}/>
-                {this.state.form != false ? (
+                {this.state.accountForm != false ? (
                     <Modal
                       title={this.props.t('account.edit')}
                       visible={true}
                       closable={false}
                       okText={this.props.t('modal.save')}
                       cancelText={this.props.t('modal.cancel')}
-                      onCancel={() => {this.setState({form: false})}}
-                      onOk={this.post}>
+                      onCancel={() => {this.setState({accountForm: false})}}
+                      onOk={this.accountPost}>
                         <Form form={this.props.form}
                            name="account"
                            labelCol={{ span: 8 }}
                             wrapperCol={{ span: 16 }}>
                             <Form.Item name="login"
                                label={this.props.t('account.login')}
-                               initialValue={this.state.form.login.value}>
+                               initialValue={this.state.accountForm.login.value}>
                                 <Input/>
                             </Form.Item>
                             <Form.Item name="role_id"
                                label={this.props.t('account.role')}
-                               initialValue={this.state.form.role_id.value*1}>
+                               initialValue={this.state.accountForm.role_id.value*1}>
                                 <Select
-                                  options={this.state.form.role_id.choices}/>
+                                  options={this.state.accountForm.role_id.choices}/>
                             </Form.Item>
                             <Form.Item name="land_ids"
                                label={this.props.t('land.s')}
-                               initialValue={this.state.form.land_ids.value}>
+                               initialValue={this.state.accountForm.land_ids.value}>
                                 <Select mode="multiple"
-                                  options={this.state.form.land_ids.choices}/>
+                                  options={this.state.accountForm.land_ids.choices}/>
                             </Form.Item>
                             <Form.Item name="id"
                               hidden={true} 
-                              initialValue={this.state.form.id.value}>
+                              initialValue={this.state.accountForm.id.value}>
                                 <Input/>
                             </Form.Item>
                             <Form.Item name="_token"
                               hidden={true} 
-                              initialValue={this.state.form._token.value}>
+                              initialValue={this.state.accountForm._token.value}>
+                                <Input/>
+                            </Form.Item>
+                        </Form>
+                    </Modal>) : ''}
+                {this.state.passwordForm != false ? (
+                    <Modal
+                      title={this.props.t('account.change_password')}
+                      visible={true}
+                      closable={false}
+                      okText={this.props.t('modal.save')}
+                      cancelText={this.props.t('modal.cancel')}
+                      onCancel={() => {this.setState({passwordForm: false})}}
+                      onOk={this.passwordPost}>
+                        <Form form={this.props.form}
+                           name="password"
+                           labelCol={{ span: 8 }}
+                            wrapperCol={{ span: 16 }}>
+                            <Form.Item name="password"
+                               label={this.props.t('account.password')}>
+                                <Input.Password />
+                            </Form.Item>
+                            <Form.Item name="id"
+                              hidden={true} 
+                              initialValue={this.state.passwordForm.id.value}>
+                                <Input/>
+                            </Form.Item>
+                            <Form.Item name="_token"
+                              hidden={true} 
+                              initialValue={this.state.passwordForm._token.value}>
                                 <Input/>
                             </Form.Item>
                         </Form>
