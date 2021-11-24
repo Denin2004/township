@@ -83,29 +83,6 @@ class UACEntity extends Entity
         return array_values($res);
     }
 
-    public function account($id)
-    {
-        $res = $this->provider->fetchAll(
-            'select users.id, users.login, users.role_id, user_lands.land_id
-                from uac.users users
-                left join lands.user_lands user_lands on (user_lands.user_id=users.id)
-                where users.id=:id',
-            [
-                'id' => $id
-            ]
-        );
-        if (count($res) == 0) {
-            return false;
-        }
-        $res[0]['land_ids'] = [];
-        foreach ($res as $key => $row) {
-            if ($row['land_id'] != '') {
-                $res[0]['land_ids'][] = $row['land_id'];
-            }
-        }
-        return $res[0];
-    }
-
     public function roleChoices()
     {
         $dbRes = $this->provider->fetchAll('select id, name from uac.roles');

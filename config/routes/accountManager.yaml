@@ -40,3 +40,13 @@ accMngrSetPassword:
     path: /password/set
     controller: App\Controller\AccountManager\Main::passwordSet
     methods: [POST]
+
+accMngrPasswordChangeForm:
+    path: /password/changeform
+    controller: App\Controller\AccountManager\Main::passwordChangeForm
+    methods: [GET]
+
+accMngrChangePassword:
+    path: /password/change
+    controller: App\Controller\AccountManager\Main::passwordChange
+    methods: [POST]

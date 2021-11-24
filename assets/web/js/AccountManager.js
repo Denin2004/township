@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { withTranslation } from 'react-i18next';
-import {Spin, message, Table, Form, Input, Modal, Select, Tag } from 'antd';
+import {Spin, message, Table, Form, Input, Modal, Select, Tag, Button} from 'antd';
 
 import axios from 'axios';
 
@@ -44,7 +44,7 @@ class AccountManager extends Component {
                     title: '',
                     dataIndex: 'id',
                     render: (id) => {
-                        return <a onClick={() => {this.passwordForm(id)}}>{this.props.t('account.change_password')}</a>
+                        return <a onClick={() => {this.passwordForm(id)}}>{this.props.t('account.password.change')}</a>
                     }
                 }
             ]
@@ -58,7 +58,7 @@ class AccountManager extends Component {
     accountForm(id)
     {
         axios.get(
-            window.mfwApp.urls.accountManager.accountForm+'/'+id,
+            window.mfwApp.urls.accountManager.accountForm+(id != -1 ? '/'+id : ''),
             {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
@@ -176,7 +176,7 @@ class AccountManager extends Component {
                 }).then(res => {
                     if (res.data.success) {
                         this.setState({passwordForm: false});
-                        message.success(this.props.t('account.password_changed'));
+                        message.success(this.props.t('account.password.changed'));
                     } else {
                         message.error(this.props.t(res.data.error));
                     }
@@ -225,17 +225,17 @@ class AccountManager extends Component {
     }
 
     render() {
-        console.log(this.state);
         return this.state.loading ? (
                 <div className="d-flex justify-content-center align-items-center min-height-100vh">
                     <Spin/>
                 </div>
             ) : (
             <React.Fragment>
+                <Button onClick={() => this.accountForm(-1)}>{this.props.t('account.new')}</Button>
                 <Table rowKey="id" columns={this.state.columns} dataSource={this.state.accounts}/>
                 {this.state.accountForm != false ? (
                     <Modal
-                      title={this.props.t('account.edit')}
+                      title={this.state.accountForm.id.value == -1 ? this.props.t('account.new') : this.props.t('account.edit')}
                       visible={true}
                       closable={false}
                       okText={this.props.t('modal.save')}
@@ -263,6 +263,11 @@ class AccountManager extends Component {
                                 <Select mode="multiple"
                                   options={this.state.accountForm.land_ids.choices}/>
                             </Form.Item>
+                            {this.state.accountForm.id.value == -1 ? 
+                                <Form.Item name="land_ids"
+                                   label={this.props.t('account.password._')}>
+                                   <Input.Password />
+                                </Form.Item> : ''}
                             <Form.Item name="id"
                               hidden={true} 
                               initialValue={this.state.accountForm.id.value}>
@@ -277,7 +282,7 @@ class AccountManager extends Component {
                     </Modal>) : ''}
                 {this.state.passwordForm != false ? (
                     <Modal
-                      title={this.props.t('account.change_password')}
+                      title={this.props.t('account.password.change')}
                       visible={true}
                       closable={false}
                       okText={this.props.t('modal.save')}
@@ -289,7 +294,13 @@ class AccountManager extends Component {
                            labelCol={{ span: 8 }}
                             wrapperCol={{ span: 16 }}>
                             <Form.Item name="password"
-                               label={this.props.t('account.password')}>
+                               label={this.props.t('account.password')}
+                               rules={[
+                                  {
+                                      required: true,
+                                      message: this.props.t('account.errors.password_blank'),
+                                  }
+                               ]}>
                                 <Input.Password />
                             </Form.Item>
                             <Form.Item name="id"

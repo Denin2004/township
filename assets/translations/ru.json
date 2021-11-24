@@ -1,21 +1,29 @@
 {
     "account": {
         "login": "Логин",
-        "password": "Пароль",
+        "password": {
+            "_": "Пароль",
+            "old": "Старый пароль",
+            "new": "Новый пароль",
+            "confirm": "Новый пароль еще раз",
+            "change": "Сменить пароль",
+            "changed": "Пароль изменен"
+        },
         "logout": "Выйти",
-        "change_password": "Сменить пароль",
-        "password_changed": "Пароль изменен",
         "s": "Аккаунты",
         "manager": "Управление",
         "role": "Роль",
         "edit": "Редактирование аккаунта",
+        "new": "Новый аккаунт",
         "errors": {
             "login_message": "Please input your username!",
             "password_message":  "Please input your password!",
-            "password_blank": "Password is blank",
+            "password_blank": "Пароль не может быть пустым",
             "user_name_blank": "User name is blank",
             "no_such_user": "Пользователь не найден",
-            "site_access": "Site access denied"
+            "site_access": "Site access denied",
+            "password_confirm": "Пароли не совпадают",
+            "old_password": "Старый пароль неправильный"
         }
     },
     "security": {

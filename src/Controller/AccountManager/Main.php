@@ -8,8 +8,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 use App\Entity\UACEntity;
-use App\Form\Account;
-use App\Form\SetPassword;
+use App\Form\AccountManager\Account;
+use App\Form\AccountManager\SetPassword;
+use App\Form\AccountManager\ChangePassword;
 
 class Main extends AbstractController
 {
@@ -31,14 +32,27 @@ class Main extends AbstractController
 
     public function accountForm(UACEntity $uacDB, $id)
     {
-        $account = $uacDB->accounts($id);
-        if (count($account) == 0) {
-            return new JsonResponse([
-                'success' => false,
-                'error' => 'account.errors.no_such_user'
-            ]);
+        $account = [
+            [
+                'id' => $id
+            ]
+        ];
+        if ($id != -1) {
+            $account = $uacDB->accounts($id);
+            if (count($account) == 0) {
+                return new JsonResponse([
+                    'success' => false,
+                    'error' => 'account.errors.no_such_user'
+                ]);
+            }
         }
-        $form = $this->createForm(Account::class, $account[0]);
+        $form = $this->createForm(
+            Account::class,
+            $account[0],
+            [
+                'createAccount' => $id == -1
+            ]
+        );
         $view = $form->createView();
         return new JsonResponse([
             'success' => true,
@@ -55,16 +69,16 @@ class Main extends AbstractController
                 'error' => 'form.errors.noData'
             ]);
         }
-        $form = $this->createForm(Account::class, [], ['request' => true]);
+        $form = $this->createForm(Account::class, [], ['request' => true, 'createAccount' => $formRequest['id'] == -1]);
         $form->submit($formRequest);
         if (!$form->isValid()) {
-            $error = '';
+            $errors = '';
             foreach ($form->getErrors(true) as $error) {
-                $error.= $error->getMessage().' ';
+                $errors.= $error->getMessage().' ';
             }
             return new JsonResponse([
                 'success' => false,
-                'error' => $error
+                'error' => $errors
             ]);
 
         }
@@ -106,18 +120,64 @@ class Main extends AbstractController
         $form = $this->createForm(SetPassword::class);
         $form->submit($formRequest);
         if (!$form->isValid()) {
-            $error = '';
+            $errors = '';
             foreach ($form->getErrors(true) as $error) {
-                $error.= $error->getMessage().' ';
+                $errors.= $error->getMessage().' ';
             }
             return new JsonResponse([
                 'success' => false,
-                'error' => $error
+                'error' => $errors
             ]);
 
         }
         $formData = $form->getData();
         $formData['password'] = $encoder->encodePassword($this->getUser(), $formData['password']);
+        $uacDB->setPassword($formData);
+        $res = [
+            'success' => true
+        ];
+        return new JsonResponse($res);
+    }
+
+    public function passwordChangeForm()
+    {
+        $form = $this->createForm(ChangePassword::class, ['id' => $this->getUser()->getId()]);
+        $view = $form->createView();
+        return new JsonResponse([
+            'success' => true,
+            'form' => $view->vars['react']
+        ]);
+    }
+
+    public function passwordChange(Request $request, UACEntity $uacDB, UserPasswordEncoderInterface $encoder)
+    {
+        $formRequest = json_decode($request->getContent(), true);
+        if ($formRequest == null) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'form.errors.noData'
+            ]);
+        }
+        $form = $this->createForm(ChangePassword::class);
+        $form->submit($formRequest);
+        if (!$form->isValid()) {
+            $errors = '';
+            foreach ($form->getErrors(true) as $error) {
+                $errors.= $error->getMessage().' ';
+            }
+            return new JsonResponse([
+                'success' => false,
+                'error' => $errors
+            ]);
+        }
+        $formData = $form->getData();
+        if (!$encoder->isPasswordValid($this->getUser(), $formData['old_password'])) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'account.errors.old_password'
+            ]);
+        }
+        $formData['password'] = $encoder->encodePassword($this->getUser(), $formData['new_password']);
         $uacDB->setPassword($formData);
         $res = [
             'success' => true
