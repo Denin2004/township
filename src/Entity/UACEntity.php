@@ -95,21 +95,25 @@ class UACEntity extends Entity
 
     public function accountPost($params)
     {
+        $params['password'] = $params['id'] != -1 ? '' : $params['password'];
         $stmt = $this->provider->db()->executeQuery(
-            'select uac.user_post(?::integer,?::character varying,?::integer,array[?]::integer[])',
+            'select uac.user_post(?::integer,?::character varying,?::integer,array[?]::integer[],?::character varying)',
             [
                 $params['id'],
                 $params['login'],
                 $params['role_id'],
-                $params['land_ids']
+                $params['land_ids'],
+                $params['password']
             ],
             [
                 \Doctrine\DBAL\ParameterType::INTEGER,
                 \Doctrine\DBAL\ParameterType::STRING,
                 \Doctrine\DBAL\ParameterType::INTEGER,
-                \Doctrine\DBAL\Connection::PARAM_INT_ARRAY
+                \Doctrine\DBAL\Connection::PARAM_INT_ARRAY,
+                \Doctrine\DBAL\ParameterType::STRING,
             ]
         );
+        return $stmt->fetchAll();
     }
 
     public function setPassword($params)

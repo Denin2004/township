@@ -27,7 +27,8 @@ class ReactChoiceType extends AbstractType
             'type' => 'mfw-choice',
             'choices' => $reactChoices,
             'value' => $view->vars['value'],
-            'multiple' => isset($options['multiple']) ? $options['multiple'] : false
+            'multiple' => isset($options['multiple']) ? $options['multiple'] : false,
+            'full_name' => $view->vars['full_name']
         ];
     }
 }

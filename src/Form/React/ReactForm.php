@@ -33,7 +33,8 @@ class ReactForm extends AbstractType
                 if ($key == '_token') {
                     $view->vars['react'][$child->vars['name']] = [
                         'value' => $child->vars['value'],
-                        'type' => 'mfw-hidden'
+                        'type' => 'mfw-hidden',
+                        'full_name' => $child->vars['full_name']
                     ];
                     break;
                 }

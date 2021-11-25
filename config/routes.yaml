@@ -22,6 +22,10 @@ accountManager:
     resource: 'routes/accountManager.yaml'
     prefix: /accounts
     
+electricity:
+    resource: 'routes/electricity.yaml'
+    prefix: /electricity
+    
 error403:
     path: /error/403
     controller: App\Controller\MainPage::index

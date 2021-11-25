@@ -80,11 +80,16 @@ class Main extends AbstractController
                 'success' => false,
                 'error' => $errors
             ]);
-
         }
         $formData = $form->getData();
-        $uacDB->accountPost($formData);
-        $account = $uacDB->accounts($formData['id']);
+        $res = $uacDB->accountPost($formData);
+        if ($uacDB->isError()) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => $uacDB->getError()
+            ]);
+        }
+        $account = $uacDB->accounts($res[0]['user_post']);
         if (count($account) == 0) {
             return new JsonResponse([
                 'success' => false,
@@ -133,6 +138,12 @@ class Main extends AbstractController
         $formData = $form->getData();
         $formData['password'] = $encoder->encodePassword($this->getUser(), $formData['password']);
         $uacDB->setPassword($formData);
+        if ($uacDB->isError()) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => $uacDB->getError()
+            ]);
+        }
         $res = [
             'success' => true
         ];
@@ -179,6 +190,12 @@ class Main extends AbstractController
         }
         $formData['password'] = $encoder->encodePassword($this->getUser(), $formData['new_password']);
         $uacDB->setPassword($formData);
+        if ($uacDB->isError()) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => $uacDB->getError()
+            ]);
+        }
         $res = [
             'success' => true
         ];

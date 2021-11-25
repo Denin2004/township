@@ -106,11 +106,12 @@ class AccountManager extends Component {
                         this.setState(state => {
                             const postRowIndex = this.state.accounts.findIndex(function(account){return account.id*1 === res.data.account.id*1});
                             var acc = [...state.accounts];
-                            if (postRowIndex == -1) {
-                                return state;
-                            }
                             res.data.account.id = res.data.account.id*1;
-                            acc[postRowIndex] = res.data.account;
+                            if (postRowIndex == -1) {
+                                acc.push(res.data.account);
+                            } else {
+                                acc[postRowIndex] = res.data.account;
+                            }
                             state.accounts = acc;
                             state.accountForm = false;
                             return state;
@@ -264,7 +265,7 @@ class AccountManager extends Component {
                                   options={this.state.accountForm.land_ids.choices}/>
                             </Form.Item>
                             {this.state.accountForm.id.value == -1 ? 
-                                <Form.Item name="land_ids"
+                                <Form.Item name="password"
                                    label={this.props.t('account.password._')}>
                                    <Input.Password />
                                 </Form.Item> : ''}

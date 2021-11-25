@@ -74,7 +74,7 @@ services:
 
     form.Account:
         class: App\Form\Account
-        arguments: ['@App\Entity\UACEntity', '@App\Entity\Lands']
+        arguments: ['@App\Entity\UACEntity', '@App\Entity\Lands', '@security.token_storage', '@security.password_encoder']
         tags: [form.type]
 
     # add more service definitions when explicit configuration is needed

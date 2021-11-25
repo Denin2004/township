@@ -6,6 +6,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 use App\Form\React\ReactForm;
 use App\Form\React\ReactTextType;
@@ -21,11 +24,15 @@ class Account extends ReactForm
 
     protected $uacDB;
     protected $landsDB;
+    protected $user;
+    protected $encoder;
 
-    public function __construct(UACEntity $uacDB, Lands $landsDB)
+    public function __construct(UACEntity $uacDB, Lands $landsDB, TokenStorageInterface $tokenStorage, UserPasswordEncoderInterface $encoder)
     {
         $this->uacDB = $uacDB;
         $this->landsDB = $landsDB;
+        $this->user = $tokenStorage->getToken()->getUser();
+        $this->encoder = $encoder;
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -39,7 +46,25 @@ class Account extends ReactForm
         $builder->add('login', ReactTextType::class)
             ->add('id', ReactHiddenType::class);
         if ($options['createAccount'] == true) {
-            $builder->add('password', ReactPasswordType::class);
+            $builder->add(
+                'password',
+                ReactPasswordType::class,
+                [
+                    'constraints' => [new NotBlank(['message' => 'account.errors.password_blank'])]
+                ]
+            );
+            if ($options['request'] == true) {
+                $passwordTransformer = new CallbackTransformer(
+                    function ($value) {
+                        return $value;
+                    },
+                    function ($value) {
+                        return $value != '' ? $this->encoder->encodePassword($this->user, $value) : $value;
+                    }
+                );
+                $builder->get('password')->addModelTransformer($passwordTransformer);
+            }
+
         }
         if ($options['request'] == true) {
             $builder->add(
@@ -54,16 +79,6 @@ class Account extends ReactForm
                     'allow_add' => true
                 ]
             );
-            $passwordformer = new CallbackTransformer(
-                function ($value) {
-                    return $value == 1;
-                },
-                function ($value) {
-                    return $value === true ? 1 : 0;
-                }
-            );
-
-            $builder->get('password')->addModelTransformer($passwordTransformer);
         } else {
             $builder->add(
                 'role_id',

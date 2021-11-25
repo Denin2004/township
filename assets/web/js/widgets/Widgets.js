@@ -1,12 +1,13 @@
 import AccountsWidget from '@app/web/js/widgets/AccountsWidget';
+import BookkeepingWidget from '@app/web/js/widgets/BookkeepingWidget';
 
 var widgets = {
     "account.s": {
         node: AccountsWidget,
         width: 3
     },
-    "account.s1": {
-        node: AccountsWidget,
+    "bookkeeping._": {
+        node: BookkeepingWidget,
         width: 3
     }    
 };

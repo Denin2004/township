@@ -17,7 +17,8 @@ class ReactPasswordType extends AbstractType
     {
         $view->parent->vars['react'][$view->vars['name']] = [
             'type' => 'mfw-password',
-            'value' => $view->vars['value']
+            'value' => $view->vars['value'],
+            'full_name' => $view->vars['full_name']
         ];
     }
 }

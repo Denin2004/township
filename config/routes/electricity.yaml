@@ -1,0 +1,9 @@
+electricityUploadForm:
+    path: /form
+    controller: App\Controller\Electricity::form
+    methods: [GET]
+    
+electricityUpload:
+    path: /upload
+    controller: App\Controller\Electricity::upload
+    methods: [POST]
