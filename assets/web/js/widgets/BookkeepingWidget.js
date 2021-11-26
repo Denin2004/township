@@ -1,20 +1,24 @@
 import React, {Component} from 'react';
 import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import { Card, message, Modal, Form, Input, Select, Upload, Button } from 'antd';
+import { Card, message, Modal, Form, Input, Select, Upload, Button, Spin, Descriptions } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
 
 import useWithForm from '@app/hooks/useWithForm';
+import MfwNumber from '@app/mfw/MfwNumber';
 
 class BookkeepingWidgets extends Component {
     constructor(props){
         super(props);
         this.state = {
             errorCode: 0,
-            electricityForm: false,
-            file: false
+            electricity: {
+                state: 0,
+                form: false,
+                result: false
+            }
         }
         this.electricityForm = this.electricityForm.bind(this);
         this.electricityUpload = this.electricityUpload.bind(this);
@@ -33,38 +37,46 @@ class BookkeepingWidgets extends Component {
             if (res.data.success) {
                 this.props.form.resetFields();
                 this.setState({
-                    electricityForm: res.data.form
+                    electricity: {
+                        state: 1,
+                        form: res.data.form,
+                        result: false
+                    }
                 });
             } else {
                 message.error(this.props.t(res.data.error));
-                this.setState({
-                    loading: false
-                });
             }
         }).catch(error => {
             if (error.response) {
                 this.setState({
-                    loading: false,
                     errorCode: error.response.status
                 });
             } else {
                 message.error(error.toString());
-                this.setState({
-                    loading: false
-                });
             }
         });
     }
 
     electricityUpload() {
+        if (this.state.electricity.state == 3) {
+            this.props.form.resetFields();
+            this.setState((state) => {
+                state.electricity.state = 1;
+                return state
+            });
+            return;
+        }
         this.props.form
             .validateFields()
             .then(values => {
                 let formData = new FormData();
                 Object.keys(values).map((key) => {
-                    formData.append(this.state.electricityForm[key].full_name, key != 'file'? values[key] : '');
+                    formData.append(this.state.electricity.form[key].full_name, values[key]);
                 });
-                formData.append(this.state.electricityForm.file.full_name, this.state.file);
+                this.setState((state) => {
+                    state.electricity.state = 2;
+                    return state;
+                });
                 axios({
                     method: 'post',
                     url: window.mfwApp.urls.electricity.upload,
@@ -72,25 +84,33 @@ class BookkeepingWidgets extends Component {
                     headers: { 'Content-Type': 'multipart/form-data','Accept': 'application/json'}
                 }).then(res => {
                     if (res.data.success) {
-                        this.setState({passwordForm: false});
-                        message.success(this.props.t('account.password.changed'));
+                        this.setState((state) => {
+                            state.electricity.state = 3;
+                            state.electricity.result = res.data.result;
+                            if (res.data.result) {
+                                state.electricity.result.month = this.props.t('calendar.months.'+res.data.result.month)
+                            }
+                            return state;
+                        });
                     } else {
-                        message.error(this.props.t(res.data.error));
+                        message.error(this.props.t(res.data.error)+(res.data.errorData ? res.data.errorData : ''));
+                        this.setState((state) => {
+                            state.electricity.state = 1;
+                            return state;
+                        });
                     }
                 }).catch(error => {
                     message.error(error.toString());
+                    this.setState((state) => {
+                        state.electricity.state = 1;
+                        return state;
+                    });
                 });
-            })
-            .catch(info => {
-                message.error(this.props.t('common.errors.validate'));
             });
     }
     
     normFile(e) {
-      if (Array.isArray(e)) {
-        return e;
-      }
-      return e && e.fileList;
+        return e && (e.fileList.length > 0 ? e.fileList[0].originFileObj : null);
     };    
 
     render() {
@@ -98,47 +118,59 @@ class BookkeepingWidgets extends Component {
             <Card title={this.props.t('bookkeeping._')}>
                 <a onClick={() => this.electricityForm()}>{this.props.t('electricity.load_bills')}</a>
             </Card>
-            {this.state.electricityForm != false ? (
+            {this.state.electricity.state != 0 ? (
                 <Modal
                   title={this.props.t('electricity.loading_bills')}
                   visible={true}
                   closable={false}
-                  okText={this.props.t('modal.upload')}
-                  cancelText={this.props.t('modal.cancel')}
-                  onCancel={() => {this.setState({electricityForm: false})}}
+                  okText={this.state.electricity.state == 3 ? this.props.t('modal.upload_more') : this.props.t('modal.upload')}
+                  cancelText={this.state.electricity.state == 3 ? this.props.t('modal.close') : this.props.t('modal.cancel')}
+                  onCancel={() => {this.setState({electricity: {state: 0, form: false, result: false}})}}
                   onOk={this.electricityUpload}>
-                    <Form form={this.props.form}
-                       name="electricity"
-                       encType="multipart/form-data"
-                       labelCol={{ span: 8 }}
-                        wrapperCol={{ span: 16 }}>
-                        <Form.Item name="year"
-                           label={this.props.t('calendar.year')}
-                           initialValue={this.state.electricityForm.year.value}>
-                            <Input/>
-                        </Form.Item>
-                        <Form.Item name="month"
-                           label={this.props.t('calendar.month')}
-                           initialValue={this.state.electricityForm.month.value}>
-                            <Select options={this.state.electricityForm.month.choices}/>
-                        </Form.Item>
-                        <Form.Item name="file"
-                           label={this.props.t('electricity.bills_file')}
-                           valuePropName="fileList"
-                           getValueFromEvent={this.normFile}>
-                            <Upload
-                              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                              beforeUpload={(file) => {this.setState({file: file});return false;}}
-                              onRemove={() => {this.setState({file: false});}}>
-                                <Button icon={<UploadOutlined />}>{this.props.t('modal.select_file')}</Button>
-                            </Upload>                        
-                        </Form.Item> 
-                        <Form.Item name="_token"
-                          hidden={true} 
-                          initialValue={this.state.electricityForm._token.value}>
-                            <Input/>
-                        </Form.Item>
-                    </Form>
+                    {this.state.electricity.state == 1 ? <Form form={this.props.form}
+                           name="electricity"
+                           encType="multipart/form-data"
+                           labelCol={{ span: 8 }}
+                            wrapperCol={{ span: 16 }}>
+                           <Form.Item name="file"
+                               label={this.props.t('electricity.bills_file')}
+                               valuePropName="File"
+                               getValueFromEvent={this.normFile}
+                               rules={[
+                                  {
+                                      required: true,
+                                      message: this.props.t('electricity.errors.file_blank')
+                                  }
+                               ]}>
+                                <Upload
+                                  beforeUpload={() => {return false;}}
+                                  maxCount={1}
+                                  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                                    <Button icon={<UploadOutlined />}>{this.props.t('modal.select_file')}</Button>
+                                </Upload>                        
+                            </Form.Item> 
+                            <Form.Item name="_token"
+                              hidden={true} 
+                              initialValue={this.state.electricity.form._token.value}>
+                                <Input/>
+                            </Form.Item>
+                        </Form> : null }
+                    {this.state.electricity.state == 2 ? <div className="d-flex justify-content-center">
+                        <Spin/>
+                    </div> : null}
+                    {this.state.electricity.state == 3 ? <Descriptions layout="vertical" bordered>
+                        <Descriptions.Item label={this.props.t('calendar.year')}>
+                            {this.state.electricity.result.year}
+                        </Descriptions.Item>
+                        <Descriptions.Item label={this.props.t('calendar.month')}>
+                            {this.state.electricity.result.month}
+                        </Descriptions.Item>
+                        <Descriptions.Item label={<div className="d-flex justify-content-end">{this.props.t('electricity.bills_on_sum')}</div>}>
+                            <div className="d-flex justify-content-end">
+                                <MfwNumber value={this.state.electricity.result.sum}/>
+                            </div>
+                        </Descriptions.Item>
+                    </Descriptions> : null}
                 </Modal>) :
             ''}
         </React.Fragment>

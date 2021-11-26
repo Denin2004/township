@@ -44,4 +44,12 @@ class Charges extends Entity
             $data
         );
     }
+
+    public function electricityBillsSum($params)
+    {
+        return $this->provider->fetchAll(
+            'select sum(el.night_amount+el.day_amount) from charges.electricity el where (el.month=:month)and(el.year=:year)',
+            $params
+        );
+    }
 }

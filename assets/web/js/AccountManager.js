@@ -122,9 +122,6 @@ class AccountManager extends Component {
                 }).catch(error => {
                     message.error(error.toString());
                 });
-            })
-            .catch(info => {
-                message.error(this.props.t('common.errors.validate'));
             });
     }
     
@@ -184,9 +181,6 @@ class AccountManager extends Component {
                 }).catch(error => {
                     message.error(error.toString());
                 });
-            })
-            .catch(info => {
-                message.error(this.props.t('common.errors.validate'));
             });
     }
 
@@ -249,7 +243,13 @@ class AccountManager extends Component {
                             wrapperCol={{ span: 16 }}>
                             <Form.Item name="login"
                                label={this.props.t('account.login')}
-                               initialValue={this.state.accountForm.login.value}>
+                               initialValue={this.state.accountForm.login.value}
+                               rules={[
+                                  {
+                                      required: true,
+                                      message: this.props.t('account.errors.login_blank')
+                                  }
+                               ]}>
                                 <Input/>
                             </Form.Item>
                             <Form.Item name="role_id"
