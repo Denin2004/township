@@ -8,6 +8,7 @@ import axios from 'axios';
 import useWithForm from '@app/hooks/useWithForm';
 import Dashboard from '@app/web/js/Dashboard';
 import AccountManager from '@app/web/js/AccountManager';
+import ElectricityBills from '@app/web/js/ElectricityBills';
 
 class Pages extends Component {
     constructor(props){
@@ -140,9 +141,12 @@ class Pages extends Component {
                         </Menu>
                     </Layout.Header>
                     <Layout.Content>
+                    {window.mfwApp.urls.electricity.bills+'/:year(\d+)/:month(\d+)'}
                         <Routes>
                             <Route path="/" element={<Dashboard widgets={this.state.widgets}/>}/>
                             <Route path={window.mfwApp.urls.accountManager.page} element={<AccountManager/>}/>
+                            <Route path={window.mfwApp.urls.electricity.bills+'/:year/:month'} element={<ElectricityBills/>}/>
+                            <Route path={window.mfwApp.urls.electricity.bills} element={<ElectricityBills/>}/>
                         </Routes>
                     </Layout.Content>
                 {this.state.passwordForm != false ? (

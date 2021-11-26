@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Link } from 'react-router-dom';
+import { Link, generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import { Card, message, Modal, Form, Input, Select, Upload, Button, Spin, Descriptions } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
@@ -87,9 +87,6 @@ class BookkeepingWidgets extends Component {
                         this.setState((state) => {
                             state.electricity.state = 3;
                             state.electricity.result = res.data.result;
-                            if (res.data.result) {
-                                state.electricity.result.month = this.props.t('calendar.months.'+res.data.result.month)
-                            }
                             return state;
                         });
                     } else {
@@ -163,11 +160,13 @@ class BookkeepingWidgets extends Component {
                             {this.state.electricity.result.year}
                         </Descriptions.Item>
                         <Descriptions.Item label={this.props.t('calendar.month')}>
-                            {this.state.electricity.result.month}
+                            {this.props.t('calendar.months.'+this.state.electricity.result.month)}
                         </Descriptions.Item>
                         <Descriptions.Item label={<div className="d-flex justify-content-end">{this.props.t('electricity.bills_on_sum')}</div>}>
                             <div className="d-flex justify-content-end">
-                                <MfwNumber value={this.state.electricity.result.sum}/>
+                                <a href={generatePath(window.mfwApp.urls.electricity.bills+'/:year/:month', { year: this.state.electricity.result.year, month: this.state.electricity.result.month})} target="_blank">
+                                    <MfwNumber value={this.state.electricity.result.sum}/>
+                                </a>
                             </div>
                         </Descriptions.Item>
                     </Descriptions> : null}

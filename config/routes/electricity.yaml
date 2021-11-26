@@ -7,3 +7,25 @@ electricityUpload:
     path: /upload
     controller: App\Controller\Electricity\Upload::upload
     methods: [POST]
+
+electricityBills:
+    path: /bills/{year}/{month}
+    controller: App\Controller\Application::index
+    methods: [GET]
+    defaults:
+        year: 0
+        month: 0
+    requirements:
+        year: \d+
+        month: \d+
+        
+electricityBillsForm:
+    path: /bills/form/{year}/{month}
+    controller: App\Controller\Electricity\Bills::form
+    methods: [GET]
+    defaults:
+        year: 0
+        month: 0
+    requirements:
+        year: \d+
+        month: \d+
