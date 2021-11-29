@@ -52,4 +52,22 @@ class Charges extends Entity
             $params
         );
     }
+
+    public function monthBills($params)
+    {
+        return $this->provider->fetchAll(
+            'select el.id, el.night_meter_start, el.day_meter_start,
+                el.night_meter_end, el.day_meter_end,
+                el.night_rate, el.day_rate,
+                el.night_amount, el.day_amount,
+                land.num,
+                inv.amount, inv.payed
+                    from charges.electricity el
+                       left join lands.lands land on(land.id=el.land_id)
+                       left join balances.invoices inv on(inv.id=el.invoice_id)
+                where (el.month=:month)and(el.year=:year)
+                order by land.num',
+            $params
+        );
+    }
 }

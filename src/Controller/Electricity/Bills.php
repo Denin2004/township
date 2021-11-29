@@ -20,7 +20,7 @@ class Bills extends AbstractController
         if ($year == 0) {
             $dt = new \DateTime();
             $data['year'] = $dt->format('Y');
-            $data['month'] = $dt->format('n');
+            $data['month'] = $month == 0 ? $dt->format('n') : $month;
         }
         $form = $this->createForm(
             BillsForm::class,
@@ -35,8 +35,15 @@ class Bills extends AbstractController
 
     public function data(Request $request, Charges $charges)
     {
-        $form = $this->createForm(UploadForm::class);
-        $form->handleRequest($request);
+        $formRequest = json_decode($request->getContent(), true);
+        if ($formRequest == null) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'form.errors.noData'
+            ]);
+        }
+        $form = $this->createForm(BillsForm::class);
+        $form->submit($formRequest);
         if (!$form->isValid()) {
             $errors = '';
             foreach ($form->getErrors(true) as $error) {
@@ -47,9 +54,9 @@ class Bills extends AbstractController
                 'error' => $errors
             ]);
         }
-        $formData = $form->getData();
         return new JsonResponse([
             'success' => true,
+            'bills' => $charges->monthBills($form->getData())
         ]);
     }
 }

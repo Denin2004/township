@@ -1,5 +1,6 @@
 import AccountsWidget from '@app/web/js/widgets/AccountsWidget';
 import BookkeepingWidget from '@app/web/js/widgets/BookkeepingWidget';
+import TownshipWidget from '@app/web/js/widgets/TownshipWidget';
 
 var widgets = {
     "account.s": {
@@ -8,7 +9,11 @@ var widgets = {
     },
     "bookkeeping._": {
         node: BookkeepingWidget,
-        width: 3
+        width: 5
+    },
+    "township._": {
+        node: TownshipWidget,
+        width: 5
     }    
 };
 export default widgets;

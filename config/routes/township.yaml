@@ -1,0 +1,4 @@
+townshipDebt:
+    path: /debt
+    controller: App\Controller\Township\Main::debt
+    methods: [GET]

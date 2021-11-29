@@ -29,3 +29,8 @@ electricityBillsForm:
     requirements:
         year: \d+
         month: \d+
+
+electricityBillsData:
+    path: /bills/data
+    controller: App\Controller\Electricity\Bills::data
+    methods: [POST]

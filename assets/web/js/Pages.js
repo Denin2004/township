@@ -141,7 +141,6 @@ class Pages extends Component {
                         </Menu>
                     </Layout.Header>
                     <Layout.Content>
-                    {window.mfwApp.urls.electricity.bills+'/:year(\d+)/:month(\d+)'}
                         <Routes>
                             <Route path="/" element={<Dashboard widgets={this.state.widgets}/>}/>
                             <Route path={window.mfwApp.urls.accountManager.page} element={<AccountManager/>}/>
