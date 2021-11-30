@@ -7,14 +7,14 @@ import axios from 'axios';
 
 import MfwNumber from '@app/mfw/MfwNumber';
 
-class TownshipWidgets extends Component {
+class LineWidgets extends Component {
     constructor(props){
         super(props);
         this.state = {
             loading: true,
             errorCode: 0,
             debt: [],
-            debtByLines: [],
+            debtLands: [],
             loadLines: true,
             columns: [
                 {
@@ -29,20 +29,19 @@ class TownshipWidgets extends Component {
                     }
                 }
             ],
-            columnsByLines: [
+            columnsLands: [
                 {
-                    title: this.props.t('land.line'),
-                    dataIndex: 'line'
+                    title: this.props.t('land._'),
+                    dataIndex: 'num'
                 },
                 {
                     title: () => {return <div className="text-align-end">{this.props.t('finance.sum')}</div>},
                     dataIndex: 'debt',
                     render: (text, record) => {
-                        console.log(record);
                         return <div className="text-align-end"><a href={generatePath(
-                            window.mfwApp.urls.township.line.debtByType+'/:line/:type_id',
+                            window.mfwApp.urls.township.land.debt+'/:land_id/:type_id',
                             { 
-                                line: record.line,
+                                line: record.id,
                                 type_id: record.charge_type_id
                             }
                         )} target="_blank"><MfwNumber value={record.debt}/></a></div>
@@ -51,13 +50,13 @@ class TownshipWidgets extends Component {
             ]
         };
         this.debtSummary = this.debtSummary.bind(this);
-        this.debtByLines = this.debtByLines.bind(this);
-        this.debtByLinesData = this.debtByLinesData.bind(this);
+        this.debtByLands = this.debtByLands.bind(this);
+        this.debtLandData = this.debtLandData.bind(this);
     }
 
     componentDidMount() {
         axios.get(
-            window.mfwApp.urls.township.debt,
+            window.mfwApp.urls.township.line.debtData,
             {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
@@ -109,26 +108,26 @@ class TownshipWidgets extends Component {
         </Table.Summary>
     }
 
-    debtByLines() {
+    debtByLands() {
         return <Table
             rowKey="line"
             size="small"
-            columns={this.state.columnsByLines}
-            dataSource={this.state.debtByLines}
+            columns={this.state.columnsLands}
+            dataSource={this.state.debtLands}
             pagination={false}
-            loading={this.state.loadLines}/>;
+            loading={this.state.loadLands}/>;
     }
 
-    debtByLinesData(expanded, record) {
+    debtLandData(expanded, record) {
         if (expanded === false) {
             this.setState({
-                loadLines: true,
-                debtByLines: []
+                loadLands: false,
+                debtLands: []
             });
             return;
         }
         axios.get(
-            window.mfwApp.urls.township.debtByLines+'/'+record.id,
+            window.mfwApp.urls.township.debtLandData+'/'+record.id,
             {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
@@ -175,8 +174,8 @@ class TownshipWidgets extends Component {
                   pagination={false}
                   summary={this.debtSummary}
                   expandable={{
-                      expandedRowRender: this.debtByLines,
-                      onExpand: this.debtByLinesData
+                      expandedRowRender: this.debtByLands,
+                      onExpand: this.debtLandData
                   }}/>
             )}
         </Card>

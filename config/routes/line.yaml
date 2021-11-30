@@ -1,0 +1,39 @@
+lineDebt:
+    path: /debt/{line}
+    controller: App\Controller\Application::index
+    methods: [GET]
+    requirements:
+        line: \d+
+    defaults: 
+        line: -1
+
+lineDebtData:
+    path: /debt/data/{line}
+    controller: App\Controller\Township\Line::debt
+    methods: [GET]
+    requirements:
+        line: \d+
+    defaults: 
+        line: -1
+
+lineDebtByType:
+    path: /debtbbytype/{line}/{type_id}
+    controller: App\Controller\Application::index
+    methods: [GET]
+    requirements:
+        type_id: \d+
+        line: \d+
+    defaults: 
+        type_id: -1
+        line: -1
+
+lineDebtTypeData:
+    path: /debttype/data/{line}/{type_id}
+    controller: App\Controller\Township\Line::debtType
+    methods: [GET]
+    requirements:
+        type_id: \d+
+        line: \d+
+    defaults: 
+        type_id: -1
+        line: -1

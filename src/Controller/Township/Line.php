@@ -5,26 +5,25 @@ namespace App\Controller\Township;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-use App\Entity\Township as TownshipDB;
+use App\Entity\Line as LineDB;
 
-class Main extends AbstractController
+class Line extends AbstractController
 {
-    public function debt(TownshipDB $townshipDB)
+    public function debt(LineDB $lineDB, $line)
     {
-
         return new JsonResponse([
             'success' => true,
-            'debt' => $townshipDB->debt()
+            'debt' => $lineDB->debt(['line' => $line])
         ]);
     }
 
-    public function debtByLines(TownshipDB $townshipDB, $type)
+    public function debtType(LineDB $lineDB, $line, $type_id)
     {
-
         return new JsonResponse([
             'success' => true,
-            'debt' => $townshipDB->debtByLines([
-                'type' => $type
+            'debt' => $lineDB->debtType([
+                'line' => $line,
+                'type_id' => $type_id
             ])
         ]);
     }

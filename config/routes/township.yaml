@@ -2,3 +2,12 @@ townshipDebt:
     path: /debt
     controller: App\Controller\Township\Main::debt
     methods: [GET]
+
+townshipDebtByLines:
+    path: /debt/{type}
+    controller: App\Controller\Township\Main::debtByLines
+    methods: [GET]
+    requirements:
+        type: \d+
+    defaults: 
+        type: -1

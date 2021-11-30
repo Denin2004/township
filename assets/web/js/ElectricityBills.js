@@ -126,7 +126,7 @@ class ElectricityBills extends Component {
                     }
                 },
                 {
-                    title: <div className="text-align-end">{this.props.t('finance.saldo')}</div>,
+                    title: <div className="text-align-end">{this.props.t('finance.debt')}</div>,
                     dataIndex: 'saldo',
                     render: (text, record) => {
                         return record.amount-record.payed != 0 ? 

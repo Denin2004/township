@@ -9,6 +9,7 @@ import useWithForm from '@app/hooks/useWithForm';
 import Dashboard from '@app/web/js/Dashboard';
 import AccountManager from '@app/web/js/AccountManager';
 import ElectricityBills from '@app/web/js/ElectricityBills';
+import LineByType from '@app/web/js/line/ByType';
 
 class Pages extends Component {
     constructor(props){
@@ -146,6 +147,7 @@ class Pages extends Component {
                             <Route path={window.mfwApp.urls.accountManager.page} element={<AccountManager/>}/>
                             <Route path={window.mfwApp.urls.electricity.bills+'/:year/:month'} element={<ElectricityBills/>}/>
                             <Route path={window.mfwApp.urls.electricity.bills} element={<ElectricityBills/>}/>
+                            <Route path={window.mfwApp.urls.township.line.debtByType+'/:line/:type_id'} element={<LineByType/>}/>
                         </Routes>
                     </Layout.Content>
                 {this.state.passwordForm != false ? (

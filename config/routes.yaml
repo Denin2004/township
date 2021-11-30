@@ -30,6 +30,14 @@ township:
     resource: 'routes/township.yaml'
     prefix: /township
     
+line:
+    resource: 'routes/line.yaml'
+    prefix: /line    
+
+land:
+    resource: 'routes/land.yaml'
+    prefix: /land    
+    
 error403:
     path: /error/403
     controller: App\Controller\MainPage::index

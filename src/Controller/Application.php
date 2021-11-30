@@ -32,7 +32,7 @@ class Application extends AbstractController
         $res = [
             'success' => true,
             'urls' => $this->renderView('urls.json.twig'),
-            'widgets' => ['account.s', 'bookkeeping._', 'township._'],
+            'widgets' => ['account.s', 'bookkeeping._', 'township._', 'line._'],
             'user' => [
                 'name' => $this->getUser()->getUsername(),
                 'id' => $this->getUser()->getId()

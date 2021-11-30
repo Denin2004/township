@@ -20,6 +20,16 @@
         "billsData": "{{ path('electricityBillsData') }}"
     },
     "township": {
-       "debt": "{{ path('townshipDebt') }}"
+        "debt": "{{ path('townshipDebt') }}",
+        "debtByLines": "{{ path('townshipDebtByLines') }}",
+        "line": {
+            "debt": "{{ path('lineDebt') }}",
+            "debtData": "{{ path('lineDebtData') }}",
+            "debtByType": "{{ path('lineDebtByType') }}",
+            "debtTypeData": "{{ path('lineDebtTypeData') }}"
+        },
+        "land": {
+            "debtTypeData": "{{ path('landDebtTypeData') }}"
+        }
     }
 }
