@@ -13,7 +13,8 @@ class Line extends Entity
                    inner join balances.lands bl_lands on(bl_lands.land_id=land.id)and(bl_lands.amount > 0)
                    left join charges.types ch_t on(ch_t.id=bl_lands.charge_type_id)
                 where land.line = :line
-                group by ch_t.id, ch_t.name'
+                group by ch_t.id, ch_t.name',
+            $params
         );
     }
 

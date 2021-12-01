@@ -54,13 +54,9 @@ services:
         class: App\Services\Security\AuthenticationHandler
         arguments: ['@router', '@session']
 
-    app.security.access:
-        class: App\Services\Security\Access
-        arguments: ['@app.dbprovider', '@twig', '@App\Entity\UACEntity']
-
     app.user.provider:
         class: App\Services\Security\UserProvider
-        arguments: ['@request_stack', '@security.password_encoder', '@App\Entity\UACEntity']
+        arguments: ['@request_stack', '@security.password_encoder', '@App\Entity\UACEntity', '@twig']
 
     app.access.denied.controller:
         class: App\Services\Security\DeniedHandler

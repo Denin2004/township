@@ -197,7 +197,6 @@ class Upload extends AbstractController
                 'year' => $queryData['year'],
                 'month' => $queryData['month']
             ]);
-            dump($res);
             return new JsonResponse([
                 'success' => true,
                 'result' => [

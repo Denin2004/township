@@ -32,10 +32,12 @@ class Application extends AbstractController
         $res = [
             'success' => true,
             'urls' => $this->renderView('urls.json.twig'),
-            'widgets' => ['account.s', 'bookkeeping._', 'township._', 'line._'],
             'user' => [
                 'name' => $this->getUser()->getUsername(),
-                'id' => $this->getUser()->getId()
+                'id' => $this->getUser()->getId(),
+                'line_manager' => $this->getUser()->get('line'),
+                'widgets' => $this->getUser()->get('widgets'),
+                'routes' => $this->getUser()->get('routes')
             ]
         ];
         return new JsonResponse($res);

@@ -9,7 +9,6 @@ use App\Services\SiteConfig\SiteConfig;
 class DbProvider
 {
     protected $db;
-    protected $user;
     protected $dateFormat;
     protected $timeFormat;
     protected $dateTimeFormat;

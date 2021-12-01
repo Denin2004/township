@@ -1,0 +1,13 @@
+userDebt:
+    path: /debt
+    controller: App\Controller\Township\User::debt
+    methods: [GET]
+
+userDebtType:
+    path: /debt/{type_id}
+    controller: App\Controller\Township\User::debtType
+    methods: [GET]
+    requirements:
+        type_id: \d+
+    defaults: 
+        type_id: -1

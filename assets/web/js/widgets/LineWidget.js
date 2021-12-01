@@ -7,15 +7,15 @@ import axios from 'axios';
 
 import MfwNumber from '@app/mfw/MfwNumber';
 
-class LineWidgets extends Component {
+class LineWidget extends Component {
     constructor(props){
         super(props);
         this.state = {
             loading: true,
             errorCode: 0,
             debt: [],
-            debtLands: [],
-            loadLines: true,
+            debtLand: [],
+            loadLands: true,
             columns: [
                 {
                     title: this.props.t('common.name'),
@@ -41,7 +41,7 @@ class LineWidgets extends Component {
                         return <div className="text-align-end"><a href={generatePath(
                             window.mfwApp.urls.township.land.debt+'/:land_id/:type_id',
                             { 
-                                line: record.id,
+                                land_id: record.id,
                                 type_id: record.charge_type_id
                             }
                         )} target="_blank"><MfwNumber value={record.debt}/></a></div>
@@ -56,7 +56,7 @@ class LineWidgets extends Component {
 
     componentDidMount() {
         axios.get(
-            window.mfwApp.urls.township.line.debtData,
+            window.mfwApp.urls.lineManager.debtLine,
             {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
@@ -108,26 +108,28 @@ class LineWidgets extends Component {
         </Table.Summary>
     }
 
-    debtByLands() {
+    debtByLands(record) {
         return <Table
-            rowKey="line"
+            rowKey="id"
             size="small"
             columns={this.state.columnsLands}
-            dataSource={this.state.debtLands}
+            dataSource={this.state.debtLand[record.id]}
             pagination={false}
-            loading={this.state.loadLands}/>;
+            loading={this.state.loadLand}/>;
     }
 
     debtLandData(expanded, record) {
         if (expanded === false) {
-            this.setState({
-                loadLands: false,
-                debtLands: []
-            });
+            this.setState((state) => {
+                state.loadLand = false;
+                delete state.debtLand[record.id];
+                return state;
+            });            
             return;
         }
+        this.setState({loadLand: true});
         axios.get(
-            window.mfwApp.urls.township.debtLandData+'/'+record.id,
+            window.mfwApp.urls.lineManager.debtByType+'/'+record.id,
             {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
@@ -135,33 +137,34 @@ class LineWidgets extends Component {
             }
         ).then(res => {
             if (res.data.success) {
-                this.setState({
-                    loadLines: false,
-                    debtByLines: res.data.debt
-                });
+                this.setState((state) => {
+                    state.loadLand = false;
+                    state.debtLand[record.id] = res.data.debt;
+                    return state;
+                });            
             } else {
                 message.error(this.props.t(res.data.error));
                 this.setState({
-                    loadLines: false
+                    loadLand: false
                 });
             }
         }).catch(error => {
             if (error.response) {
                 this.setState({
-                    loadLines: false,
+                    loadLand: false,
                     errorCode: error.response.status
                 });
             } else {
                 message.error(error.toString());
                 this.setState({
-                    loading: false
+                    loadLand: false
                 });
             }
         });
     }
 
     render() {
-        return <Card title={this.props.t('township.debt')}>
+        return <Card title={this.props.t('line.debt')+' '+window.mfwApp.user.line_manager}>
             {this.state.loading ? (
                 <div className="d-flex justify-content-center align-items-center">
                     <Spin/>
@@ -178,8 +181,8 @@ class LineWidgets extends Component {
                       onExpand: this.debtLandData
                   }}/>
             )}
-        </Card>
+        </Card>;
     }
 }
 
-export default withTranslation()(TownshipWidgets);
+export default withTranslation()(LineWidget);

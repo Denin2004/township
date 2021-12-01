@@ -1,0 +1,13 @@
+lmLineDebt:
+    path: /debt
+    controller: App\Controller\Township\LineManager::debtLine
+    methods: [GET]
+
+lmByTypeDebt:
+    path: /debtbytype/{type_id}
+    controller: App\Controller\Township\LineManager::debtByType
+    methods: [GET]
+    requirements:
+        type_id: \d+
+    defaults: 
+        type_id: -1

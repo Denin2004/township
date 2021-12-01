@@ -1,6 +1,6 @@
-landDebtByTypeData:
+landDebtTypeData:
     path: /debtbbytype/data/{land_id}/{type_id}
-    controller: App\Controller\Township\Land::debtByType
+    controller: App\Controller\Township\Land::debtType
     methods: [GET]
     requirements:
         type_id: \d+

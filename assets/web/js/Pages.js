@@ -36,9 +36,10 @@ class Pages extends Component {
         ).then(res => {
             if (res.data.success) {
                 window.mfwApp.urls = JSON.parse(res.data.urls);
+                window.mfwApp.user = res.data.user;
                 this.setState({
                     loading: false,
-                    widgets: res.data.widgets,
+                    widgets: res.data.user.widgets,
                     userName: res.data.user.name,
                     userID: res.data.user.id
                 });

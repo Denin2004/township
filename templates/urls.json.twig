@@ -30,6 +30,17 @@
         },
         "land": {
             "debtTypeData": "{{ path('landDebtTypeData') }}"
+        },
+        "user": {
+            "debt": "{{ path('userDebt') }}",
+            "debtType": "{{ path('userDebtType') }}"
         }
+    },
+    "lineManager": {
+        "debtLine": "{{ path('lmLineDebt') }}",
+        "debtByType": "{{ path('lmByTypeDebt') }}"
+    },
+    "finance": {
+        "invoice": "{{ path('financeInvoice') }}"
     }
 }

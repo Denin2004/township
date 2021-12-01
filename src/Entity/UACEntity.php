@@ -8,7 +8,7 @@ class UACEntity extends Entity
     public function getUser($login)
     {
         $user = $this->provider->fetchAll(
-            'select users.id, users.login, users.psw,
+            'select users.id, users.login, users.psw, users.line_manager,
                 role.name role_name, role.security
                 from uac.users users
                 left join uac.roles role on (role.id=users.role_id)

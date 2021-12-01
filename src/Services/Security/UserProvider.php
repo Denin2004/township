@@ -8,6 +8,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Twig\Environment;
 
 use App\Services\Security\WebUser;
 use App\Entity\UACEntity;
@@ -17,12 +18,14 @@ class UserProvider implements UserProviderInterface
     protected $requestStack;
     protected $encoder;
     protected $uac;
+    protected $twig;
 
-    public function __construct(RequestStack $requestStack, UserPasswordEncoderInterface $encoder, UACEntity $uac)
+    public function __construct(RequestStack $requestStack, UserPasswordEncoderInterface $encoder, UACEntity $uac, Environment $twig)
     {
         $this->requestStack = $requestStack;
         $this->uac = $uac;
         $this->encoder = $encoder;
+        $this->twig = $twig;
     }
 
     public function loadUserByUsername($username)
@@ -39,6 +42,8 @@ class UserProvider implements UserProviderInterface
         if (is_array($user)) {
             $webUser = new WebUser($user);
             if ($this->encoder->isPasswordValid($webUser, $password)) {
+                $defaultAccess = json_decode($this->twig->render('/config/security.json.twig'), true);
+                $webUser->setAccess($defaultAccess);
                 return $webUser;
             }
             throw new BadCredentialsException('uac.errors.credentials');

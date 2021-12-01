@@ -37,6 +37,18 @@ line:
 land:
     resource: 'routes/land.yaml'
     prefix: /land    
+
+lineManager:
+    resource: 'routes/lineManager.yaml'
+    prefix: /linemanager    
+    
+user:
+    resource: 'routes/user.yaml'
+    prefix: /user    
+    
+finance:
+    resource: 'routes/finance.yaml'
+    prefix: /finance    
     
 error403:
     path: /error/403

@@ -1,0 +1,74 @@
+{
+    "routes": {
+        "common": {
+            "access": true,
+            "routes": [
+                "appConfig",
+                "appDashboard"
+            ]
+        },
+        "account.manager": {
+            "access": false,
+            "routes": [
+                "accMngrCount",
+                "accMngrPage",
+                "accMngrAccounts",
+                "accMngrAccountForm",
+                "accMngrAccountPost",
+                "accMngrPasswordForm",
+                "accMngrSetPassword",
+                "accMngrPasswordChangeForm",
+                "accMngrChangePassword"
+            ]
+        }
+    },
+    "allLands": false,
+    "allLines": false,
+    "widgets": [],
+    "mapping": [
+        {
+            "type": "routesToWidget",
+            "widget": "account.s",
+            "routes": [
+                "accMngrCount",
+                "accMngrPage"
+            ]
+        },
+        {
+            "type": "routesToWidget",
+            "widget": "line._",
+            "routes": [
+                "lmLineDebt",
+                "lmByTypeDebt"
+            ]
+        },
+        {
+            "type": "routesToWidget",
+            "widget": "township._",
+            "routes": [
+                "townshipDebt",
+                "townshipDebtByLines"
+            ]
+        },
+        {
+            "type": "routesToWidget",
+            "widget": "bookkeeping._",
+            "routes": [
+                "electricityBills",
+                "electricityUploadForm",
+                "electricityUpload",
+                "electricityBillsForm",
+                "electricityBillsData"
+            ]
+        },
+        {
+            "type": "routesToWidget",
+            "widget": "user._",
+            "routes": [
+                "userDebt",
+                "userDebtType",
+                "financeInvoice"
+            ]
+        }        
+    ]
+}

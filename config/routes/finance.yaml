@@ -1,0 +1,8 @@
+financeInvoice:
+    path: /invoice/{id}
+    controller: App\Controller\Finance\Invoice::data
+    methods: [GET]
+    requirements:
+        id: \d+
+    defaults: 
+        id: -1

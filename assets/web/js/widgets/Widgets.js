@@ -2,6 +2,7 @@ import AccountsWidget from '@app/web/js/widgets/AccountsWidget';
 import BookkeepingWidget from '@app/web/js/widgets/BookkeepingWidget';
 import TownshipWidget from '@app/web/js/widgets/TownshipWidget';
 import LineWidget from '@app/web/js/widgets/LineWidget';
+import UserWidget from '@app/web/js/widgets/UserWidget';
 
 var widgets = {
     "account.s": {
@@ -16,8 +17,12 @@ var widgets = {
         node: TownshipWidget,
         width: 5
     },
-    "land.line": {
+    "line._": {
         node: LineWidget,
+        width: 5
+    },
+    "user._": {
+        node: UserWidget,
         width: 5
     }
 };

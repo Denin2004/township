@@ -123,17 +123,14 @@ class LineByType extends Component {
 
     debtLandData(expanded, record) {
         if (expanded === false) {
-            this.setState({
-                loadLines: false,
-                debtByLines: []
-            });
             this.setState((state) => {
-                state.loadLand = true;
+                state.loadLand = false;
                 delete state.debtLand[record.id];
                 return state;
             });            
             return;
         }
+        this.setState({loadLand: true});
         axios.get(
             window.mfwApp.urls.township.land.debtTypeData+'/'+record.id+'/'+this.props.params.type_id,
             {
