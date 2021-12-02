@@ -11,3 +11,18 @@ userDebtType:
         type_id: \d+
     defaults: 
         type_id: -1
+
+userMoneyMove:
+    path: /moneymove
+    controller: App\Controller\Application::index
+    methods: [GET]
+
+userMoneyMoveForm:
+    path: /moneymove/form
+    controller: App\Controller\Township\User::moneyMoveForm
+    methods: [GET]
+
+userMoneyMoveData:
+    path: /moneymove/data
+    controller: App\Controller\Township\User::moneyMoveData
+    methods: [POST]

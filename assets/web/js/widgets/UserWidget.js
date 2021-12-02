@@ -97,7 +97,7 @@ class UserWidget extends Component {
                 </Table.Summary.Cell>
                 <Table.Summary.Cell index={1} className="text-align-end">
                     <Typography.Text strong>
-                        <MfwNumber value={sumAmount}/>
+                        <a href={window.mfwApp.urls.township.user.moneyMove} target="_blank"><MfwNumber value={sumAmount}/></a>
                     </Typography.Text>
                 </Table.Summary.Cell>
             </Table.Summary.Row>

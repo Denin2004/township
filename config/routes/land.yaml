@@ -1,3 +1,14 @@
+landDebtType:
+    path: /debtbtype/{land_id}/{type_id}
+    controller: App\Controller\Application::index
+    methods: [GET]
+    requirements:
+        type_id: \d+
+        land_id: \d+
+    defaults: 
+        type_id: -1
+        land_id: -1
+
 landDebtTypeData:
     path: /debtbbytype/data/{land_id}/{type_id}
     controller: App\Controller\Township\Land::debtType

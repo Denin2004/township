@@ -9,7 +9,7 @@ use App\Entity\Land as LandDB;
 
 class Land extends AbstractController
 {
-    public function debtByType(LandDB $landDB, $land_id, $type_id)
+    public function debtType(LandDB $landDB, $land_id, $type_id)
     {
         return new JsonResponse([
             'success' => true,

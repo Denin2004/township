@@ -69,8 +69,13 @@ services:
         public: false
 
     form.Account:
-        class: App\Form\Account
+        class: App\Form\AccountManager\Account
         arguments: ['@App\Entity\UACEntity', '@App\Entity\Lands', '@security.token_storage', '@security.password_encoder']
+        tags: [form.type]
+        
+    form.Range:
+        class: App\Form\React\ReactRangeType
+        arguments: ['@App\Services\SiteConfig\SiteConfig']
         tags: [form.type]
 
     # add more service definitions when explicit configuration is needed

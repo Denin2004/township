@@ -13,7 +13,7 @@ class LineManager extends AbstractController
     {
         return new JsonResponse([
             'success' => true,
-            'debt' => $lineDB->debt(['line' => $this->getUser()->getLine()])
+            'debt' => $lineDB->debt(['line' => $this->getUser()->get('line')])
         ]);
     }
 
@@ -22,7 +22,7 @@ class LineManager extends AbstractController
         return new JsonResponse([
             'success' => true,
             'debt' => $lineDB->debtType([
-                'line' => $this->getUser()->getLine(),
+                'line' => $this->getUser()->get('line'),
                 'type_id' => $type_id
             ])
         ]);

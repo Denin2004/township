@@ -39,7 +39,7 @@ class LineWidget extends Component {
                     dataIndex: 'debt',
                     render: (text, record) => {
                         return <div className="text-align-end"><a href={generatePath(
-                            window.mfwApp.urls.township.land.debt+'/:land_id/:type_id',
+                            window.mfwApp.urls.township.land.debtType+'/:land_id/:type_id',
                             { 
                                 land_id: record.id,
                                 type_id: record.charge_type_id

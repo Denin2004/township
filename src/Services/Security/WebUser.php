@@ -93,7 +93,7 @@ class WebUser implements UserInterface, EquatableInterface
 
     public function setAccess($defaultAccess)
     {
-        $defaultAccess = array_merge($defaultAccess, $this->user['security']);
+        $defaultAccess = array_replace_recursive($defaultAccess, $this->user['security']);
         foreach ($defaultAccess['routes'] as $routes) {
             if ($routes['access'] == true) {
                 $this->access['routes'] = array_merge($this->access['routes'], $routes['routes']);

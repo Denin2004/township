@@ -1,0 +1,15 @@
+<?php
+namespace App\Form\User;
+
+use Symfony\Component\Form\FormBuilderInterface;
+
+use App\Form\React\ReactForm;
+use App\Form\React\ReactRangeType;
+
+class MoneyMove extends ReactForm
+{
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('date_range', ReactRangeType::class);
+    }
+}
