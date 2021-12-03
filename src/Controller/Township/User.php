@@ -33,7 +33,7 @@ class User extends AbstractController
     public function moneyMoveForm(SiteConfig $config)
     {
         $dtFrom = new \DateTime();
-        $dtFrom->sub(new \DateInterval('P1M'));
+        $dtFrom->setDate($dtFrom->format('Y'), 1, 1);
         $dtTo = new \DateTime();
         $form = $this->createForm(
             MoneyMove::class,
@@ -51,7 +51,7 @@ class User extends AbstractController
         ]);
     }
 
-    public function moneyMoveData(Request $request)
+    public function moneyMoveData(Request $request, UserDB $userDB)
     {
         $formRequest = json_decode($request->getContent(), true);
         if ($formRequest == null) {
@@ -60,7 +60,7 @@ class User extends AbstractController
                 'error' => 'form.errors.noData'
             ]);
         }
-        $form = $this->createForm(MoneyMove::class);
+        $form = $this->createForm(MoneyMove::class, [], ['request' => true]);
         $form->submit($formRequest);
         if (!$form->isValid()) {
             $errors = '';
@@ -73,7 +73,8 @@ class User extends AbstractController
             ]);
         }
         return new JsonResponse([
-            'success' => true
+            'success' => true,
+            'moneyMove' => $userDB->moneyMove($form->getData())
         ]);
     }
 }

@@ -34,15 +34,29 @@ class ReactRangeType extends AbstractType
                 return $value;
             },
             function ($value) {
-                return explode('#', $value);
+                if (isset($value[0])) {
+                    $dt = new \DateTime($value[0]);
+                    $value[0] = !$dt ? $value[0] : $dt->format($this->siteConfig->get('php_date_format'));
+                }
+                if (isset($value[1])) {
+                    $dt = new \DateTime($value[1]);
+                    $value[1] = !$dt ? $value[1] : $dt->format($this->siteConfig->get('php_date_format'));
+                }
+                return $value;
             }
         ));
+        if ($options['request']) {
+            $builder->add('0', HiddenType::class)
+                ->add('1', HiddenType::class);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'constraints' => [ new Callback(['callback' => [$this, 'checkRange']])]
+            'constraints' => [ new Callback(['callback' => [$this, 'checkRange']])],
+            'request' => false,
+            'compound' => true
         ]);
     }
 
@@ -61,9 +75,9 @@ class ReactRangeType extends AbstractType
             $context->buildViolation('calendar.errors.range_format')->addViolation();
             return;
         }
-        $dtFrom = \DateTime::createFromFormat($this->siteConfig->get('php_date_format'), $value[0]);
-        $dtTo = \DateTime::createFromFormat($$this->siteConfig->get('php_date_format'), $value[1]);
-        if (!$dtFrom || $dtTo) {
+        $dtFrom = new \DateTime($value[0]);
+        $dtTo = new \DateTime($value[1]);
+        if (!$dtFrom || !$dtTo) {
             $context->buildViolation('calendar.errors.range_format')->addViolation();
             return;
         }

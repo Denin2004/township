@@ -10,6 +10,12 @@ class MoneyMove extends ReactForm
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('date_range', ReactRangeType::class);
+        $builder->add(
+            'date_range',
+            ReactRangeType::class,
+            [
+                'request' => isset($options['request']) ? $options['request'] : false
+            ]
+        );
     }
 }

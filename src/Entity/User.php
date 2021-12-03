@@ -33,4 +33,16 @@ class User extends Entity
             $params
         );
     }
+
+    public function moneyMove($params)
+    {
+        $params['user_id'] = $this->provider->user()->getId();
+        $params['format'] = $this->provider->dateFormat();
+        $params['date_from'] = $params['date_range'][0];
+        $params['date_to'] = $params['date_range'][1];
+        return $this->provider->fetchAll(
+            'select to_char(mm.dt, :format) as dt1, mm.* from balances.money_move(:user_id, to_date(:date_from, :format), to_date(:date_to, :format)) mm',
+            $params
+        );
+    }
 }
