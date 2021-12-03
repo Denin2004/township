@@ -32,11 +32,11 @@ class UserProvider implements UserProviderInterface
     {
         $request = $this->requestStack->getCurrentRequest();
         if ($username == '') {
-            throw new BadCredentialsException('uac.errors.user_name_blank');
+            throw new BadCredentialsException('account.errors.user_name_blank');
         }
         $password = $request->get('_password');
         if ($password == '') {
-            throw new BadCredentialsException('uac.errors.password_blank');
+            throw new BadCredentialsException('account.errors.password_blank');
         }
         $user = $this->uac->getUser($username);
         if (is_array($user)) {
@@ -46,9 +46,9 @@ class UserProvider implements UserProviderInterface
                 $webUser->setAccess($defaultAccess);
                 return $webUser;
             }
-            throw new BadCredentialsException('uac.errors.credentials');
+            throw new BadCredentialsException('account.errors.credentials');
         } else {
-            throw new UsernameNotFoundException('uac.errors.user_not_found');
+            throw new UsernameNotFoundException('account.errors.user_not_found');
         }
         throw new \Exception('TODO: fill in loadUserByUsername() inside '.__FILE__);
     }

@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import withRouter from '@app/hooks/withRouter';
 
-class Main extends Component {
+class Pages extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -54,4 +54,4 @@ class Main extends Component {
     }
 }
 
-export default withRouter(withTranslation()(Main));
+export default withRouter(withTranslation()(Pages));

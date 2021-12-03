@@ -22,7 +22,8 @@
             "no_such_user": "Пользователь не найден",
             "site_access": "Site access denied",
             "password_confirm": "Пароли не совпадают",
-            "old_password": "Старый пароль неправильный"
+            "old_password": "Старый пароль неправильный",
+            "credentials": "Неправильный логин или пароль"
         }
     },
     "security": {
@@ -50,7 +51,8 @@
         "close": "Закрыть",
         "upload_more": "Загрузить еще",
         "show":  "Показать",
-        "close": "Закрыть"
+        "close": "Закрыть",
+        "enter": "Войти"
     },
     "form": {
         "errors": {

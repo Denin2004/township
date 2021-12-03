@@ -50,17 +50,6 @@ class App extends Component {
             i18n.changeLanguage(this.state.locale);
         }
     }
-    
-    setLocale(locale) {
-        locale = locales[locale] == undefined ? window.mfwApp.locale : locale;
-        moment.locale(locales[locale].moment);
-        window.mfwApp.formats.date = moment.localeData().longDateFormat('L');
-        window.mfwApp.formats.time = moment.localeData().longDateFormat('LT');
-        window.mfwApp.formats.datetime = window.mfwApp.formats.date + ' ' + window.mfwApp.formats.time;
-        i18n.changeLanguage(locale);
-        this.props.cookies.set('locale', locale, { path: '/' });
-        this.setState({locale: locale});
-    }
 
     render() {
         return (
