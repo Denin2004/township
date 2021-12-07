@@ -16,7 +16,6 @@
         "edit": "Редактирование аккаунта",
         "new": "Новый аккаунт",
         "errors": {
-            "password_message":  "Please input your password!",
             "password_blank": "Пароль не может быть пустым",
             "login_blank": "Логин не может быть пустым",
             "no_such_user": "Пользователь не найден",

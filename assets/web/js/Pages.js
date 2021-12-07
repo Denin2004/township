@@ -196,17 +196,17 @@ class Pages extends Component {
                                      required: true,
                                      message: this.props.t('account.errors.password_blank')
                                  },
-                                 ({ getFieldValue, getFieldInstance }) => ({
+                                 ({ getFieldValue }) => ({
+                                    message: this.props.t('account.errors.password_confirm'),
                                     validator(_, value) {
                                        if (!value || getFieldValue('new_password') === value) {
                                           return Promise.resolve();
                                        }
-                                       const input = getFieldInstance('new1_password');
-                                       return Promise.reject(new Error(input.props.confirm_error));
+                                       return Promise.reject();
                                     }
                                  })
                               ]}>
-                                <Input.Password confirm_error={this.props.t('account.errors.password_confirm')} />
+                                <Input.Password/>
                             </Form.Item>                            
                             <Form.Item name="id"
                               hidden={true} 

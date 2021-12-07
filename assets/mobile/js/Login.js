@@ -48,7 +48,7 @@ class Login extends Component {
     };    
     
     render() {
-        return this.state.redirect ? <Redirect to={this.state.redirect}/> : 
+        return this.state.redirect ? <Navigate to={this.state.redirect}/> : 
             <React.Fragment>
                  <Form
                   name="basic"
@@ -59,12 +59,12 @@ class Login extends Component {
                      <Form.Item label={this.props.t('account.login')}
                        name="_username"
                        rules={[{ required: true, message: this.props.t('account.errors.login_message')}]}>
-                         <Input />
+                         <Input placeholder={this.props.t('account.login')}/>
                      </Form.Item>
                      <Form.Item label={this.props.t('account.password._')}
                         name="_password"
                         rules={[{ required: true, message: this.props.t('account.errors.password_message')}]}>
-                         <Input type="password" onEnterPress={() => this.props.form.submit()}/>
+                         <Input type="password" onEnterPress={() => this.props.form.submit()} placeholder={this.props.t('account.password._')}/>
                      </Form.Item>
                  </Form>
              </React.Fragment>

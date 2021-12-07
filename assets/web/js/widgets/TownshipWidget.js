@@ -176,6 +176,7 @@ class TownshipWidget extends Component {
                   dataSource={this.state.debt}
                   pagination={false}
                   summary={this.debtSummary}
+                  scroll={{ x: true }}
                   expandable={{
                       expandedRowRender: this.debtByLines,
                       onExpand: this.debtByLinesData
