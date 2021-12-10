@@ -6,9 +6,9 @@ import { Card, Toast, Loading, Space, List, Collapse } from 'antd-mobile';
 import axios from 'axios';
 
 import MfwNumber from '@app/mfw/MfwNumber';
-import DebtLines from '@app/mobile/js/township/DebtLines';
+import UserByType from '@app/mobile/js/user/ByType';
 
-class TownshipWidget extends Component {
+class UserWidget extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -20,7 +20,7 @@ class TownshipWidget extends Component {
 
     componentDidMount() {
         axios.get(
-            window.mfwApp.urls.township.debt,
+            window.mfwApp.urls.township.user.debt,
             {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
@@ -54,7 +54,7 @@ class TownshipWidget extends Component {
     }
 
     render() {
-        return <Card title={this.props.t('township.debt')}>
+        return <Card title={this.props.t('user.debt')}>
             {this.state.loading ? (
                 <Space className="mfw-d-flex" justify="center">
                     <Loading/>
@@ -66,7 +66,7 @@ class TownshipWidget extends Component {
                        key={record.id}
                        className="mfw-widget-record"
                        title={<List.Item key={record.id} extra={<MfwNumber value={record.debt}/>}>{record.name}</List.Item>}>
-                       <DebtLines typeID={record.id} />
+                        <UserByType typeID={record.id} />
                     </Collapse.Panel>
                 })}
                 </Collapse>
@@ -75,4 +75,4 @@ class TownshipWidget extends Component {
     }
 }
 
-export default withTranslation()(TownshipWidget);
+export default withTranslation()(UserWidget);

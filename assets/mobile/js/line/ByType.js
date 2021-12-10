@@ -6,9 +6,10 @@ import { Card, Toast, Loading, Space, List, Collapse } from 'antd-mobile';
 import axios from 'axios';
 
 import MfwNumber from '@app/mfw/MfwNumber';
-import DebtLines from '@app/mobile/js/township/DebtLines';
+import useWithParams from '@app/hooks/useWithParams';
+import LandByType from '@app/mobile/js/land/ByType';
 
-class TownshipWidget extends Component {
+class LineByType extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -20,7 +21,7 @@ class TownshipWidget extends Component {
 
     componentDidMount() {
         axios.get(
-            window.mfwApp.urls.township.debt,
+            window.mfwApp.urls.township.line.debtTypeData+'/'+this.props.params.line+'/'+this.props.params.type_id,
             {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
@@ -54,25 +55,26 @@ class TownshipWidget extends Component {
     }
 
     render() {
-        return <Card title={this.props.t('township.debt')}>
-            {this.state.loading ? (
-                <Space className="mfw-d-flex" justify="center">
-                    <Loading/>
-                </Space>
-            ) : (
+        return this.state.loading ? (
+            <Space className="mfw-d-flex" justify="center">
+                <Loading/>
+            </Space>
+        ) : (
+        <React.Fragment>
+            <h3>{this.props.t('line.debt')} {this.props.params.line}</h3>
             <Collapse>
                 {this.state.debt.map(record => {
                     return <Collapse.Panel 
                        key={record.id}
                        className="mfw-widget-record"
-                       title={<List.Item key={record.id} extra={<MfwNumber value={record.debt}/>}>{record.name}</List.Item>}>
-                       <DebtLines typeID={record.id} />
+                       title={<List.Item key={record.id} extra={<MfwNumber value={record.debt}/>}>{record.num}</List.Item>}>
+                        <LandByType land_id={record.id} charge_type_id={record.charge_type_id}/>
                     </Collapse.Panel>
                 })}
-                </Collapse>
-            )}
-        </Card>
+            </Collapse>
+        </React.Fragment>
+        );
     }
 }
 
-export default withTranslation()(TownshipWidget);
+export default useWithParams(withTranslation()(LineByType));

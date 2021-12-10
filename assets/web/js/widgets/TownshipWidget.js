@@ -139,7 +139,7 @@ class TownshipWidget extends Component {
             if (res.data.success) {
                 this.setState((state) => {
                     state.loadLines = false;
-                     state.debtLines[record.id] = res.data.debt;
+                    state.debtLines[record.id] = res.data.debt;
                     return state;
                 });            
             } else {

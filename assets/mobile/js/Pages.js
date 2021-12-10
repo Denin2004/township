@@ -6,6 +6,9 @@ import { withTranslation } from 'react-i18next';
 import { NavBar, Loading, Popup, List, Modal, Toast, Form, Input, Button, Space} from 'antd-mobile';
 
 import Dashboard from '@app/mobile/js/Dashboard';
+import LineByType from '@app/mobile/js/line/ByType';
+import LandByType from '@app/mobile/js/land/ByType';
+import useWithNavigate from '@app/hooks/useWithNavigate';
 
 class Pages extends Component {
     constructor(props){
@@ -79,7 +82,10 @@ class Pages extends Component {
             }
         }).catch(error => {
             if (error.response) {
-                Toast.fail(error.response.status);
+                Toast.show({
+                    icon: 'fail',
+                    content: error.response.status
+                });
             } else {
                 Toast.show({
                     icon: 'fail',
@@ -117,7 +123,7 @@ class Pages extends Component {
         return this.state.loading ? 
             <Loading/>
             : <React.Fragment>
-                <NavBar back={null} right={<a href="#" onClick={() => this.setState({userMenu: true})}>{window.mfwApp.user.name}</a>}/>
+                <NavBar onBack={()=>{this.props.navigate(-1)}} right={<a href="#" onClick={() => this.setState({userMenu: true})}>{window.mfwApp.user.name}</a>}/>
                 { this.state.userMenu ? 
                     <Popup visible={true} onMaskClick={() => this.setState({userMenu: false})}>
                         <List mode="card">
@@ -203,9 +209,11 @@ class Pages extends Component {
                 : ''}
             <Routes>
                 <Route path="/" element={<Dashboard/>}/>
+                <Route path={window.mfwApp.urls.township.line.debtByType+'/:line/:type_id'} element={<LineByType/>}/>
+                <Route path={window.mfwApp.urls.township.land.debtType+'/:land_id/:charge_type_id'} element={<LandByType/>}/>
             </Routes>
         </React.Fragment>;
     }
 }
 
-export default withTranslation()(Pages);
+export default useWithNavigate(withTranslation()(Pages));
