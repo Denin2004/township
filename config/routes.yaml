@@ -7,53 +7,57 @@ login_check:
 
 logout:
     path: /logout
-    
+
 appConfig:
     path: /config
     controller: App\Controller\Application::config
     methods: GET
-    
+
 appDashboard:
     path: /
     controller: App\Controller\MainPage::index
     methods: GET
-    
+
 accountManager:
     resource: 'routes/accountManager.yaml'
     prefix: /accounts
-    
+
 electricity:
     resource: 'routes/electricity.yaml'
     prefix: /electricity
-    
+
 township:
     resource: 'routes/township.yaml'
     prefix: /township
-    
+
 line:
     resource: 'routes/line.yaml'
-    prefix: /line    
+    prefix: /line
 
 land:
     resource: 'routes/land.yaml'
-    prefix: /land    
+    prefix: /land
 
 lineManager:
     resource: 'routes/lineManager.yaml'
-    prefix: /linemanager    
-    
+    prefix: /linemanager
+
 user:
     resource: 'routes/user.yaml'
-    prefix: /user    
-    
+    prefix: /user
+
 finance:
     resource: 'routes/finance.yaml'
-    prefix: /finance    
-    
+    prefix: /finance
+
+budget:
+    resource: 'routes/budget.yaml'
+    prefix: /budget
+
 error403:
     path: /error/403
     controller: App\Controller\MainPage::index
-    
+
 error500:
     path: /error/500
-    controller: App\Controller\MainPage::index    
+    controller: App\Controller\MainPage::index

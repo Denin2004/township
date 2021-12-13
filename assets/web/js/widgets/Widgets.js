@@ -3,6 +3,7 @@ import BookkeepingWidget from '@app/web/js/widgets/BookkeepingWidget';
 import TownshipWidget from '@app/web/js/widgets/TownshipWidget';
 import LineWidget from '@app/web/js/widgets/LineWidget';
 import UserWidget from '@app/web/js/widgets/UserWidget';
+import BudgetWidget from '@app/web/js/widgets/BudgetWidget';
 
 var widgets = {
     "account.s": {
@@ -24,6 +25,10 @@ var widgets = {
     "user._": {
         node: UserWidget,
         width: 5
-    }
+    },
+    "budget._": {
+        node: BudgetWidget,
+        width: 5
+    }    
 };
 export default widgets;

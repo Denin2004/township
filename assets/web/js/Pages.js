@@ -12,6 +12,7 @@ import ElectricityBills from '@app/web/js/ElectricityBills';
 import LineByType from '@app/web/js/line/ByType';
 import LandByType from '@app/web/js/land/ByType';
 import UserMoneyMove from '@app/web/js/user/MoneyMove';
+import Budgets from '@app/web/js/budget/Main';
 
 class Pages extends Component {
     constructor(props){
@@ -153,6 +154,7 @@ class Pages extends Component {
                             <Route path={window.mfwApp.urls.township.line.debtByType+'/:line/:type_id'} element={<LineByType/>}/>
                             <Route path={window.mfwApp.urls.township.land.debtType+'/:land_id/:type_id'} element={<LandByType/>}/>
                             <Route path={window.mfwApp.urls.township.user.moneyMove} element={<UserMoneyMove/>}/>
+                            <Route path={window.mfwApp.urls.budget.page} element={<Budgets/>}/>
                         </Routes>
                     </Layout.Content>
                 {this.state.passwordForm != false ? (

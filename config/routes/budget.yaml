@@ -1,0 +1,20 @@
+budgetPage:
+    path: /page
+    controller: App\Controller\Application::index
+    methods: [GET]
+
+budgetWidget:
+    path: /widget
+    controller: App\Controller\Budget\Main::widget
+    methods: [GET]
+
+budgetForm:
+    path: /form
+    controller: App\Controller\Budget\Main::form
+    methods: [GET]
+    
+budgetData:
+    path: /data
+    controller: App\Controller\Budget\Main::data
+    methods: [POST]
+    

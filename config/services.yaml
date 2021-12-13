@@ -65,7 +65,6 @@ services:
     app.voter:
         class: App\Services\Security\RouteVoter
         tags: [security.voter]
-        # small performance boost
         public: false
 
     form.Account:
@@ -78,5 +77,7 @@ services:
         arguments: ['@App\Services\SiteConfig\SiteConfig']
         tags: [form.type]
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    App\Form\Budget\View:
+        class: App\Form\Budget\View
+        arguments: ['@App\Entity\Budget']
+        tags: [form.type]

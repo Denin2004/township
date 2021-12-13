@@ -56,7 +56,8 @@ class DbProvider
             $this->db->executeQuery($sql, $params);
         } catch (\Doctrine\DBAL\DBALException $ex) {
             $err = explode('ERROR:', $ex->getPrevious()->getMessage());
-            $this->error = str_replace(' ', '', explode("\n", $err[count($err)-1])[0]);
+            //$this->error = str_replace(' ', '', explode("\n", $err[count($err)-1])[0]);
+            $this->error = explode("\n", $err[count($err)-1])[0];
         }
     }
 
@@ -67,7 +68,8 @@ class DbProvider
             $res = $this->db->fetchAll($sql, $params);
         } catch (\Doctrine\DBAL\DBALException $ex) {
             $err = explode('ERROR:', $ex->getPrevious()->getMessage());
-            $this->error = str_replace(' ', '', explode("\n", $err[count($err)-1])[0]);
+            //$this->error = str_replace(' ', '', explode("\n", $err[count($err)-1])[0]);
+            $this->error = explode("\n", $err[count($err)-1])[0];
             return;
         }
         return $res;
