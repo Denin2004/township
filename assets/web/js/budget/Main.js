@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 //import { useMatch } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import {message, Table, Form, InputNumber, Input, Select, Button, Space, Typography} from 'antd';
+import {message, Table, Select, Space} from 'antd';
 import { SearchOutlined, CloseCircleOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
@@ -10,29 +10,67 @@ import moment from 'moment-timezone';
 import useWithForm from '@app/hooks/useWithForm';
 import useWithParams from '@app/hooks/useWithParams';
 import MfwNumber from '@app/mfw/MfwNumber';
+import EditItem from'@app/web/js/budget/EditItem';
 
 class Budgets extends Component {
     constructor(props){
         super(props);
         this.state = {
             errorCode: 0,
-            form: false,
+            list: false,
             loading: false,
+            budget: [],
+            budgetID: null,
+            editItem: null,
             columns: [
                 {
-                    title: this.props.t('land._'),
-                    dataIndex: 'num'
+                    title: this.props.t('budget.item'),
+                    dataIndex: 'name'
                 },
                 {
-                    title: () => {return <div className="text-align-end">{this.state.from}</div>},
-                    key: 'meter_start',
+                    title: this.props.t('budget.planned_expense'),
+                    children: [
+                        {
+                            title: () => {return <div className="text-align-end">{this.props.t('budget.month')}</div>},
+                            key: 'month',
+                            render: (text, record) => {
+                                return record.by_month ? <div className="text-align-end"><MfwNumber value={record.amount}/></div> : null
+                            }
+                        },
+                        {
+                            title: () => {return <div className="text-align-end">{this.props.t('budget.period')}</div>},
+                            key: 'amount',
+                            render: (text, record) => {
+                                return <div className="text-align-end"><MfwNumber value={record.by_month ? record.amount*record.months : record.amount}/></div>
+                            }
+                        },
+                        {
+                            title: () => {return <div className="text-align-end">{this.props.t('budget.tax')}</div>},
+                            dataIndex: 'tax',
+                            render: (text, record) => {
+                                return record.tax != null ? <div className="text-align-end"><MfwNumber value={record.tax}/></div> : null
+                            }
+                        }
+                    ]
+                },
+                {
+                    title: this.props.t('common.comments'),
+                    dataIndex: 'comments'
+                },
+                {
+                    title: this.props.t('action.s'),
+                    key: 'actions',
                     render: (text, record) => {
-                        return <React.Fragment>
-                            <div className="text-align-end"><MfwNumber value={record.day_meter_start}/></div>
-                            <div className="text-align-end"><MfwNumber value={record.night_meter_start}/></div>
-                        </React.Fragment>
+                        return record.tax != null ? <Space>
+                            <a onClick={() => this.setState({editItem: record.id})} >{this.props.t('action.edit')}</a>
+                            <a >{this.props.t('action.delete')}</a>
+                        </Space> : <Space>
+                            <a onClick={() => this.setState({editItem: record.id})}>{this.props.t('action.edit')}</a>
+                            <a >{this.props.t('budget.add_child')}</a>
+                            <a >{this.props.t('action.delete')}</a>
+                        </Space>
                     }
-                }
+                }                
             ]
         };
         this.showBudget = this.showBudget.bind(this);
@@ -40,7 +78,7 @@ class Budgets extends Component {
 
     componentDidMount() {
         axios.get(
-            window.mfwApp.urls.budget.form,
+            window.mfwApp.urls.budget.list,
             {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
@@ -49,8 +87,11 @@ class Budgets extends Component {
         ).then(res => {
             if (res.data.success) {
                 this.setState({
-                    form: res.data.form
+                    list: res.data.list
                 });
+                if (res.data.list.default != 0) {
+                    this.showBudget(res.data.list.default);
+                }
             } else {
                 message.error(this.props.t(res.data.error));
             }
@@ -65,18 +106,22 @@ class Budgets extends Component {
         });
     }
 
-    showBudget(values) {
+    showBudget(budgetID) {
         this.setState({loading: true});
         axios({
-            method: 'post',
-            url: window.mfwApp.urls.budget.data,
+            method: 'get',
+            url: window.mfwApp.urls.budget.data+'/'+budgetID,
             headers: {
                     'X-Requested-With': 'XMLHttpRequest'
-            },
-            data: values
+            }
         }).then(res => {
             if (res.data.success) {
-                this.setState({loading:false});
+                this.setState({
+                    loading: false,
+                    editForm: null,
+                    budgetID: budgetID,
+                    budget: res.data.budget
+                });
             } else {
                 message.error(this.props.t(res.data.error));
             }
@@ -92,34 +137,20 @@ class Budgets extends Component {
     }
 
     render() {
-        return this.state.form != false ?
+        return this.state.list != false ?
             <React.Fragment>
-                <Form form={this.props.form}
-                  className="mfw-mb-1 mfw-mt-1"
-                  onFinish={this.showBills}
-                  layout="inline">
-                    <Form.Item name="budgets"
-                      label={this.props.t('calendar.month')}
-                      initialValue={this.state.form.month.value*1}>
-                        <Select options={this.state.form.month.choices}/>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit">{this.props.t('modal.show')}</Button>
-                    </Form.Item>
-                    <Form.Item name="_token"
-                      hidden={true}
-                      initialValue={this.state.form._token.value}>
-                        <Input/>
-                    </Form.Item>
-                </Form>
+                <Select options={this.state.list.options} defaultValue={this.state.list.default}/>
                 <Table 
                   rowKey="id" 
                   loading={this.state.loading}
                   columns={this.state.columns} 
-                  dataSource={this.state.bills}
+                  dataSource={this.state.budget}
                   scroll={{ x: 'max-content', y: 600 }}
-                  pagination={false}
-                  summary={this.billsSummary}/>
+                  pagination={false}/>
+                {this.state.editItem != null ? <EditItem
+                    id={this.state.editItem} 
+                    cancel={() => this.setState({editItem: null})}
+                    success={() => this.showBudget(this.state.budgetID)}/> : null}
             </React.Fragment>
         : null;
     }

@@ -8,13 +8,48 @@ budgetWidget:
     controller: App\Controller\Budget\Main::widget
     methods: [GET]
 
-budgetForm:
-    path: /form
-    controller: App\Controller\Budget\Main::form
+budgetList:
+    path: /list
+    controller: App\Controller\Budget\Main::list
     methods: [GET]
     
 budgetData:
-    path: /data
+    path: /data/{budget_id}
     controller: App\Controller\Budget\Main::data
+    methods: [GET]
+    defaults:
+        budget_id: 0
+    requirements:
+        budget_id: \d+
+
+budgetItemForm:
+    path: /item/form/{id}
+    controller: App\Controller\Budget\Item::form
+    methods: [GET]
+    defaults:
+        id: 0
+    requirements:
+        id: \d+
+        
+budgetItemCreateForm:
+    path: /item/form/create/{parent_id}
+    controller: App\Controller\Budget\Item::createForm
+    methods: [GET]
+    defaults:
+        parent_id: 0
+    requirements:
+        parent_: \d+        
+
+budgetItemPost:
+    path: /item/post
+    controller: App\Controller\Budget\Item::post
     methods: [POST]
-    
+
+budgetItemDelete:
+    path: /item/delete/{id}
+    controller: App\Controller\Budget\Item::delete
+    methods: [GET]
+    defaults:
+        id: 0
+    requirements:
+        id: \d+

@@ -50,7 +50,13 @@
     "budget": {
         "page": "{{ path('budgetPage') }}",
         "widget": "{{ path('budgetWidget') }}",
-        "form": "{{ path('budgetForm') }}",
-        "data": "{{ path('budgetData') }}"
+        "list": "{{ path('budgetList') }}",
+        "data": "{{ path('budgetData') }}",
+        "item": {
+            "form": "{{ path('budgetItemForm') }}",
+            "createForm": "{{ path('budgetItemCreateForm') }}",
+            "post": "{{ path('budgetItemPost') }}",
+            "delete": "{{ path('budgetItemDelete') }}"
+        }
     }
 }

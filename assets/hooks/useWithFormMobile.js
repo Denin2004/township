@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form } from 'ant-mobile';
+import { Form } from 'antd-mobile';
 
 const useWithForm = (Component) => {
     return (props) => {

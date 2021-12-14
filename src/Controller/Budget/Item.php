@@ -6,11 +6,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use App\Entity\Budget;
-use App\Services\SiteConfig\SiteConfig;
 
 class Item extends AbstractController
 {
-    public function form(Budget $budgetDB, SiteConfig $siteConfig)
+    public function form(Budget $budgetDB, $id)
     {
         return new JsonResponse([
             'success' => true,
