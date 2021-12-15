@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 use App\Entity\Budget;
 use App\Form\Budget\ItemEdit;
+use App\Form\Budget\ItemCreate;
 
 class Item extends AbstractController
 {
@@ -78,6 +79,56 @@ class Item extends AbstractController
                 'label' => $name,
                 'value' => $added['id']
             ]
+        ]);
+    }
+
+    public function createF($budget_id, $parent_id)
+    {
+        $form = $this->createForm(
+            ItemCreate::class,
+            [
+                'parent_id' => $parent_id,
+                'budget_id' => $budget_id
+            ]
+        );
+        $view = $form->createView();
+        return new JsonResponse([
+            'success' => true,
+            'form' => $view->vars['react']
+        ]);
+    }
+
+    public function crteate(Request $request, Budget $budgetDB)
+    {
+        $formRequest = json_decode($request->getContent(), true);
+        if ($formRequest == null) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'form.errors.noData'
+            ]);
+        }
+        $form = $this->createForm(ItemCreate::class, [], ['request' => true]);
+        $form->submit($formRequest);
+        if (!$form->isValid()) {
+            $errors = '';
+            foreach ($form->getErrors(true) as $error) {
+                $errors.= $error->getMessage().' ';
+            }
+            return new JsonResponse([
+                'success' => false,
+                'error' => $errors
+            ]);
+        }
+        $formData = $form->getData();
+        $budgetDB->itemCreate($formData);
+        if ($budgetDB->isError()) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => $budgetDB->getError()
+            ]);
+        }
+        return new JsonResponse([
+            'success' => true
         ]);
     }
 }

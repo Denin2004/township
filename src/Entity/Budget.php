@@ -148,4 +148,13 @@ class Budget extends Entity
             ]
         )[0];
     }
+
+    public function itemCreate($params)
+    {
+        $this->provider->executeQuery(
+            'insert budget.items (parent_id, item_name_id, amount, tax, comments, by_month, budget_id)
+                values(:parent_id, :item_name_id, :amount, :tax, :comments, :by_month, :budget_id)',
+            $params
+        );
+    }
 }

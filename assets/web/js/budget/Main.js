@@ -11,6 +11,7 @@ import useWithForm from '@app/hooks/useWithForm';
 import useWithParams from '@app/hooks/useWithParams';
 import MfwNumber from '@app/mfw/MfwNumber';
 import EditItem from'@app/web/js/budget/EditItem';
+import CreateItem from'@app/web/js/budget/CreateItem';
 
 class Budgets extends Component {
     constructor(props){
@@ -22,6 +23,7 @@ class Budgets extends Component {
             budget: [],
             budgetID: null,
             editItem: null,
+            createItem: null,
             columns: [
                 {
                     title: this.props.t('budget.item._'),
@@ -66,7 +68,7 @@ class Budgets extends Component {
                             <a >{this.props.t('action.delete')}</a>
                         </Space> : <Space>
                             <a onClick={() => this.setState({editItem: record.id})}>{this.props.t('action.edit')}</a>
-                            <a >{this.props.t('budget.add_child')}</a>
+                            <a onClick={() => this.setState({createItem: record.id})}>{this.props.t('budget.add_child')}</a>
                             <a >{this.props.t('action.delete')}</a>
                         </Space>
                     }
@@ -153,6 +155,12 @@ class Budgets extends Component {
                     id={this.state.editItem} 
                     cancel={() => this.setState({editItem: null})}
                     success={() => this.showBudget(this.state.budgetID)}/> : null}
+                {this.state.createItem != null ? <CreateItem
+                    budgetID={this.state.budgetID} 
+                    parentID={this.state.createItem}
+                    cancel={() => this.setState({createItem: null})}
+                    success={() => this.showBudget(this.state.budgetID)}/> : null}
+                    
             </React.Fragment>
         : null;
     }

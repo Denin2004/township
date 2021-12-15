@@ -81,4 +81,9 @@ services:
         class: App\Form\Budget\EditItem
         arguments: ['@App\Entity\Budget']
         tags: [form.type]
+
+    App\Form\Budget\CreateItem:
+        class: App\Form\Budget\CreateItem
+        arguments: ['@App\Entity\Budget']
+        tags: [form.type]
         

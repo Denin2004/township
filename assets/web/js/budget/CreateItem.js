@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { withTranslation } from 'react-i18next';
-import {message, Form, Input, InputNumber, Modal} from 'antd';
+import {message, Form, Input, InputNumber, Modal, Checkbox} from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
@@ -8,7 +8,7 @@ import axios from 'axios';
 import useWithForm from '@app/hooks/useWithForm';
 import SelectItemName from '@app/web/js/budget/SelectItemName';
 
-class EditItem extends Component {
+class CreateItem extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -22,19 +22,17 @@ class EditItem extends Component {
 
     componentDidMount() {
         axios.get(
-            window.mfwApp.urls.budget.item.form+'/'+this.props.id,
+            window.mfwApp.urls.budget.item.createForm+'/'+this.props.budgetID+'/'+this.props.parentID,
             {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             }
         ).then(res => {
-            //console.log(res.request.responseURL, window.mfwApp.urls.budget.item.form+'/'+this.props.id);
             if (res.data.success) {
                 this.setState({
                     loading: false,
-                    form: res.data.form,
-                    byMonth: res.data.byMonth
+                    form: res.data.form
                 });
             } else {
                 message.error(this.props.t(res.data.error));
@@ -59,7 +57,7 @@ class EditItem extends Component {
             .then(values => {
                 axios({
                     method: 'post',
-                    url: window.mfwApp.urls.budget.item.post,
+                    url: window.mfwApp.urls.budget.item.create,
                     data: values,
                     headers: {'Content-Type': 'application/json','X-Requested-With': 'XMLHttpRequest'}
                 }).then(res => {
@@ -76,7 +74,7 @@ class EditItem extends Component {
     }
     render() {
         return  this.state.loading ? null : <Modal
-          title={this.props.t('budget.item.edit')}
+          title={this.props.t('budget.item.create')}
           visible={true}
           closable={false}
           okText={this.props.t('modal.save')}
@@ -92,50 +90,48 @@ class EditItem extends Component {
                    initialValue={this.state.form.item_name_id.value*1}>
                     <SelectItemName initialValue={this.state.form.item_name_id.value*1} options={this.state.form.item_name_id.choices}/>
                 </Form.Item>
-                {this.state.form.tax.type != 'mfw-hidden' ? 
-                    <Form.Item name="tax"
-                      label={this.props.t('budget.tax')}
-                      initialValue={this.state.form.tax.value}
-                      rules={[
-                        {
-                          required: true,
-                          message: this.props.t('budget.errors.tax_blank')
-                        }
-                      ]}>
-                        <InputNumber precision="2"/>
-                    </Form.Item> :
-                    <Form.Item name="tax"
-                      hidden={true} 
-                      initialValue={this.state.form.tax.value}>
-                        <Input/>
-                    </Form.Item>
-                }
-                {this.state.form.amount.type != 'mfw-hidden' ? 
-                    <Form.Item name="amount"
-                      label={this.props.t('finance.sum')+(this.state.byMonth ? '('+this.props.t('budget.month').toLowerCase()+')' : '')}
-                      initialValue={this.state.form.amount.value}
-                      rules={[
-                        {
-                          required: true,
-                          message: this.props.t('budget.errors.amount_blank')
-                        }
-                      ]}>
-                        <InputNumber precision="2"/>
-                    </Form.Item> :
-                    <Form.Item name="amount"
-                      hidden={true} 
-                      initialValue={this.state.form.amount.value}>
-                        <Input/>
-                    </Form.Item>
-                }
+
+                <Form.Item name="tax"
+                  label={this.props.t('budget.tax')}
+                  initialValue={this.state.form.tax.value}
+                  rules={[
+                    {
+                      required: true,
+                      message: this.props.t('budget.errors.tax_blank')
+                    }
+                  ]}>
+                    <InputNumber precision="2"/>
+                </Form.Item>
+                <Form.Item name="amount"
+                  label={this.props.t('finance.sum')+(this.state.byMonth ? '('+this.props.t('budget.month').toLowerCase()+')' : '')}
+                  initialValue={this.state.form.amount.value}
+                  rules={[
+                    {
+                      required: true,
+                      message: this.props.t('budget.errors.amount_blank')
+                    }
+                  ]}>
+                    <InputNumber precision="2"/>
+                </Form.Item>
+                <Form.Item name="by_month"
+                   label={this.props.t('budget.by_month')}
+                   valuePropName="checked"
+                   initialValue={this.state.form.by_month.value}>
+                    <Checkbox/>
+                </Form.Item>
                 <Form.Item name="comments"
                    label={this.props.t('common.comment')}
                    initialValue={this.state.form.comments.value}>
                     <Input/>
                 </Form.Item>
-                <Form.Item name="id"
+                <Form.Item name="parent_id"
                   hidden={true} 
-                  initialValue={this.state.form.id.value}>
+                  initialValue={this.state.form.parent_id.value}>
+                    <Input/>
+                </Form.Item>
+                <Form.Item name="budget_id"
+                  hidden={true} 
+                  initialValue={this.state.form.budget_id.value}>
                     <Input/>
                 </Form.Item>
                 <Form.Item name="_token"
@@ -148,4 +144,4 @@ class EditItem extends Component {
     }
 }
 
-export default useWithForm(withTranslation()(EditItem));
+export default useWithForm(withTranslation()(CreateItem));
