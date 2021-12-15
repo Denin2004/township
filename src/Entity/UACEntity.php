@@ -96,7 +96,7 @@ class UACEntity extends Entity
     public function accountPost($params)
     {
         $params['password'] = $params['id'] != -1 ? '' : $params['password'];
-        $stmt = $this->provider->db()->executeQuery(
+        $stmt = $this->provider->executeQuery(
             'select uac.user_post(?::integer,?::character varying,?::integer,array[?]::integer[],?::character varying)',
             [
                 $params['id'],

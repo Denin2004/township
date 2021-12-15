@@ -108,4 +108,44 @@ class Budget extends Entity
         }
         return false;
     }
+
+    public function item($id)
+    {
+        return $this->provider->fetchAll(
+            'select id, amount, tax, item_name_id, comments, by_month from budget.items where id=:id',
+            [
+                'id' => $id
+            ]
+        );
+    }
+
+    public function itemNameChoices()
+    {
+        $data = $this->provider->fetchAll('select id, name from budget.item_names');
+        $res = [];
+        foreach ($data as $row) {
+            $res[$row['name']] = $row['id'];
+        }
+        return $res;
+    }
+
+    public function itemPost($params)
+    {
+        $this->provider->executeQuery(
+            'update budget.items set item_name_id=:item_name_id,
+                amount=:amount, tax=:tax, comments=:comments
+                where id=:id',
+            $params
+        );
+    }
+
+    public function addItemName($name)
+    {
+        return $this->provider->fetchAll(
+            'insert into budget.item_names (name)values(:name) returning id',
+            [
+                'name' => $name
+            ]
+        )[0];
+    }
 }

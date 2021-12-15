@@ -53,3 +53,11 @@ budgetItemDelete:
         id: 0
     requirements:
         id: \d+
+
+budgetItemNameAdd:
+    path: /item/name/add/{name}
+    controller: App\Controller\Budget\Item::nameAdd
+    methods: [GET]
+    defaults:
+        name: ''
+    

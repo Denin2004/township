@@ -76,3 +76,9 @@ services:
         class: App\Form\React\ReactRangeType
         arguments: ['@App\Services\SiteConfig\SiteConfig']
         tags: [form.type]
+        
+    App\Form\Budget\EditItem:
+        class: App\Form\Budget\EditItem
+        arguments: ['@App\Entity\Budget']
+        tags: [form.type]
+        

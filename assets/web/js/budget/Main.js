@@ -24,7 +24,7 @@ class Budgets extends Component {
             editItem: null,
             columns: [
                 {
-                    title: this.props.t('budget.item'),
+                    title: this.props.t('budget.item._'),
                     dataIndex: 'name'
                 },
                 {
@@ -107,7 +107,10 @@ class Budgets extends Component {
     }
 
     showBudget(budgetID) {
-        this.setState({loading: true});
+        this.setState({
+            loading: true,
+            editItem: null
+        });
         axios({
             method: 'get',
             url: window.mfwApp.urls.budget.data+'/'+budgetID,
@@ -118,7 +121,6 @@ class Budgets extends Component {
             if (res.data.success) {
                 this.setState({
                     loading: false,
-                    editForm: null,
                     budgetID: budgetID,
                     budget: res.data.budget
                 });
