@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 //import { useMatch } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import {message, Table, Select, Space} from 'antd';
-import { SearchOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import {message, Table, Select, Space, Button, Modal} from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
 import moment from 'moment-timezone';
@@ -65,17 +65,18 @@ class Budgets extends Component {
                     render: (text, record) => {
                         return record.tax != null ? <Space>
                             <a onClick={() => this.setState({editItem: record.id})} >{this.props.t('action.edit')}</a>
-                            <a >{this.props.t('action.delete')}</a>
+                            <a onClick={() => this.deleteItem(record.id)}>{this.props.t('action.delete')}</a>
                         </Space> : <Space>
                             <a onClick={() => this.setState({editItem: record.id})}>{this.props.t('action.edit')}</a>
                             <a onClick={() => this.setState({createItem: record.id})}>{this.props.t('budget.add_child')}</a>
-                            <a >{this.props.t('action.delete')}</a>
+                            <a onClick={() => this.deleteItem(record.id)}>{this.props.t('action.delete')}</a>
                         </Space>
                     }
                 }                
             ]
         };
         this.showBudget = this.showBudget.bind(this);
+        this.deleteItem = this.deleteItem.bind(this);
     }
 
     componentDidMount() {
@@ -110,8 +111,7 @@ class Budgets extends Component {
 
     showBudget(budgetID) {
         this.setState({
-            loading: true,
-            editItem: null
+            loading: true
         });
         axios({
             method: 'get',
@@ -139,11 +139,48 @@ class Budgets extends Component {
             }
         });
     }
+    
+    deleteItem(id) {
+        Modal.confirm({
+            content: this.props.t('budget.item.confirm'),
+            okText: this.props.t('modal.yes'),
+            cancelText: this.props.t('modal.cancel'),
+            icon: <ExclamationCircleOutlined />,
+            onOk: () => {
+                axios({
+                    method: 'get',
+                    url: window.mfwApp.urls.budget.item.delete+'/'+id,
+                    headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                    }
+                }).then(res => {
+                    if (res.data.success) {
+                        this.showBudget(this.state.budgetID)  
+                    } else {
+                        message.error(this.props.t(res.data.error));
+                    }
+                }).catch(error => {
+                    if (error.response) {
+                        this.setState({
+                            errorCode: error.response.status
+                        });
+                    } else {
+                        message.error(error.toString());
+                    }
+                });
+            }
+        });
+    }
+    
 
     render() {
         return this.state.list != false ?
             <React.Fragment>
-                <Select options={this.state.list.options} defaultValue={this.state.list.default}/>
+                <Space>
+                    {this.props.t('budget._')}
+                    <Select options={this.state.list.options} defaultValue={this.state.list.default}/>
+                    <Button type="primary" onClick={() => this.setState({createItem: -1})}>{this.props.t('budget.item.add_to_root')}</Button>
+                </Space>
                 <Table 
                   rowKey="id" 
                   loading={this.state.loading}

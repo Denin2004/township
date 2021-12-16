@@ -56,6 +56,7 @@ class SelectItemName extends Component {
     render() {
         return <Select
           showSearch
+          onChange={(value) => {this.props.onChange(value);}}
           filterOption={(input, option) =>  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           dropdownRender={this.dropdownRender}
           value={this.state.value}

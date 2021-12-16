@@ -86,14 +86,11 @@ class CreateItem extends Component {
                labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}>
                 <Form.Item name="item_name_id"
-                   label={this.props.t('budget.item._')}
-                   initialValue={this.state.form.item_name_id.value*1}>
-                    <SelectItemName initialValue={this.state.form.item_name_id.value*1} options={this.state.form.item_name_id.choices}/>
+                   label={this.props.t('budget.item._')}>
+                    <SelectItemName options={this.state.form.item_name_id.choices}/>
                 </Form.Item>
-
                 <Form.Item name="tax"
                   label={this.props.t('budget.tax')}
-                  initialValue={this.state.form.tax.value}
                   rules={[
                     {
                       required: true,
@@ -104,7 +101,6 @@ class CreateItem extends Component {
                 </Form.Item>
                 <Form.Item name="amount"
                   label={this.props.t('finance.sum')+(this.state.byMonth ? '('+this.props.t('budget.month').toLowerCase()+')' : '')}
-                  initialValue={this.state.form.amount.value}
                   rules={[
                     {
                       required: true,
@@ -120,8 +116,7 @@ class CreateItem extends Component {
                     <Checkbox/>
                 </Form.Item>
                 <Form.Item name="comments"
-                   label={this.props.t('common.comment')}
-                   initialValue={this.state.form.comments.value}>
+                   label={this.props.t('common.comment')}>
                     <Input/>
                 </Form.Item>
                 <Form.Item name="parent_id"

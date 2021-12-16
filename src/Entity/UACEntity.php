@@ -110,7 +110,7 @@ class UACEntity extends Entity
                 \Doctrine\DBAL\ParameterType::STRING,
                 \Doctrine\DBAL\ParameterType::INTEGER,
                 \Doctrine\DBAL\Connection::PARAM_INT_ARRAY,
-                \Doctrine\DBAL\ParameterType::STRING,
+                \Doctrine\DBAL\ParameterType::STRING
             ]
         );
         return $stmt->fetchAll();

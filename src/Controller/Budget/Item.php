@@ -98,7 +98,7 @@ class Item extends AbstractController
         ]);
     }
 
-    public function crteate(Request $request, Budget $budgetDB)
+    public function create(Request $request, Budget $budgetDB)
     {
         $formRequest = json_decode($request->getContent(), true);
         if ($formRequest == null) {
@@ -121,6 +121,20 @@ class Item extends AbstractController
         }
         $formData = $form->getData();
         $budgetDB->itemCreate($formData);
+        if ($budgetDB->isError()) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => $budgetDB->getError()
+            ]);
+        }
+        return new JsonResponse([
+            'success' => true
+        ]);
+    }
+
+    public function delete(Budget $budgetDB, $id)
+    {
+        $budgetDB->itemDelete($id);
         if ($budgetDB->isError()) {
             return new JsonResponse([
                 'success' => false,

@@ -151,10 +151,21 @@ class Budget extends Entity
 
     public function itemCreate($params)
     {
+        $params['by_month'] = $params['by_month'] ? 't' : 'f';
         $this->provider->executeQuery(
-            'insert budget.items (parent_id, item_name_id, amount, tax, comments, by_month, budget_id)
+            'insert into budget.items (parent_id, item_name_id, amount, tax, comments, by_month, budget_id)
                 values(:parent_id, :item_name_id, :amount, :tax, :comments, :by_month, :budget_id)',
             $params
+        );
+    }
+
+    public function itemDelete($id)
+    {
+        $this->provider->executeQuery(
+            'delete from budget.items where id=:id',
+            [
+                'id' => $id
+            ]
         );
     }
 }
