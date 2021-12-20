@@ -8,6 +8,7 @@ import moment from 'moment-timezone';
 
 import useWithParams from '@app/hooks/useWithParams';
 import MfwNumber from '@app/mfw/MfwNumber';
+import Invoice from '@app/web/js/user/Invoice';
 
 class LandByType extends Component {
     constructor(props){
@@ -16,6 +17,7 @@ class LandByType extends Component {
             errorCode: 0,
             debt: [],
             loading: true,
+            invoiceID: null,
             columns: [
                 {
                     title: this.props.t('finance.invoice.num'),
@@ -51,7 +53,7 @@ class LandByType extends Component {
                     dataIndex: 'debt',
                     align: 'right',
                     render: (text, record) => {
-                        return <MfwNumber value={record.debt}/>
+                        return <a onClick={()=> this.setState({invoiceID: record.id})}><MfwNumber value={record.debt}/></a>
                     }
                 }                
             ]
@@ -116,6 +118,7 @@ class LandByType extends Component {
               dataSource={this.state.debt}
               summary={this.landSummary}
               pagination={false}/>
+            {this.state.invoiceID != null ? <Invoice id={this.state.invoiceID} close={() => {this.setState({invoiceID: null})}}/> : null}
         </React.Fragment>
     }
 }

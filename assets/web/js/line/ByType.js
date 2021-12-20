@@ -4,10 +4,12 @@ import { withTranslation } from 'react-i18next';
 import {message, Table, Typography} from 'antd';
 
 import axios from 'axios';
+import moment from 'moment-timezone';
 
 import useWithForm from '@app/hooks/useWithForm';
 import useWithParams from '@app/hooks/useWithParams';
 import MfwNumber from '@app/mfw/MfwNumber';
+import Invoice from '@app/web/js/user/Invoice';
 
 class LineByType extends Component {
     constructor(props){
@@ -18,6 +20,7 @@ class LineByType extends Component {
             loading: true,
             loadLand: false,
             debtLand: [],
+            invoiceID: null,
             columns: [
                 {
                     title: this.props.t('land._'),
@@ -35,14 +38,23 @@ class LineByType extends Component {
             columnsLand: [
                 {
                     title: this.props.t('finance.invoice.num'),
-                    dataIndex: 'invoice_num'
+                    dataIndex: 'invoice_num',
+                    render: (text, record) => {
+                        switch (record.charge_type_id) {
+                            case 1:
+                                return text;
+                            case 2:
+                                return record.name+' '+moment().set({month: record.month,year: record.year}).format('MMMM YYYY')
+                        }
+                        return text;
+                    }                    
                 },
                 {
                     title: this.props.t('finance.sum'),
                     dataIndex: 'amonut',
                     align: 'right',
                     render: (text, record) => {
-                        return <MfwNumber value={record.amount}/>
+                        return <a onClick={()=> this.setState({invoiceID: record.id})}><MfwNumber value={record.amount}/></a>
                     }
                 },
                 {
@@ -184,6 +196,7 @@ class LineByType extends Component {
                       expandedRowRender: this.debtLand,
                       onExpand: this.debtLandData
                   }}/>
+                {this.state.invoiceID != null ? <Invoice id={this.state.invoiceID} close={() => {this.setState({invoiceID: null})}}/> : null}
             </React.Fragment>
         : null;
     }
