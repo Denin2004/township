@@ -22,10 +22,11 @@ class Line extends Component {
                     dataIndex: 'name'
                 },
                 {
-                    title: <div className="text-align-end">{this.props.t('finance.sum')}</div>,
+                    title: this.props.t('finance.sum'),
+                    align: 'right',
                     dataIndex: 'amount',
                     render: (text, record) => {
-                        return <div className="text-align-end"><MfwNumber value={record.amount}/></div>
+                        return <MfwNumber value={record.amount}/>
                     }
                 }
             ]

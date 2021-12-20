@@ -4,6 +4,7 @@ import { withTranslation } from 'react-i18next';
 import {message, Table, Typography} from 'antd';
 
 import axios from 'axios';
+import moment from 'moment-timezone';
 
 import useWithParams from '@app/hooks/useWithParams';
 import MfwNumber from '@app/mfw/MfwNumber';
@@ -18,27 +19,39 @@ class LandByType extends Component {
             columns: [
                 {
                     title: this.props.t('finance.invoice.num'),
-                    dataIndex: 'invoice_num'
+                    dataIndex: 'invoice_num',
+                    render: (text, record) => {
+                        switch (record.charge_type_id) {
+                            case 1:
+                                return text;
+                            case 2:
+                                return record.name+' '+moment().set({month: record.month,year: record.year}).format('MMMM YYYY')
+                        }
+                        return text;
+                    }
                 },
                 {
-                    title: <div className="text-align-end">{this.props.t('finance.sum')}</div>,
+                    title: this.props.t('finance.sum'),
                     dataIndex: 'amonut',
+                    align: 'right',
                     render: (text, record) => {
-                        return <div className="text-align-end"><MfwNumber value={record.amount}/></div>
+                        return <MfwNumber value={record.amount}/>
                     }
                 },
                 {
-                    title: <div className="text-align-end">{this.props.t('finance.payed')}</div>,
+                    title: this.props.t('finance.payed'),
                     dataIndex: 'payed',
+                    align: 'right',
                     render: (text, record) => {
-                        return <div className="text-align-end"><MfwNumber value={record.payed}/></div>
+                        return <MfwNumber value={record.payed}/>
                     }
                 },
                 {
-                    title: <div className="text-align-end">{this.props.t('finance.debt')}</div>,
+                    title: this.props.t('finance.debt'),
                     dataIndex: 'debt',
+                    align: 'right',
                     render: (text, record) => {
-                        return <div className="text-align-end"><MfwNumber value={record.debt}/></div>
+                        return <MfwNumber value={record.debt}/>
                     }
                 }                
             ]

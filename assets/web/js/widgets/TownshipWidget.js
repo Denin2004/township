@@ -22,10 +22,11 @@ class TownshipWidget extends Component {
                     dataIndex: 'name'
                 },
                 {
-                    title: () => {return <div className="text-align-end">{this.props.t('finance.sum')}</div>},
+                    title: this.props.t('finance.sum'),
                     dataIndex: 'debt',
+                    align: 'right',
                     render: (text, record) => {
-                        return <div className="text-align-end"><MfwNumber value={record.debt}/></div>
+                        return <MfwNumber value={record.debt}/>
                     }
                 }
             ],
@@ -35,16 +36,17 @@ class TownshipWidget extends Component {
                     dataIndex: 'line'
                 },
                 {
-                    title: () => {return <div className="text-align-end">{this.props.t('finance.sum')}</div>},
+                    title: this.props.t('finance.sum'),
                     dataIndex: 'debt',
+                    align: 'right',
                     render: (text, record) => {
-                        return <div className="text-align-end"><a href={generatePath(
+                        return <a href={generatePath(
                             window.mfwApp.urls.township.line.debtByType+'/:line/:type_id',
                             { 
                                 line: record.line,
                                 type_id: record.charge_type_id
                             }
-                        )} target="_blank"><MfwNumber value={record.debt}/></a></div>
+                        )} target="_blank"><MfwNumber value={record.debt}/></a>
                     }
                 }
             ]

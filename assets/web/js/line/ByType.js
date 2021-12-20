@@ -24,10 +24,11 @@ class LineByType extends Component {
                     dataIndex: 'num'
                 },
                 {
-                    title: <div className="text-align-end">{this.props.t('finance.sum')}</div>,
+                    title: this.props.t('finance.sum'),
                     dataIndex: 'debt',
+                    align: 'right',
                     render: (text, record) => {
-                        return <div className="text-align-end"><MfwNumber value={record.debt}/></div>
+                        return <MfwNumber value={record.debt}/>
                     }
                 }
             ],
@@ -37,24 +38,27 @@ class LineByType extends Component {
                     dataIndex: 'invoice_num'
                 },
                 {
-                    title: <div className="text-align-end">{this.props.t('finance.sum')}</div>,
+                    title: this.props.t('finance.sum'),
                     dataIndex: 'amonut',
+                    align: 'right',
                     render: (text, record) => {
-                        return <div className="text-align-end"><MfwNumber value={record.amount}/></div>
+                        return <MfwNumber value={record.amount}/>
                     }
                 },
                 {
-                    title: <div className="text-align-end">{this.props.t('finance.payed')}</div>,
+                    title: this.props.t('finance.payed'),
                     dataIndex: 'payed',
+                    align: 'right',
                     render: (text, record) => {
-                        return <div className="text-align-end"><MfwNumber value={record.payed}/></div>
+                        return <MfwNumber value={record.payed}/>
                     }
                 },
                 {
-                    title: <div className="text-align-end">{this.props.t('finance.debt')}</div>,
+                    title: this.props.t('finance.debt'),
                     dataIndex: 'debt',
+                    align: 'right',
                     render: (text, record) => {
-                        return <div className="text-align-end"><MfwNumber value={record.debt}/></div>
+                        return <MfwNumber value={record.debt}/>
                     }
                 }                
             ]

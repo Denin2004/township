@@ -6,6 +6,7 @@ import { Card, Spin, Table, message, Typography, Modal, Descriptions } from 'ant
 import axios from 'axios';
 
 import MfwNumber from '@app/mfw/MfwNumber';
+import Invoice from '@app/web/js/user/Invoice';
 
 class UserWidget extends Component {
     constructor(props){
@@ -16,16 +17,18 @@ class UserWidget extends Component {
             debt: [],
             debtBills: [],
             loadBills: true,
+            invoiceID: null,
             columns: [
                 {
                     title: this.props.t('common.name'),
                     dataIndex: 'name'
                 },
                 {
-                    title: () => {return <div className="text-align-end">{this.props.t('finance.sum')}</div>},
+                    title: this.props.t('finance.sum'),
                     dataIndex: 'debt',
+                    align: 'right',
                     render: (text, record) => {
-                        return <div className="text-align-end"><MfwNumber value={record.debt}/></div>
+                        return <MfwNumber value={record.debt}/>
                     }
                 }
             ],
@@ -36,10 +39,11 @@ class UserWidget extends Component {
                     ellipsis: true
                 },
                 {
-                    title: () => {return <div className="text-align-end">{this.props.t('finance.sum')}</div>},
+                    title: this.props.t('finance.sum'),
                     dataIndex: 'debt',
+                    align: 'right',
                     render: (text, record) => {
-                        return <div className="text-align-end"><a onClick={()=> this.showInvoice(record.id)}><MfwNumber value={record.debt}/></a></div>
+                        return <a onClick={()=> this.setState({invoiceID: record.id})}><MfwNumber value={record.debt}/></a>
                     }
                 }
             ]
@@ -47,7 +51,6 @@ class UserWidget extends Component {
         this.debtSummary = this.debtSummary.bind(this);
         this.debtType = this.debtType.bind(this);
         this.debtTypeData = this.debtTypeData.bind(this);
-        this.showInvoice = this.showInvoice.bind(this);
     }
 
     componentDidMount() {
@@ -158,57 +161,6 @@ class UserWidget extends Component {
             }
         });
     }
-    
-    showInvoice(id) {
-        this.setState({loadBills: true});
-        axios.get(
-            window.mfwApp.urls.finance.invoice+'/'+id,
-            {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            }
-        ).then(res => {
-            if (res.data.success) {
-                var invoice = JSON.parse(res.data.invoice);
-                this.setState({
-                    loadBills: false
-                });
-                Modal.info({
-                    title: this.props.t('finance.invoice.num')+' '+invoice.invoiceNum,
-                    content: (
-                        <Descriptions>
-                            <Descriptions.Item label={this.props.t('finance.sum')}><MfwNumber value={invoice.amount}/></Descriptions.Item>
-                            <Descriptions.Item label={this.props.t('finance.payed')}><MfwNumber value={invoice.payed}/></Descriptions.Item>
-                            <Descriptions.Item label={this.props.t('finance.debt')}><MfwNumber value={invoice.amount-invoice.payed}/></Descriptions.Item>
-                            <Descriptions.Item label={this.props.t('finance.charge')} span={3}></Descriptions.Item>
-                            <Descriptions.Item label={this.props.t('calendar.day')}><MfwNumber value={invoice.day}/></Descriptions.Item>
-                            <Descriptions.Item label={this.props.t('calendar.night')}><MfwNumber value={invoice.night}/></Descriptions.Item>
-                        </Descriptions>
-                    ),
-                    okText: this.props.t('modal.close'),
-                    width: 800
-                });                
-            } else {
-                message.error(this.props.t(res.data.error));
-                this.setState({
-                    loadBills: false
-                });
-            }
-        }).catch(error => {
-            if (error.response) {
-                this.setState({
-                    loadBills: false,
-                    errorCode: error.response.status
-                });
-            } else {
-                message.error(error.toString());
-                this.setState({
-                    loadBills: false
-                });
-            }
-        });
-    }
 
     render() {
         return <Card title={this.props.t('user.debt')}>
@@ -228,6 +180,7 @@ class UserWidget extends Component {
                       onExpand: this.debtTypeData
                   }}/>
             )}
+            {this.state.invoiceID != null ? <Invoice id={this.state.invoiceID} close={() => {this.setState({invoiceID: null})}}/> : null}
         </Card>;
     }
 }

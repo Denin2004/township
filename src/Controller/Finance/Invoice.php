@@ -11,9 +11,16 @@ class Invoice extends AbstractController
 {
     public function data(InvoiceDB $invoiceDB, $id)
     {
+        $invoice = $invoiceDB->data(['id' => $id]);
+        if (!$invoice) {
+            return new JsonResponse([
+                'success' => fasle,
+                'error' => 'finance.invoice.errors.no_found'
+            ]);
+        }
         return new JsonResponse([
             'success' => true,
-            'invoice' => $invoiceDB->data(['id' => $id])[0]['invoice']
+            'invoice' => $invoice
         ]);
     }
 }

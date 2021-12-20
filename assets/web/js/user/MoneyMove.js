@@ -33,17 +33,19 @@ class UserMoneyMove extends Component {
                     dataIndex: 'land_num'
                 },
                 {
-                    title: <div className="text-align-end">{this.props.t('finance.charge')}</div>,
+                    title: this.props.t('finance.charge'),
                     dataIndex: 'amount_in',
+                    align: 'right',
                     render: (text, record) => {
-                        return record.amount_in == 0 ? null :  <div className="text-align-end"><MfwNumber value={record.amount_in}/></div>
+                        return record.amount_in == 0 ? null : <MfwNumber value={record.amount_in}/>
                     }
                 },
                 {
-                    title: <div className="text-align-end">{this.props.t('finance.debited')}</div>,
+                    title: this.props.t('finance.debited'),
                     dataIndex: 'amount_out',
+                    align: 'right',
                     render: (text, record) => {
-                        return record.amount_out == 0 ? null :  <div className="text-align-end"><MfwNumber value={record.amount_out}/></div>
+                        return record.amount_out == 0 ? null : <MfwNumber value={record.amount_out}/>
                     }
                 }
             ]

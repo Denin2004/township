@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-//import { useMatch } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import {message, Table, Form, InputNumber, Input, Select, Button, Space, Typography} from 'antd';
 import { SearchOutlined, CloseCircleOutlined } from '@ant-design/icons';
@@ -56,81 +55,89 @@ class ElectricityBills extends Component {
                     title: this.props.t('electricity.meter.value_on'),
                     children: [
                         {
-                            title: () => {return <div className="text-align-end">{this.state.from}</div>},
+                            title: () => this.state.from,
                             key: 'meter_start',
+                            align: 'right',
                             render: (text, record) => {
                                 return <React.Fragment>
-                                    <div className="text-align-end"><MfwNumber value={record.day_meter_start}/></div>
-                                    <div className="text-align-end"><MfwNumber value={record.night_meter_start}/></div>
+                                    <div><MfwNumber value={record.day_meter_start}/></div>
+                                    <div><MfwNumber value={record.night_meter_start}/></div>
                                 </React.Fragment>
                             }
                         },
                         {
-                            title: () => {return <div className="text-align-end">{this.state.to}</div>},
+                            title: () => this.state.to,
                             key: 'meter_end',
+                            align: 'right',
                             render: (text, record) => {
                                 return <React.Fragment>
-                                    <div className="text-align-end"><MfwNumber value={record.day_meter_end}/></div>
-                                    <div className="text-align-end"><MfwNumber value={record.night_meter_end}/></div>
+                                    <div><MfwNumber value={record.day_meter_end}/></div>
+                                    <div><MfwNumber value={record.night_meter_end}/></div>
                                 </React.Fragment>
                             }
                         }
                     ]
                 },
                 {
-                    title: <div className="text-align-end">{this.props.t('electricity.meter.diff')}</div>,
+                    title: this.props.t('electricity.meter.diff'),
                     key: 'meter_diff',
+                    align: 'right',
                     render: (text, record) => {
                         return <React.Fragment>
-                            <div className="text-align-end">
+                            <div>
                                 <MfwNumber value={record.day_meter_end-record.day_meter_start}/>
                             </div>
-                            <div className="text-align-end">
+                            <div>
                                 <MfwNumber value={record.night_meter_end-record.night_meter_start}/>
                             </div>
                         </React.Fragment>
                     }
                 },
                 {
-                    title: <div className="text-align-end">{this.props.t('electricity.meter.rate')}</div>,
+                    title: this.props.t('electricity.meter.rate'),
                     key: 'meter_rate',
+                    align: 'right',
                     render: (text, record) => {
                         return <React.Fragment>
-                            <div className="text-align-end"><MfwNumber value={record.day_rate}/></div>
-                            <div className="text-align-end"><MfwNumber value={record.night_rate}/></div>
+                            <div><MfwNumber value={record.day_rate}/></div>
+                            <div><MfwNumber value={record.night_rate}/></div>
                         </React.Fragment>
                     }
                 },
                 {
-                    title: <div className="text-align-end">{this.props.t('finance.charge')}</div>,
+                    title: this.props.t('finance.charge'),
                     key: 'meter_amount',
+                    align: 'right',
                     render: (text, record) => {
                         return <React.Fragment>
-                            <div className="text-align-end"><MfwNumber value={record.day_amount}/></div>
-                            <div className="text-align-end"><MfwNumber value={record.night_amount}/></div>
+                            <div><MfwNumber value={record.day_amount}/></div>
+                            <div><MfwNumber value={record.night_amount}/></div>
                         </React.Fragment>
                     }
                 },
                 {
-                    title: <div className="text-align-end">{this.props.t('finance.sum')}</div>,
+                    title: this.props.t('finance.sum'),
                     dataIndex: 'amount',
+                    align: 'right',
                     render: (text, record) => {
-                        return <div className="text-align-end"><MfwNumber value={record.amount}/></div>
+                        return <MfwNumber value={record.amount}/>
                     }
                 },
                 {
-                    title: <div className="text-align-end">{this.props.t('finance.payed')}</div>,
+                    title: this.props.t('finance.payed'),
+                    align: 'right',
                     dataIndex: 'payed',
                     render: (text, record) => {
-                        return <div className="text-align-end"><MfwNumber value={record.payed}/></div>
+                        return <MfwNumber value={record.payed}/>
                     }
                 },
                 {
-                    title: <div className="text-align-end">{this.props.t('finance.debt')}</div>,
+                    title: this.props.t('finance.debt'),
                     dataIndex: 'saldo',
+                    align: 'right',
                     render: (text, record) => {
                         return record.amount-record.payed != 0 ? 
-                            <div className="text-align-end"><MfwNumber value={record.amount-record.payed}/></div>
+                            <MfwNumber value={record.amount-record.payed}/>
                             : null
                     },
                     sorter: (a, b) => (a.amount-a.payed)-(b.amount-b.payed)
@@ -253,6 +260,7 @@ class ElectricityBills extends Component {
     }
 
     render() {
+        console.log(this.state);
         return this.state.form != false ?
             <React.Fragment>
                 <Form form={this.props.form}

@@ -33,24 +33,27 @@ class Budgets extends Component {
                     title: this.props.t('budget.planned_expense'),
                     children: [
                         {
-                            title: () => {return <div className="text-align-end">{this.props.t('budget.month')}</div>},
+                            title: () => this.props.t('budget.month'),
                             key: 'month',
+                            align: 'right',
                             render: (text, record) => {
-                                return record.by_month ? <div className="text-align-end"><MfwNumber value={record.amount}/></div> : null
+                                return record.by_month ? <MfwNumber value={record.amount}/> : null
                             }
                         },
                         {
-                            title: () => {return <div className="text-align-end">{this.props.t('budget.period')}</div>},
+                            title: () => this.props.t('budget.period'),
                             key: 'amount',
+                            align: 'right',
                             render: (text, record) => {
-                                return <div className="text-align-end"><MfwNumber value={record.by_month ? record.amount*record.months : record.amount}/></div>
+                                return <MfwNumber value={record.by_month ? record.amount*record.months : record.amount}/>
                             }
                         },
                         {
-                            title: () => {return <div className="text-align-end">{this.props.t('budget.tax')}</div>},
+                            title: () => this.props.t('budget.tax'),
                             dataIndex: 'tax',
+                            align: 'right',
                             render: (text, record) => {
-                                return record.tax != null ? <div className="text-align-end"><MfwNumber value={record.tax}/></div> : null
+                                return record.tax != null ? <MfwNumber value={record.tax}/> : null
                             }
                         }
                     ]
