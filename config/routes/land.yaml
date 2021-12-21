@@ -11,7 +11,7 @@ landDebtType:
 
 landDebtTypeData:
     path: /debtbbytype/data/{land_id}/{type_id}
-    controller: App\Controller\Township\Land::debtType
+    controller: App\Controller\Land\Main::debtType
     methods: [GET]
     requirements:
         type_id: \d+
@@ -19,3 +19,36 @@ landDebtTypeData:
     defaults: 
         type_id: -1
         land_id: -1
+
+landOwnersPage:
+    path: /owners/page
+    controller: App\Controller\Application::index
+    methods: [GET]
+    
+landOwnersData:
+    path: /owners/data
+    controller: App\Controller\Land\Owner::data
+    methods: [GET]
+    
+landOwnerForm:
+    path: /owner/form
+    controller: App\Controller\Land\Owner::form
+    methods: [GET]
+    requirements:
+        id: \d+
+    defaults: 
+        id: -1
+    
+landOwnerPost:
+    path: /owner/post
+    controller: App\Controller\Land\Owner::post
+    methods: [POST]
+    
+landOwnerDelete:
+    path: /owner/delete/{id}
+    controller: App\Controller\Land\Owner::delete
+    methods: [GET]
+    requirements:
+        id: \d+
+    defaults: 
+        id: -1

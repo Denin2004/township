@@ -56,7 +56,7 @@ budget:
 
 error403:
     path: /error/403
-    controller: App\Controller\MainPage::index
+    controller: App\Controller\Application::index
 
 error500:
     path: /error/500

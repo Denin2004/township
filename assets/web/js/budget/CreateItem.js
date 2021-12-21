@@ -12,7 +12,6 @@ class CreateItem extends Component {
     constructor(props){
         super(props);
         this.state = {
-            errorCode: 0,
             form: null,
             loading: true,
             byMonth: false
@@ -39,11 +38,8 @@ class CreateItem extends Component {
                 this.props.cancel();
             }
         }).catch(error => {
-            if (error.response) {
-                this.setState({
-                    errorCode: error.response.status
-                });
-                this.props.cancel();
+            if (error.response && error.response.data) {
+                message.error(this.props.t(error.response.data.error));
             } else {
                 message.error(error.toString());
                 this.props.cancel();

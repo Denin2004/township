@@ -25,14 +25,8 @@ class DeniedHandler implements AccessDeniedHandlerInterface
         if ($request->isXmlHttpRequest()) {
             return new JsonResponse(
                 [
-                    'data' => [
-                        [
-                            'showToast' => [
-                                'text' => $this->translator->trans('errors.route_forbidden'),
-                                'type' => 'error'
-                            ]
-                        ]
-                    ]
+                    'success' => false,
+                    'error' => 'security.error.403'
                 ]
             );
         }

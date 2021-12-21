@@ -12,7 +12,6 @@ class Invoice extends Component {
         super(props);
         this.state = {
             loading: true,
-            errorCode: 0,
             columns: [
                 {
                     title: this.props.t('common.type'),
@@ -65,10 +64,8 @@ class Invoice extends Component {
                 message.error(this.props.t(res.data.error));
             }
         }).catch(error => {
-            if (error.response) {
-                this.setState({
-                    errorCode: error.response.status
-                });
+            if (error.response && error.response.data) {
+                message.error(this.props.t(error.response.data.error));
             } else {
                 message.error(error.toString());
             }

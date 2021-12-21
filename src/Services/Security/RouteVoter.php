@@ -3,7 +3,7 @@ namespace App\Services\Security;
 
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use App\Security\WebUser;
+use App\Services\Security\WebUser;
 
 class RouteVoter extends Voter
 {

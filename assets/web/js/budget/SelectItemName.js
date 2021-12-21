@@ -9,7 +9,6 @@ class SelectItemName extends Component {
     constructor(props){
         super(props);
         this.state = {
-            errorCode: 0,
             options: [...this.props.options],
             loading: true,
             name: '',

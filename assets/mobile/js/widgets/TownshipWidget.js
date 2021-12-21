@@ -13,7 +13,6 @@ class TownshipWidget extends Component {
         super(props);
         this.state = {
             loading: true,
-            errorCode: 0,
             debt: []
         }
     }
@@ -39,10 +38,10 @@ class TownshipWidget extends Component {
                 });
             }
         }).catch(error => {
-            if (error.response) {
+            if (error.response && error.response.data) {
                 Toast.show({
                     icon: 'fail',
-                    content:this.props.t(error.response.status)
+                    content:this.props.t(error.response.data.error)
                 });
             } else {
                 Toast.show({

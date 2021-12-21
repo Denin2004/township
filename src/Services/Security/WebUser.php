@@ -72,11 +72,8 @@ class WebUser implements UserInterface, EquatableInterface
 
     public function getAccess($subject)
     {
-        return true;
         $route = $subject->attributes->get('_route');
-        return in_array($this->access['routes'], $route);
-/*        $route = $subject->attributes->get('_route');
-        return isset($this->userAccess['routes'][$route]) ? $this->userAccess['routes'][$route] : true;*/
+        return in_array($route, $this->access['routes']);
     }
 
     public function get($param)

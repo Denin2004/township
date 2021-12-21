@@ -12,7 +12,6 @@ class BudgetWidget extends Component {
         super(props);
         this.state = {
             loading: true,
-            errorCode: 0,
             info: null
         }
     }
@@ -35,10 +34,8 @@ class BudgetWidget extends Component {
                 message.error(this.props.t(res.data.error));
             }
         }).catch(error => {
-            if (error.response) {
-                this.setState({
-                    errorCode: error.response.status
-                });
+            if (error.response && error.response.data) {
+                message.error(this.props.t(error.response.data.error));
             } else {
                 message.error(error.toString());
             }

@@ -13,7 +13,6 @@ class BookkeepingWidgets extends Component {
     constructor(props){
         super(props);
         this.state = {
-            errorCode: 0,
             electricity: {
                 state: 0,
                 form: false,
@@ -47,10 +46,8 @@ class BookkeepingWidgets extends Component {
                 message.error(this.props.t(res.data.error));
             }
         }).catch(error => {
-            if (error.response) {
-                this.setState({
-                    errorCode: error.response.status
-                });
+            if (error.response && error.response.data) {
+                message.error(this.props.t(error.response.data.error));
             } else {
                 message.error(error.toString());
             }

@@ -30,7 +30,14 @@
         },
         "land": {
             "debtType": "{{ path('landDebtType') }}",
-            "debtTypeData": "{{ path('landDebtTypeData') }}"
+            "debtTypeData": "{{ path('landDebtTypeData') }}",
+            "owner": {
+                "page": "{{ path('landOwnersPage') }}",
+                "data": "{{ path('landOwnersData') }}",
+                "forml": "{{ path('landOwnerForm') }}",
+                "post": "{{ path('landOwnerPost') }}",
+                "delete": "{{ path('landOwnerDelete') }}"
+            }
         },
         "user": {
             "debt": "{{ path('userDebt') }}",

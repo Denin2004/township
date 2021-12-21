@@ -12,7 +12,6 @@ class TownshipWidget extends Component {
         super(props);
         this.state = {
             loading: true,
-            errorCode: 0,
             debt: [],
             debtLines: [],
             loadLines: true,
@@ -77,11 +76,8 @@ class TownshipWidget extends Component {
                 });
             }
         }).catch(error => {
-            if (error.response) {
-                this.setState({
-                    loading: false,
-                    errorCode: error.response.status
-                });
+            if (error.response && error.response.data) {
+                message.error(this.props.t(error.response.data.error));
             } else {
                 message.error(error.toString());
                 this.setState({
@@ -151,16 +147,10 @@ class TownshipWidget extends Component {
                 });
             }
         }).catch(error => {
-            if (error.response) {
-                this.setState({
-                    loadLines: false,
-                    errorCode: error.response.status
-                });
+            if (error.response && error.response.data) {
+                message.error(this.props.t(error.response.data.error));
             } else {
                 message.error(error.toString());
-                this.setState({
-                    loadLines: false
-                });
             }
         });
     }

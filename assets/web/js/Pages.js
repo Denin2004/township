@@ -13,13 +13,14 @@ import LineByType from '@app/web/js/line/ByType';
 import LandByType from '@app/web/js/land/ByType';
 import UserMoneyMove from '@app/web/js/user/MoneyMove';
 import Budgets from '@app/web/js/budget/Main';
+import Owners from '@app/web/js/land/Owners';
+import Error403 from '@app/web/js/Error403';
 
 class Pages extends Component {
     constructor(props){
         super(props);
         this.state = {
             loading: true,
-            errorCode: 0,
             userName: '',
             userID: 0,
             passwordForm: false
@@ -48,21 +49,12 @@ class Pages extends Component {
                 });
             } else {
                 message.error(this.props.t(res.data.error));
-                this.setState({
-                    loading: false
-                });
             }
         }).catch(error => {
-            if (error.response) {
-                this.setState({
-                    loading: false,
-                    errorCode: error.response.status
-                });
+            if (error.response && error.response.data) {
+                message.error(this.props.t(error.response.data.error));
             } else {
                 message.error(error.toString());
-                this.setState({
-                    loading: false
-                });
             }
         });
     }
@@ -90,16 +82,10 @@ class Pages extends Component {
                 });
             }
         }).catch(error => {
-            if (error.response) {
-                this.setState({
-                    loading: false,
-                    errorCode: error.response.status
-                });
+            if (error.response && error.response.data) {
+                message.error(this.props.t(error.response.data.error));
             } else {
                 message.error(error.toString());
-                this.setState({
-                    loading: false
-                });
             }
         });
     }
@@ -155,6 +141,8 @@ class Pages extends Component {
                             <Route path={window.mfwApp.urls.township.land.debtType+'/:land_id/:type_id'} element={<LandByType/>}/>
                             <Route path={window.mfwApp.urls.township.user.moneyMove} element={<UserMoneyMove/>}/>
                             <Route path={window.mfwApp.urls.budget.page} element={<Budgets/>}/>
+                            <Route path={window.mfwApp.urls.township.land.owner.page} element={<Owners/>}/>
+                            <Route path="/error/403" element={<Error403/>}/>
                         </Routes>
                     </Layout.Content>
                 {this.state.passwordForm != false ? (

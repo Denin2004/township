@@ -33,13 +33,16 @@ security:
         App\Services\Security\WebUser: 
             algorithm: bcrypt
             cost: 12
+            
+    access_decision_manager:
+        strategy: unanimous
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login_check, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/error403, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/error/403, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/*, roles: IS_AUTHENTICATED_REMEMBERED }        
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }

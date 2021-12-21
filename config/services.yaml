@@ -69,7 +69,7 @@ services:
 
     form.Account:
         class: App\Form\AccountManager\Account
-        arguments: ['@App\Entity\UACEntity', '@App\Entity\Lands', '@security.token_storage', '@security.password_encoder']
+        arguments: ['@App\Entity\UACEntity', '@App\Entity\Land', '@security.token_storage', '@security.password_encoder']
         tags: [form.type]
         
     form.Range:

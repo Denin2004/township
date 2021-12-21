@@ -17,20 +17,20 @@ use App\Form\React\ReactChoiceType;
 use App\Form\React\ReactPasswordType;
 
 use App\Entity\UACEntity;
-use App\Entity\Lands;
+use App\Entity\Land;
 
 class Account extends ReactForm
 {
 
     protected $uacDB;
-    protected $landsDB;
+    protected $landDB;
     protected $user;
     protected $encoder;
 
-    public function __construct(UACEntity $uacDB, Lands $landsDB, TokenStorageInterface $tokenStorage, UserPasswordEncoderInterface $encoder)
+    public function __construct(UACEntity $uacDB, Land $landDB, TokenStorageInterface $tokenStorage, UserPasswordEncoderInterface $encoder)
     {
         $this->uacDB = $uacDB;
-        $this->landsDB = $landsDB;
+        $this->landDB = $landDB;
         $this->user = $tokenStorage->getToken()->getUser();
         $this->encoder = $encoder;
     }
@@ -91,7 +91,7 @@ class Account extends ReactForm
                 'land_ids',
                 ReactChoiceType::class,
                 [
-                    'choices' => $this->landsDB->listChoices(),
+                    'choices' => $this->landDB->listChoices(),
                     'expanded' => false,
                     'multiple' => true
                 ]

@@ -13,7 +13,6 @@ class UserWidget extends Component {
         super(props);
         this.state = {
             loading: true,
-            errorCode: 0,
             debt: [],
             debtBills: [],
             loadBills: true,
@@ -74,16 +73,10 @@ class UserWidget extends Component {
                 });
             }
         }).catch(error => {
-            if (error.response) {
-                this.setState({
-                    loading: false,
-                    errorCode: error.response.status
-                });
+            if (error.response && error.response.data) {
+                message.error(this.props.t(error.response.data.error));
             } else {
                 message.error(error.toString());
-                this.setState({
-                    loading: false
-                });
             }
         });
     }
@@ -148,16 +141,10 @@ class UserWidget extends Component {
                 });
             }
         }).catch(error => {
-            if (error.response) {
-                this.setState({
-                    loadBills: false,
-                    errorCode: error.response.status
-                });
+            if (error.response && error.response.data) {
+                message.error(this.props.t(error.response.data.error));
             } else {
                 message.error(error.toString());
-                this.setState({
-                    loadBills: false
-                });
             }
         });
     }

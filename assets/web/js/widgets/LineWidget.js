@@ -12,7 +12,6 @@ class LineWidget extends Component {
         super(props);
         this.state = {
             loading: true,
-            errorCode: 0,
             debt: [],
             debtLand: [],
             loadLands: true,
@@ -77,16 +76,10 @@ class LineWidget extends Component {
                 });
             }
         }).catch(error => {
-            if (error.response) {
-                this.setState({
-                    loading: false,
-                    errorCode: error.response.status
-                });
+            if (error.response && error.response.data) {
+                message.error(this.props.t(error.response.data.error));
             } else {
                 message.error(error.toString());
-                this.setState({
-                    loading: false
-                });
             }
         });
     }
@@ -151,16 +144,10 @@ class LineWidget extends Component {
                 });
             }
         }).catch(error => {
-            if (error.response) {
-                this.setState({
-                    loadLand: false,
-                    errorCode: error.response.status
-                });
+            if (error.response && error.response.data) {
+                message.error(this.props.t(error.response.data.error));
             } else {
                 message.error(error.toString());
-                this.setState({
-                    loadLand: false
-                });
             }
         });
     }

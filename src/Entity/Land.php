@@ -25,4 +25,25 @@ class Land extends Entity
             $params
         );
     }
+
+    public function listChoices()
+    {
+        $dbRes = $this->provider->fetchAll(
+            'select id, num from lands.lands'
+        );
+        $res = [];
+        foreach ($dbRes as $row) {
+            $res[$row['num']] = $row['id'];
+        }
+        return $res;
+    }
+
+    public function owners()
+    {
+        return $this->provider->fetchAll(
+            'select lo.id, lo.lamd_id, lo.name, l.num
+               from lands.owners lo
+                 left join lands.lands l on(l.id=lo.land_id)'
+        );
+    }
 }

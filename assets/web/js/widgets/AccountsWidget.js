@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import { Card, Spin, Descriptions, message } from 'antd';
+import { Card, Spin, Descriptions, message, List } from 'antd';
 
 import axios from 'axios';
 
@@ -10,7 +10,6 @@ class AccountsWidgets extends Component {
         super(props);
         this.state = {
             loading: true,
-            errorCode: 0,
             count: 0
         }
     }
@@ -36,16 +35,10 @@ class AccountsWidgets extends Component {
                 });
             }
         }).catch(error => {
-            if (error.response) {
-                this.setState({
-                    loading: false,
-                    errorCode: error.response.status
-                });
+            if (error.response && error.response.data) {
+                message.error(this.props.t(error.response.data.error));
             } else {
                 message.error(error.toString());
-                this.setState({
-                    loading: false
-                });
             }
         });
     }
@@ -58,10 +51,15 @@ class AccountsWidgets extends Component {
                     <Spin/>
                 </div>
             ) : (
+            <React.Fragment>
                 <Descriptions layout="horizontal">
                     <Descriptions.Item label={this.props.t('account.s')}>{this.state.count}</Descriptions.Item>
                 </Descriptions>
-            )}
+                <List>
+                    <List.Item><Link to={window.mfwApp.urls.township.land.owner.page}>{this.props.t('land.owners')}</Link></List.Item>
+                    <List.Item>{this.props.t('budget.discounts')}</List.Item>
+                </List>
+            </React.Fragment>)}
         </Card>
     }
 }

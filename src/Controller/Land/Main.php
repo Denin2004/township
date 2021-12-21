@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Controller\Township;
+namespace App\Controller\Land;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use App\Entity\Land as LandDB;
 
-class Land extends AbstractController
+class Main extends AbstractController
 {
     public function debtType(LandDB $landDB, $land_id, $type_id)
     {
