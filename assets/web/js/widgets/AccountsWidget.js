@@ -56,7 +56,7 @@ class AccountsWidgets extends Component {
                     <Descriptions.Item label={this.props.t('account.s')}>{this.state.count}</Descriptions.Item>
                 </Descriptions>
                 <List>
-                    <List.Item><Link to={window.mfwApp.urls.township.land.owner.page}>{this.props.t('land.owners')}</Link></List.Item>
+                    <List.Item><Link to={window.mfwApp.urls.township.land.owner.page}>{this.props.t('land.owner.s')}</Link></List.Item>
                     <List.Item>{this.props.t('budget.discounts')}</List.Item>
                 </List>
             </React.Fragment>)}

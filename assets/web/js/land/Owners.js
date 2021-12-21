@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
 //import { useMatch } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import {message, Table} from 'antd';
+import {message, Table, Button} from 'antd';
 
 import axios from 'axios';
+
+import OwnerModal from '@app/web/js/land/OwnerModal';
 
 class Owners extends Component {
     constructor(props){
@@ -11,20 +13,27 @@ class Owners extends Component {
         this.state = {
             owners: [],
             loading: true,
+            ownerID: null,
             columns: [
                 {
                     title: this.props.t('land._'),
                     dataIndex: 'id'
                 },
                 {
-                    title: this.props.t('land.owner'),
+                    title: this.props.t('land.owner._'),
                     dataIndex: 'name'
                 }                
             ]
         };
+        this.ownersData = this.ownersData.bind(this);
     }
 
     componentDidMount() {
+        this.ownersData();
+    }
+    
+    ownersData() {
+        this.setState({ownerID: null, loadin: true});
         axios.get(
             window.mfwApp.urls.township.land.owner.data,
             {
@@ -51,14 +60,18 @@ class Owners extends Component {
     }
     
     render() {
-        console.log(this.state);
-//            {this.state.invoiceID != null ? <Invoice id={this.state.invoiceID} close={() => {this.setState({invoiceID: null})}}/> : null}        
         return  <React.Fragment>
+            <Button onClick={() => this.setState({ownerID: -1})}>{this.props.t('land.owner.add')}</Button>
             <Table 
               rowKey="id" 
               loading={this.state.loading}
               columns={this.state.columns} 
               dataSource={this.state.owners}/>
+            {this.state.ownerID != null ? 
+              <OwnerModal 
+                id={this.state.ownerID} 
+                close={() => {this.setState({ownerID: null})}} 
+                success={this.ownersData} /> : null}
         </React.Fragment>
     }
 }
