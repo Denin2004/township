@@ -255,7 +255,6 @@ class ElectricityBills extends Component {
     }
 
     render() {
-        console.log(this.state);
         return this.state.form != false ?
             <React.Fragment>
                 <Form form={this.props.form}

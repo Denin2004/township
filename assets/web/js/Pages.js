@@ -14,6 +14,7 @@ import LandByType from '@app/web/js/land/ByType';
 import UserMoneyMove from '@app/web/js/user/MoneyMove';
 import Budgets from '@app/web/js/budget/Main';
 import Owners from '@app/web/js/land/Owners';
+import Discounts from '@app/web/js/budget/Discounts';
 import Error403 from '@app/web/js/Error403';
 
 class Pages extends Component {
@@ -142,6 +143,7 @@ class Pages extends Component {
                             <Route path={window.mfwApp.urls.township.user.moneyMove} element={<UserMoneyMove/>}/>
                             <Route path={window.mfwApp.urls.budget.page} element={<Budgets/>}/>
                             <Route path={window.mfwApp.urls.township.land.owner.page} element={<Owners/>}/>
+                            <Route path={window.mfwApp.urls.budget.discount.page} element={<Discounts/>}/>
                             <Route path="/error/403" element={<Error403/>}/>
                         </Routes>
                     </Layout.Content>

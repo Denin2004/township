@@ -168,4 +168,62 @@ class Budget extends Entity
             ]
         );
     }
+
+    public function discounts()
+    {
+        return $this->provider->fetchAll(
+            'select bd.land_id||\' \'||bd.item_name_id as id,
+                 bd.land_id, bd.item_name_id, bd.discount,
+                l.num, bi.name
+               from charges.budget_discount bd
+                 left join lands.lands l on(l.id=bd.land_id)
+                 left join budget.item_names bi on (bi.id=bd.item_name_id)'
+        );
+    }
+
+    public function discount($params)
+    {
+        $res = $this->provider->fetchAll(
+            'select bd.land_id, bd.item_name_id, bd.discount
+               from charges.budget_discount bd
+               where (bd.land_id=:land_id)and(bd.item_name_id=:item_name_id)',
+            $params
+        );
+        return count($res) == 0 ? false : $res[0];
+    }
+
+    public function discountPost($params)
+    {
+            $this->provider->executeQuery(
+                'insert into charges.budget_discount (land_id, item_name_id, discount)
+                    values(:land_id, :item_name_id, :discount)
+                 on conflict (land_id, item_name_id) do update  set discount=:discount
+                    where (charges.budget_discount.land_id=:land_id)and(charges.budget_discount.item_name_id=:item_name_id)',
+                $params
+            );
+/*
+
+
+        if ($params['land_id'] == -1) {
+            $this->provider->executeQuery(
+                'insert into charges.budget_discount (land_id, item_name_id, discount)
+                    values(:land_id, :item_name_id, :discount)',
+                $params
+            );
+        } else {
+            $this->provider->executeQuery(
+                'update charges.budget_discount bd set discount=:discount
+                    where (bd.land_id=:land_id)and(bd.item_name_id=:item_name_id)',
+                $params
+            );
+        }*/
+    }
+
+    public function discountDelete($params)
+    {
+        $this->provider->executeQuery(
+            'delete from charges.budget_discount where (land_id=:land_id)and(item_name_id=:item_name_id)',
+            $params
+        );
+    }
 }

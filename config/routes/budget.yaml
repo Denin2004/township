@@ -68,3 +68,40 @@ budgetItemNameAdd:
     defaults:
         name: ''
     
+budgetDiscountsPage:
+    path: /discounts/page
+    controller: App\Controller\Application::index
+    methods: [GET]
+    
+budgetDiscountsData:
+    path: /discounts/data
+    controller: App\Controller\Budget\Discount::data
+    methods: [GET]
+    
+budgetDiscountForm:
+    path: /discount/form/{land_id}/{item_name_id}
+    controller: App\Controller\Budget\Discount::form
+    methods: [GET]
+    requirements:
+        land_id: \d+|-1
+        item_name_id: \d+|-1
+    defaults: 
+        land_id: -1
+        item_name_id: -1
+    
+budgetDiscountPost:
+    path: /discount/post
+    controller: App\Controller\Budget\Discount::post
+    methods: [POST]
+    
+budgetDiscountDelete:
+    path: /discount/delete/{land_id}/{item_name_id}
+    controller: App\Controller\Budget\Discount::delete
+    methods: [GET]
+    requirements:
+        land_id: \d+|-1
+        item_name_id: \d+|-1
+    defaults: 
+        land_id: -1
+        item_name_id: -1
+    

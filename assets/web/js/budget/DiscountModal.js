@@ -8,7 +8,7 @@ import axios from 'axios';
 import MfwNumber from '@app/mfw/MfwNumber';
 import useWithForm from '@app/hooks/useWithForm';
 
-class OwnerModal extends Component {
+class DiscountModal extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -20,7 +20,7 @@ class OwnerModal extends Component {
 
     componentDidMount() {
         axios.get(
-            window.mfwApp.urls.township.land.owner.form+'/'+this.props.id,
+            window.mfwApp.urls.budget.discount.form+'/'+this.props.id.land_id+'/'+this.props.id.item_name_id,
             {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
@@ -50,7 +50,7 @@ class OwnerModal extends Component {
             .then(values => {
                 axios({
                     method: 'post',
-                    url: window.mfwApp.urls.township.land.owner.post,
+                    url: window.mfwApp.urls.budget.discount.post,
                     data: values,
                     headers: {'Content-Type': 'application/json','X-Requested-With': 'XMLHttpRequest'}
                 }).then(res => {
@@ -66,7 +66,7 @@ class OwnerModal extends Component {
     }
 
     render() {
-        return <Modal title={this.props.t('land.owner.__')}
+        return <Modal title={this.props.t('budget.discount._')}
             visible={true}
             closable={false}
             cancelText={this.props.t('modal.close')}
@@ -79,7 +79,7 @@ class OwnerModal extends Component {
                 </div>
             ) : (
                 <Form form={this.props.form}
-                   name="owner"
+                   name="discount"
                    labelCol={{ span: 8 }}
                     wrapperCol={{ span: 16 }}>
                     <Form.Item name="land_id"
@@ -88,20 +88,21 @@ class OwnerModal extends Component {
                         <Select
                           options={this.state.form.land_id.choices}/>
                     </Form.Item>
-                    <Form.Item name="name"
-                       label={this.props.t('land.owner._')}
-                       initialValue={this.state.form.name.value}
+                    <Form.Item name="item_name_id"
+                       label={this.props.t('budget.item._')}
+                       initialValue={this.state.form.item_name_id.value*1}>
+                        <Select
+                          options={this.state.form.item_name_id.choices}/>
+                    </Form.Item>
+                    <Form.Item name="discount"
+                       label={this.props.t('finance.discount')}
+                       initialValue={this.state.form.discount.value}
                        rules={[
                           {
                               required: true,
-                              message: this.props.t('land.errors.owner_blank')
+                              message: this.props.t('budget.errors.discount_blank')
                           }
                        ]}>
-                        <Input/>
-                    </Form.Item>
-                    <Form.Item name="id"
-                      hidden={true} 
-                      initialValue={this.state.form.id.value}>
                         <Input/>
                     </Form.Item>
                     <Form.Item name="_token"
@@ -115,4 +116,4 @@ class OwnerModal extends Component {
     }
 }
 
-export default useWithForm(withTranslation()(OwnerModal));
+export default useWithForm(withTranslation()(DiscountModal));

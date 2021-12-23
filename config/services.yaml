@@ -91,4 +91,9 @@ services:
         class: App\Form\Land\Owner
         arguments: ['@App\Entity\Land']
         tags: [form.type]
+
+    App\Form\Budget\Discount:
+        class: App\Form\Budget\Discount
+        arguments: ['@App\Entity\Land', '@App\Entity\Budget']
+        tags: [form.type]
         

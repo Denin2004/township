@@ -28,7 +28,6 @@ class EditItem extends Component {
                 }
             }
         ).then(res => {
-            //console.log(res.request.responseURL, window.mfwApp.urls.budget.item.form+'/'+this.props.id);
             if (res.data.success) {
                 this.setState({
                     loading: false,
