@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 //import { useMatch } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import {message, Table, Button} from 'antd';
+import {message, Table, Button, Modal, Space} from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
 
@@ -17,15 +18,26 @@ class Owners extends Component {
             columns: [
                 {
                     title: this.props.t('land._'),
-                    dataIndex: 'id'
+                    dataIndex: 'num'
                 },
                 {
                     title: this.props.t('land.owner._'),
                     dataIndex: 'name'
+                },
+                {
+                    title: this.props.t('action.s'),
+                    key: 'actions',
+                    render: (text, record) => {
+                        return <Space>
+                            <a onClick={() => this.setState({ownerID: record.id})} >{this.props.t('action.edit')}</a>
+                            <a onClick={() => this.deleteOwner(record.id)}>{this.props.t('action.delete')}</a>
+                        </Space>
+                    }
                 }                
             ]
         };
         this.ownersData = this.ownersData.bind(this);
+        this.deleteOwner = this.deleteOwner.bind(this);
     }
 
     componentDidMount() {
@@ -55,6 +67,36 @@ class Owners extends Component {
                 message.error(this.props.t(error.response.data.error));
             } else {
                 message.error(error.toString());
+            }
+        });
+    }
+    
+    deleteOwner(id) {
+        Modal.confirm({
+            content: this.props.t('land.owner.confirm'),
+            okText: this.props.t('modal.yes'),
+            cancelText: this.props.t('modal.cancel'),
+            icon: <ExclamationCircleOutlined />,
+            onOk: () => {
+                axios({
+                    method: 'get',
+                    url: window.mfwApp.urls.township.land.owner.delete+'/'+id,
+                    headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                    }
+                }).then(res => {
+                    if (res.data.success) {
+                        this.ownersData(); 
+                    } else {
+                        message.error(this.props.t(res.data.error));
+                    }
+                }).catch(error => {
+                if (error.response && error.response.data) {
+                    message.error(this.props.t(error.response.data.error));
+                } else {
+                        message.error(error.toString());
+                    }
+                });
             }
         });
     }

@@ -31,11 +31,11 @@ landOwnersData:
     methods: [GET]
     
 landOwnerForm:
-    path: /owner/form
+    path: /owner/form/{id}
     controller: App\Controller\Land\Owner::form
     methods: [GET]
     requirements:
-        id: \d+
+        id: \d+|-1
     defaults: 
         id: -1
     

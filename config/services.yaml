@@ -86,4 +86,9 @@ services:
         class: App\Form\Budget\CreateItem
         arguments: ['@App\Entity\Budget']
         tags: [form.type]
+
+    App\Form\Land\Owner:
+        class: App\Form\Land\Owner
+        arguments: ['@App\Entity\Land']
+        tags: [form.type]
         

@@ -167,7 +167,6 @@ class Budgets extends Component {
             }
         });
     }
-    
 
     render() {
         return this.state.list != false ?

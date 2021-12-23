@@ -41,9 +41,47 @@ class Land extends Entity
     public function owners()
     {
         return $this->provider->fetchAll(
-            'select lo.id, lo.lamd_id, lo.name, l.num
+            'select lo.id, lo.land_id, lo.name, l.num
                from lands.owners lo
                  left join lands.lands l on(l.id=lo.land_id)'
+        );
+    }
+
+    public function owner($id)
+    {
+        $res = $this->provider->fetchAll(
+            'select lo.id, lo.land_id, lo.name
+               from lands.owners lo
+               where lo.id=:id',
+            [
+                'id' => $id
+            ]
+        );
+        return count($res) == 0 ? false : $res[0];
+    }
+
+    public function ownerPost($params)
+    {
+        if ($params['id'] == -1) {
+            $this->provider->executeQuery(
+                'insert into lands.owners (land_id, name) values(:land_id, :name)',
+                $params
+            );
+        } else {
+            $this->provider->executeQuery(
+                'update lands.owners set land_id=:land_id, name=:name where id=:id',
+                $params
+            );
+        }
+    }
+
+    public function ownerDelete($id)
+    {
+        $this->provider->executeQuery(
+            'delete from lands.owners where id=:id',
+            [
+                'id' => $id
+            ]
         );
     }
 }

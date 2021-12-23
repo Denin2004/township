@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import { Link, generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import { Modal, Spin, message, Descriptions, Table } from 'antd';
+import { Modal, Spin, message, Descriptions, Table, Form, Select, Input } from 'antd';
 
 import axios from 'axios';
 
 import MfwNumber from '@app/mfw/MfwNumber';
+import useWithForm from '@app/hooks/useWithForm';
 
 class OwnerModal extends Component {
     constructor(props){
@@ -14,6 +15,7 @@ class OwnerModal extends Component {
             loading: true,
             form: null
         };
+        this.post = this.post.bind(this);
     }
 
     componentDidMount() {
@@ -41,6 +43,28 @@ class OwnerModal extends Component {
             }
         });
     }
+    
+    post() {
+        this.props.form
+            .validateFields()
+            .then(values => {
+                axios({
+                    method: 'post',
+                    url: window.mfwApp.urls.township.land.owner.post,
+                    data: values,
+                    headers: {'Content-Type': 'application/json','X-Requested-With': 'XMLHttpRequest'}
+                }).then(res => {
+                    if (res.data.success) {
+                        this.setState({passwordForm: false});
+                        this.props.success();
+                    } else {
+                        message.error(this.props.t(res.data.error));
+                    }
+                }).catch(error => {
+                    message.error(error.toString());
+                });
+            });
+    }
 
     render() {
         return <Modal title={this.props.t('land.owner.__')}
@@ -55,11 +79,41 @@ class OwnerModal extends Component {
                     <Spin/>
                 </div>
             ) : (
-            <React.Fragment>
-            </React.Fragment>
+                <Form form={this.props.form}
+                   name="owner"
+                   labelCol={{ span: 8 }}
+                    wrapperCol={{ span: 16 }}>
+                    <Form.Item name="land_id"
+                       label={this.props.t('land._')}
+                       initialValue={this.state.form.land_id.value*1}>
+                        <Select
+                          options={this.state.form.land_id.choices}/>
+                    </Form.Item>
+                    <Form.Item name="name"
+                       label={this.props.t('land.owner._')}
+                       initialValue={this.state.form.name.value}
+                       rules={[
+                          {
+                              required: true,
+                              message: this.props.t('land.errors.owner_blank')
+                          }
+                       ]}>
+                        <Input/>
+                    </Form.Item>
+                    <Form.Item name="id"
+                      hidden={true} 
+                      initialValue={this.state.form.id.value}>
+                        <Input/>
+                    </Form.Item>
+                    <Form.Item name="_token"
+                      hidden={true} 
+                      initialValue={this.state.form._token.value}>
+                        <Input/>
+                    </Form.Item>
+                </Form>
             )}
         </Modal>
     }
 }
 
-export default withTranslation()(OwnerModal);
+export default useWithForm(withTranslation()(OwnerModal));
