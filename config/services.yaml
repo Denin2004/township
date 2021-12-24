@@ -26,7 +26,7 @@ services:
             
     App\Services\SiteConfig\SiteConfig:
         class: App\Services\SiteConfig\SiteConfig
-        arguments: ['%kernel.project_dir%', '@session', '%kernel.default_locale%']
+        arguments: ['%kernel.project_dir%', '@request_stack', '%kernel.default_locale%']
         public: true
             
     db_connection:
@@ -52,15 +52,15 @@ services:
 
     app.auth.handler:
         class: App\Services\Security\AuthenticationHandler
-        arguments: ['@router', '@session']
+        arguments: ['@router', '@request_stack']
 
-    app.user.provider:
+    App\Services\Security\UserProvider:
         class: App\Services\Security\UserProvider
-        arguments: ['@request_stack', '@security.password_encoder', '@App\Entity\UACEntity', '@twig']
+        arguments: ['@request_stack', '@security.user_password_hasher', '@App\Entity\UACEntity', '@twig']
 
     app.access.denied.controller:
         class: App\Services\Security\DeniedHandler
-        arguments: ['@service_container', '@router']
+        arguments: ['@router']
 
     app.voter:
         class: App\Services\Security\RouteVoter
@@ -69,7 +69,7 @@ services:
 
     form.Account:
         class: App\Form\AccountManager\Account
-        arguments: ['@App\Entity\UACEntity', '@App\Entity\Land', '@security.token_storage', '@security.password_encoder']
+        arguments: ['@App\Entity\UACEntity', '@App\Entity\Land', '@security.token_storage', '@security.user_password_hasher']
         tags: [form.type]
         
     form.Range:

@@ -4,7 +4,7 @@ namespace App\Services\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,10 +22,10 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
      *  @param     RouterInterface $router
      *  @param     Session $session
      */
-    public function __construct(RouterInterface $router, SessionInterface $session)
+    public function __construct(RouterInterface $router, RequestStack $requestStack)
     {
         $this->router = $router;
-        $this->session = $session;
+        $this->session = $requestStack->getSession();
     }
     /**     * onAuthenticationSuccess
      *  @author     Joe Sexton <joe@webtipblog.com>

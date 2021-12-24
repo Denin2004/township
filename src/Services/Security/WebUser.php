@@ -3,8 +3,10 @@ namespace App\Services\Security;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
+use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
-class WebUser implements UserInterface, EquatableInterface
+class WebUser implements UserInterface, EquatableInterface, PasswordUpgraderInterface, PasswordAuthenticatedUserInterface
 {
     private $salt = '';
     private $roles = ['ROLE_ADMIN'];
@@ -26,7 +28,7 @@ class WebUser implements UserInterface, EquatableInterface
         return $this->roles;
     }
 
-    public function getPassword()
+    public function getPassword(): ?string
     {
         return $this->user['psw'];
     }
@@ -37,6 +39,11 @@ class WebUser implements UserInterface, EquatableInterface
     }
 
     public function getUsername()
+    {
+        return $this->user['login'];
+    }
+
+    public function getUserIdentifier()
     {
         return $this->user['login'];
     }
@@ -59,7 +66,7 @@ class WebUser implements UserInterface, EquatableInterface
             return false;
         }
 
-        if ($this->user['login'] !== $user->getUsername()) {
+        if ($this->user['login'] !== $user->getUserName()/*$user->getUserIdentifier()*/) {
             return false;
         }
         return true;

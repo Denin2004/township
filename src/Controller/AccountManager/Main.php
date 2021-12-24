@@ -5,7 +5,7 @@ namespace App\Controller\AccountManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 use App\Entity\UACEntity;
 use App\Form\AccountManager\Account;
@@ -113,7 +113,7 @@ class Main extends AbstractController
         ]);
     }
 
-    public function passwordSet(Request $request, UACEntity $uacDB, UserPasswordEncoderInterface $encoder)
+    public function passwordSet(Request $request, UACEntity $uacDB, UserPasswordHasherInterface $encoder)
     {
         $formRequest = json_decode($request->getContent(), true);
         if ($formRequest == null) {
@@ -136,7 +136,7 @@ class Main extends AbstractController
 
         }
         $formData = $form->getData();
-        $formData['password'] = $encoder->encodePassword($this->getUser(), $formData['password']);
+        $formData['password'] = $encoder->hashPassword($this->getUser(), $formData['password']);
         $uacDB->setPassword($formData);
         if ($uacDB->isError()) {
             return new JsonResponse([
@@ -160,7 +160,7 @@ class Main extends AbstractController
         ]);
     }
 
-    public function passwordChange(Request $request, UACEntity $uacDB, UserPasswordEncoderInterface $encoder)
+    public function passwordChange(Request $request, UACEntity $uacDB, UserPasswordHasherInterface $encoder)
     {
         $formRequest = json_decode($request->getContent(), true);
         if ($formRequest == null) {
@@ -188,7 +188,7 @@ class Main extends AbstractController
                 'error' => 'account.errors.old_password'
             ]);
         }
-        $formData['password'] = $encoder->encodePassword($this->getUser(), $formData['new_password']);
+        $formData['password'] = $encoder->hashPassword($this->getUser(), $formData['new_password']);
         $uacDB->setPassword($formData);
         if ($uacDB->isError()) {
             return new JsonResponse([

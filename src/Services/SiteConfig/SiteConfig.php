@@ -1,14 +1,15 @@
 <?php
 namespace App\Services\SiteConfig;
 
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class SiteConfig
 {
     protected $config = [];
 
-    public function __construct($projectDir, Session $session, $defaultLocale)
+    public function __construct($projectDir, RequestStack $requestStack, $defaultLocale)
     {
+        $session = $requestStack->getSession();
         $locale = $session->get('_locale') ? $session->get('_locale') : $defaultLocale;
         $this->config = array_merge(
             json_decode(file_get_contents($projectDir.'/templates/config/site_config.json.twig'), true),

@@ -11,13 +11,11 @@ use Symfony\Component\Routing\RouterInterface;
 
 class DeniedHandler implements AccessDeniedHandlerInterface
 {
-    private $translator;
     private $router;
 
-    public function __construct(ContainerInterface $container, RouterInterface $router)
+    public function __construct(RouterInterface $router)
     {
         $this->router = $router;
-        $this->translator = $container->get('translator');
     }
 
     public function handle(Request $request, AccessDeniedException $accessDeniedException)

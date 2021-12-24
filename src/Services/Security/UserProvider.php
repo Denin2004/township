@@ -7,7 +7,7 @@ use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Twig\Environment;
 
 use App\Services\Security\WebUser;
@@ -20,7 +20,7 @@ class UserProvider implements UserProviderInterface
     protected $uac;
     protected $twig;
 
-    public function __construct(RequestStack $requestStack, UserPasswordEncoderInterface $encoder, UACEntity $uac, Environment $twig)
+    public function __construct(RequestStack $requestStack, UserPasswordHasherInterface $encoder, UACEntity $uac, Environment $twig)
     {
         $this->requestStack = $requestStack;
         $this->uac = $uac;

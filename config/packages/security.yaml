@@ -2,11 +2,13 @@ security:
     enable_authenticator_manager: true
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+        App\Services\Security\WebUser: 
+            algorithm: bcrypt
+            cost: 12
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        app_provider:
-            id: app.user.provider
+        App\Services\Security\UserProvider:
+            id: App\Services\Security\UserProvider
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -16,7 +18,7 @@ security:
             form_login:
                 login_path: /login
                 check_path: /login_check
-                provider: app_provider
+                provider: App\Services\Security\UserProvider
                 failure_handler: app.auth.handler
                 success_handler: app.auth.handler
 
@@ -29,11 +31,7 @@ security:
 
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
-    encoders:
-        App\Services\Security\WebUser: 
-            algorithm: bcrypt
-            cost: 12
-            
+           
     access_decision_manager:
         strategy: unanimous
 

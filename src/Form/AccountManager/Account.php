@@ -6,7 +6,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -27,7 +27,7 @@ class Account extends ReactForm
     protected $user;
     protected $encoder;
 
-    public function __construct(UACEntity $uacDB, Land $landDB, TokenStorageInterface $tokenStorage, UserPasswordEncoderInterface $encoder)
+    public function __construct(UACEntity $uacDB, Land $landDB, TokenStorageInterface $tokenStorage, UserPasswordHasherInterface $encoder)
     {
         $this->uacDB = $uacDB;
         $this->landDB = $landDB;
@@ -59,7 +59,7 @@ class Account extends ReactForm
                         return $value;
                     },
                     function ($value) {
-                        return $value != '' ? $this->encoder->encodePassword($this->user, $value) : $value;
+                        return $value != '' ? $this->encoder->hashPassword($this->user, $value) : $value;
                     }
                 );
                 $builder->get('password')->addModelTransformer($passwordTransformer);

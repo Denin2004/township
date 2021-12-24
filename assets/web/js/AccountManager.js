@@ -282,7 +282,7 @@ class AccountManager extends Component {
                            labelCol={{ span: 8 }}
                             wrapperCol={{ span: 16 }}>
                             <Form.Item name="password"
-                               label={this.props.t('account.password')}
+                               label={this.props.t('account.password._')}
                                rules={[
                                   {
                                       required: true,
