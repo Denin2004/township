@@ -201,22 +201,6 @@ class Budget extends Entity
                     where (charges.budget_discount.land_id=:land_id)and(charges.budget_discount.item_name_id=:item_name_id)',
                 $params
             );
-/*
-
-
-        if ($params['land_id'] == -1) {
-            $this->provider->executeQuery(
-                'insert into charges.budget_discount (land_id, item_name_id, discount)
-                    values(:land_id, :item_name_id, :discount)',
-                $params
-            );
-        } else {
-            $this->provider->executeQuery(
-                'update charges.budget_discount bd set discount=:discount
-                    where (bd.land_id=:land_id)and(bd.item_name_id=:item_name_id)',
-                $params
-            );
-        }*/
     }
 
     public function discountDelete($params)

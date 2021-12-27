@@ -7,6 +7,9 @@ class Land extends Entity
 {
     public function debtByType($params)
     {
+        if (!$this->access($params['land_id'])) {
+            return false;
+        }
         return $this->provider->fetchAll(
             'select inv.id, el.invoice_num, inv.amount, inv.payed,
                 inv.amount-inv.payed as debt, inv.charge_type_id, inv.month, inv.year,
@@ -83,5 +86,16 @@ class Land extends Entity
                 'id' => $id
             ]
         );
+    }
+
+    private function access($land_id)
+    {
+        return $this->provider->fetchAll(
+            'select * from uac.land_access(:user_id, :land_id)',
+            [
+                'user_id' => $this->provider->user()->getId(),
+                'land_id' => $land_id
+            ]
+        )[0]['p_access'];
     }
 }

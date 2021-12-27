@@ -7,6 +7,9 @@ class Line extends Entity
 {
     public function debt($params)
     {
+        if (!$this->access($params['line'])) {
+            return false;
+        }
         return $this->provider->fetchAll(
             'select ch_t.id, ch_t.name, sum(bl_lands.amount) debt
                 from lands.lands land
@@ -20,6 +23,9 @@ class Line extends Entity
 
     public function debtType($params)
     {
+        if (!$this->access($params['line'])) {
+            return false;
+        }
         return $this->provider->fetchAll(
             'select land.num, land.id, bl_lands.charge_type_id, sum(bl_lands.amount) debt
                 from lands.lands land
@@ -28,5 +34,16 @@ class Line extends Entity
                 group by land.num, land.id, bl_lands.charge_type_id',
             $params
         );
+    }
+
+    private function access($line)
+    {
+        return $this->provider->fetchAll(
+            'select * from uac.line_access(:user_id, :line)',
+            [
+                'user_id' => $this->provider->user()->getId(),
+                'line' => $line
+            ]
+        )[0]['p_access'];
     }
 }

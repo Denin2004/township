@@ -22,7 +22,7 @@ class RouteVoter extends Voter
         if (!$user instanceof WebUser) {
             return false;
         }
-        return $user->getAccess($subject);
 //        return true;
+        return $user->getAccess($subject);
     }
 }

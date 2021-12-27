@@ -11,20 +11,34 @@ class Line extends AbstractController
 {
     public function debt(LineDB $lineDB, $line)
     {
+        $debt = $lineDB->debt(['line' => $line]);
+        if (!$debt) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'security.error.403'
+            ]);
+        }
         return new JsonResponse([
             'success' => true,
-            'debt' => $lineDB->debt(['line' => $line])
+            'debt' => $debt
         ]);
     }
 
     public function debtType(LineDB $lineDB, $line, $type_id)
     {
+        $debt = $lineDB->debtType([
+            'line' => $line,
+            'type_id' => $type_id
+        ]);
+        if (!$debt) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'security.error.403'
+            ]);
+        }
         return new JsonResponse([
             'success' => true,
-            'debt' => $lineDB->debtType([
-                'line' => $line,
-                'type_id' => $type_id
-            ])
+            'debt' => $debt
         ]);
     }
 }
