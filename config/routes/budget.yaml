@@ -105,3 +105,32 @@ budgetDiscountDelete:
         land_id: -1
         item_name_id: -1
     
+budgetSpendingCreateForm:
+    path: /spending/create/form
+    controller: App\Controller\Budget\Spending::createForm
+    methods: [GET]
+    
+budgetSpendingEditForm:
+    path: /spending/edit/form
+    controller: App\Controller\Budget\Spending::editForm
+    methods: [GET]
+    
+budgetSpendingCreate:
+    path: /spending/create
+    controller: App\Controller\Budget\Spending::create
+    methods: [POST]
+    
+budgetSpendingPost:
+    path: /spending/post
+    controller: App\Controller\Budget\Spending::post
+    methods: [POST]
+    
+budgetSpendingDelete:
+    path: /spending/delete/{id}
+    controller: App\Controller\Budget\Spending::delete
+    methods: [GET]
+    requirements:
+        id: \d+|-1
+    defaults: 
+        id: -1
+  

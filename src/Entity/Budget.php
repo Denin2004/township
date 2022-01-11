@@ -9,7 +9,8 @@ class Budget extends Entity
     {
         $dt = new \DateTime();
         return $this->provider->fetchAll(
-            'select bd.id, bd.amount, bd.accrued, bd.collected, bd.spent
+            'select bd.id, bd.amount, bd.accrued, bd.collected, bd.spent,
+                to_char(bd.dt_from, :format)||\' - \'||to_char(bd.dt_to, :format) as name
                 from budget.budgets bd
                   where (to_date(:dt, :format) between bd.dt_from and bd.dt_to)',
             [

@@ -65,17 +65,17 @@ class Budgets extends Component {
                     title: this.props.t('action.s'),
                     key: 'actions',
                     render: (text, record) => {
-                        return record.tax != null ? <Space>
+                        return window.mfwApp.user.security.routes['budget.edit'].access ? (record.tax != null ? <Space>
                             <a onClick={() => this.setState({editItem: record.id})} >{this.props.t('action.edit')}</a>
                             <a onClick={() => this.deleteItem(record.id)}>{this.props.t('action.delete')}</a>
                         </Space> : <Space>
                             <a onClick={() => this.setState({editItem: record.id})}>{this.props.t('action.edit')}</a>
                             <a onClick={() => this.setState({createItem: record.id})}>{this.props.t('budget.add_child')}</a>
                             <a onClick={() => this.deleteItem(record.id)}>{this.props.t('action.delete')}</a>
-                        </Space>
+                        </Space>) : null
                     }
                 }                
-            ]
+            ].filter(col =>  col.key == 'actions' ? window.mfwApp.user.security.routes['budget.edit'].access : true)
         };
         this.showBudget = this.showBudget.bind(this);
         this.deleteItem = this.deleteItem.bind(this);
@@ -174,7 +174,9 @@ class Budgets extends Component {
                 <Space>
                     {this.props.t('budget._')}
                     <Select options={this.state.list.options} defaultValue={this.state.list.default}/>
-                    <Button type="primary" onClick={() => this.setState({createItem: -1})}>{this.props.t('budget.item.add_to_root')}</Button>
+                    { window.mfwApp.user.security.routes['budget.edit'].access ?
+                        <Button type="primary" onClick={() => this.setState({createItem: -1})}>{this.props.t('budget.item.add_to_root')}</Button>
+                    : null }
                 </Space>
                 <Table 
                   rowKey="id" 

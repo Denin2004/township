@@ -92,6 +92,8 @@ class WebUser implements UserInterface, EquatableInterface, PasswordUpgraderInte
                 return $this->access['widgets'];
             case 'routes':
                 return $this->access['routes'];
+            case 'security':
+                return $this->user['security'];
         }
     }
 

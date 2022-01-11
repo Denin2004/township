@@ -16,15 +16,15 @@ var widgets = {
     },
     "township._": {
         node: TownshipWidget,
-        width: 5
+        width: 6
     },
     "line._": {
         node: LineWidget,
-        width: 5
+        width: 6
     },
     "user._": {
         node: UserWidget,
-        width: 5
+        width: 6
     },
     "budget._": {
         node: BudgetWidget,

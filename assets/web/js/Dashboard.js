@@ -21,7 +21,7 @@ class Dashboard extends Component {
                     }
                 })}
             </Row>  
-            </React.Fragment>
+        </React.Fragment>
     }
 }
 

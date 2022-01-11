@@ -37,7 +37,7 @@ class Application extends AbstractController
                 'id' => $this->getUser()->getId(),
                 'line_manager' => $this->getUser()->get('line'),
                 'widgets' => $this->getUser()->get('widgets'),
-                'routes' => $this->getUser()->get('routes')
+                'security' => $this->getUser()->get('security')
             ]
         ];
         return new JsonResponse($res);
