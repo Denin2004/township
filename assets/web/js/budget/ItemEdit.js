@@ -8,7 +8,7 @@ import axios from 'axios';
 import useWithForm from '@app/hooks/useWithForm';
 import SelectItemName from '@app/web/js/budget/SelectItemName';
 
-class EditItem extends Component {
+class ItemEdit extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -86,7 +86,9 @@ class EditItem extends Component {
                 <Form.Item name="item_name_id"
                    label={this.props.t('budget.item._')}
                    initialValue={this.state.form.item_name_id.value*1}>
-                    <SelectItemName initialValue={this.state.form.item_name_id.value*1} options={this.state.form.item_name_id.choices}/>
+                    <SelectItemName 
+                       options={this.state.form.item_name_id.choices}
+                       onAdd={(value) => this.props.form.setFieldsValue({item_name_id: value})}/>
                 </Form.Item>
                 {this.state.form.tax.type != 'mfw-hidden' ? 
                     <Form.Item name="tax"
@@ -144,4 +146,4 @@ class EditItem extends Component {
     }
 }
 
-export default useWithForm(withTranslation()(EditItem));
+export default useWithForm(withTranslation()(ItemEdit));

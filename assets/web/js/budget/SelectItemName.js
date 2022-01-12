@@ -26,11 +26,12 @@ class SelectItemName extends Component {
         }).then(res => {
             if (res.data.success) {
                 this.setState(state => {
-                    state.options.push(res.data.added);
+                    state.options = [... state.options, res.data.added];
                     state.name = '';
-                    state.value = res.data.added.value
+                    state.value = res.data.added.value*1;
                     return state;
                 })
+                this.props.onAdd(res.data.added.value*1);
             } else {
                 message.error(this.props.t(res.data.error));
             }
@@ -46,8 +47,8 @@ class SelectItemName extends Component {
             <div className="mfw-add-form">
                 <Input value={this.state.name} onChange={(event) => this.setState({name: event.target.value})}/>
                 <a onClick={this.addItemName}>
-                <PlusOutlined /> {this.props.t('budget.item.add')}
-              </a>
+                    <PlusOutlined /> {this.props.t('budget.item.add')}
+                </a>
             </div>
           </div>
     }    
@@ -55,15 +56,12 @@ class SelectItemName extends Component {
     render() {
         return <Select
           showSearch
-          onChange={(value) => {this.props.onChange(value);}}
-          filterOption={(input, option) =>  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          filterOption={(input, option) => option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           dropdownRender={this.dropdownRender}
           value={this.state.value}
-          onSelect={(value) => this.setState({value: value})}>
-            {this.state.options.map(item => (
-                <Select.Option key={item.value} value={item.value}>{item.label}</Select.Option>
-            ))}
-        </Select>
+          defaultValue={this.state.value}
+          onSelect={(value) => this.setState({value: value})}
+          options={this.state.options}/>
     }
 }
 

@@ -8,19 +8,20 @@ import axios from 'axios';
 import useWithForm from '@app/hooks/useWithForm';
 import SelectItemName from '@app/web/js/budget/SelectItemName';
 
-class AddSpending extends Component {
+class ItemCreate extends Component {
     constructor(props){
         super(props);
         this.state = {
             form: null,
-            loading: true
+            loading: true,
+            byMonth: false
         };
-        this.post = this.post.bind(this);
+        this.itemPost = this.itemPost.bind(this);
     }
 
     componentDidMount() {
         axios.get(
-            window.mfwApp.urls.budget.spendinf.form,
+            window.mfwApp.urls.budget.item.createForm+'/'+this.props.budgetID+'/'+this.props.parentID,
             {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
@@ -52,13 +53,13 @@ class AddSpending extends Component {
             .then(values => {
                 axios({
                     method: 'post',
-                    url: window.mfwApp.urls.budget.spending.post,
+                    url: window.mfwApp.urls.budget.item.create,
                     data: values,
                     headers: {'Content-Type': 'application/json','X-Requested-With': 'XMLHttpRequest'}
                 }).then(res => {
                     if (res.data.success) {
                         this.props.success();
-                        message.success(this.props.t('account.password.changed'));
+                        message.success(this.props.t('budget.item.added'));
                     } else {
                         message.error(this.props.t(res.data.error));
                     }
@@ -69,7 +70,7 @@ class AddSpending extends Component {
     }
     render() {
         return  this.state.loading ? null : <Modal
-          title={this.props.t('budget.spending.create')}
+          title={this.props.t('budget.item.create')}
           visible={true}
           closable={false}
           okText={this.props.t('modal.save')}
@@ -82,7 +83,9 @@ class AddSpending extends Component {
                 wrapperCol={{ span: 16 }}>
                 <Form.Item name="item_name_id"
                    label={this.props.t('budget.item._')}>
-                    <SelectItemName options={this.state.form.item_name_id.choices}/>
+                    <SelectItemName 
+                      options={this.state.form.item_name_id.choices} 
+                      onAdd={(value) => this.props.form.setFieldsValue({item_name_id: value})}/>
                 </Form.Item>
                 <Form.Item name="tax"
                   label={this.props.t('budget.tax')}
@@ -134,4 +137,4 @@ class AddSpending extends Component {
     }
 }
 
-export default useWithForm(withTranslation()(AddSpending));
+export default useWithForm(withTranslation()(ItemCreate));

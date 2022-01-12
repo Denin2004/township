@@ -145,4 +145,27 @@ class Item extends AbstractController
             'success' => true
         ]);
     }
+
+    public function choices(Budget $budgetDB, $budget_id)
+    {
+        $res = $budgetDB->childItemChoices($budget_id);
+        $choices = [];
+        foreach ($res as $key => $row) {
+            $choices[] = [
+                'label' => $key,
+                'value' => $row
+            ];
+        }
+        if ($budgetDB->isError()) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => $budgetDB->getError()
+            ]);
+        }
+        return new JsonResponse([
+            'success' => true,
+            'choices' => $choices,
+            'value' => count($choices) != 0 ? $choices[0]['value'] : null
+        ]);
+    }
 }

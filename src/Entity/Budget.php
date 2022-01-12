@@ -27,7 +27,7 @@ class Budget extends Entity
             'default' => 0
         ];
         $budgets = $this->provider->fetchAll(
-            'select bd.id, to_char(bd.dt_from, :format)||\' - \'||to_char(bd.dt_to, :format) as name,
+            'select bd.id, to_char(bd.dt_from, :format)||\' - \'||to_char(bd.dt_to, :format)||\' \'||bd.comment as name,
                 case
                    when now()::date between bd.dt_from and bd.dt_to
                    then 1
@@ -210,5 +210,48 @@ class Budget extends Entity
             'delete from charges.budget_discount where (land_id=:land_id)and(item_name_id=:item_name_id)',
             $params
         );
+    }
+
+    public function choices()
+    {
+        $data = [];
+        $res = $this->provider->fetchAll(
+            'select bd.id, to_char(bd.dt_from, :format)||\' - \'||to_char(bd.dt_to, :format)||\' \'||bd.comment as name,
+                case
+                   when now()::date between bd.dt_from and bd.dt_to
+                   then 1
+                    else 0
+                end as current
+                from budget.budgets bd order by id desc',
+            [
+                'format' => $this->provider->dateFormat()
+            ]
+        );
+        foreach ($res as $row) {
+            $data[$row['name']] = $row['id'];
+        }
+        return $data;
+    }
+
+    public function childItemChoices($budgetID)
+    {
+        $res = $this->provider->fetchAll(
+            'select bi.id, bin.name, count(bi_c.id)
+                from budget.items bi
+                   left join budget.items bi_c on (bi_c.parent_id=bi.id)
+                   left join budget.item_names bin on (bin.id=bi.item_name_id)
+                where bi.budget_id=:id
+                group by bi.id, bin.name
+                having count(bi_c.id) = 0
+                order by 2',
+            [
+                'id' => $budgetID
+            ]
+        );
+        $data = [];
+        foreach ($res as $row) {
+            $data[$row['name']] = $row['id'];
+        }
+        return $data;
     }
 }

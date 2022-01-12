@@ -10,8 +10,8 @@ import moment from 'moment-timezone';
 import useWithForm from '@app/hooks/useWithForm';
 import useWithParams from '@app/hooks/useWithParams';
 import MfwNumber from '@app/mfw/MfwNumber';
-import EditItem from'@app/web/js/budget/EditItem';
-import CreateItem from'@app/web/js/budget/CreateItem';
+import ItemEdit from'@app/web/js/budget/ItemEdit';
+import ItemCreate from'@app/web/js/budget/ItemCreate';
 
 class Budgets extends Component {
     constructor(props){
@@ -173,7 +173,10 @@ class Budgets extends Component {
             <React.Fragment>
                 <Space>
                     {this.props.t('budget._')}
-                    <Select options={this.state.list.options} defaultValue={this.state.list.default}/>
+                    <Select 
+                       options={this.state.list.options} 
+                       defaultValue={this.state.list.default}
+                       onChange={(value) => this.showBudget(value)}/>
                     { window.mfwApp.user.security.routes['budget.edit'].access ?
                         <Button type="primary" onClick={() => this.setState({createItem: -1})}>{this.props.t('budget.item.add_to_root')}</Button>
                     : null }
@@ -185,16 +188,15 @@ class Budgets extends Component {
                   dataSource={this.state.budget}
                   scroll={{ x: 'max-content', y: 600 }}
                   pagination={false}/>
-                {this.state.editItem != null ? <EditItem
+                {this.state.editItem != null ? <ItemEdit
                     id={this.state.editItem} 
                     cancel={() => this.setState({editItem: null})}
                     success={() => this.showBudget(this.state.budgetID)}/> : null}
-                {this.state.createItem != null ? <CreateItem
+                {this.state.createItem != null ? <ItemCreate
                     budgetID={this.state.budgetID} 
                     parentID={this.state.createItem}
                     cancel={() => this.setState({createItem: null})}
-                    success={() => this.showBudget(this.state.budgetID)}/> : null}
-                    
+                    success={() => this.showBudget(this.state.budgetID)}/> : null}                    
             </React.Fragment>
         : null;
     }

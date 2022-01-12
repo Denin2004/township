@@ -77,13 +77,18 @@ services:
         arguments: ['@App\Services\SiteConfig\SiteConfig']
         tags: [form.type]
         
-    App\Form\Budget\EditItem:
-        class: App\Form\Budget\EditItem
+    form.Date:
+        class: App\Form\React\ReactDateType
+        arguments: ['@App\Services\SiteConfig\SiteConfig']
+        tags: [form.type]        
+        
+    App\Form\Budget\ItemEdit:
+        class: App\Form\Budget\ItemEdit
         arguments: ['@App\Entity\Budget']
         tags: [form.type]
 
-    App\Form\Budget\CreateItem:
-        class: App\Form\Budget\CreateItem
+    App\Form\Budget\ItemCreate:
+        class: App\Form\Budget\ItemCreate
         arguments: ['@App\Entity\Budget']
         tags: [form.type]
 
@@ -95,5 +100,10 @@ services:
     App\Form\Budget\Discount:
         class: App\Form\Budget\Discount
         arguments: ['@App\Entity\Land', '@App\Entity\Budget']
+        tags: [form.type]
+
+    App\Form\Budget\SpendingCreate:
+        class: App\Form\Budget\SpendingCreate
+        arguments: ['@App\Entity\Budget']
         tags: [form.type]
         

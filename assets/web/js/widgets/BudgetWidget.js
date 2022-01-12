@@ -6,7 +6,7 @@ import { Card, Spin, Descriptions, message, Space } from 'antd';
 import axios from 'axios';
 
 import MfwNumber from '@app/mfw/MfwNumber';
-import AddSpending from '@app/web/js/budget/AddSpending';
+import SpendingCreate from '@app/web/js/budget/SpendingCreate';
 
 class BudgetWidget extends Component {
     constructor(props){
@@ -46,7 +46,6 @@ class BudgetWidget extends Component {
 
 
     render() {
-        console.log(this.state);
         return <Card title={this.props.t('budget._')}>
             {this.state.loading ? (
                 <div className="d-flex justify-content-center align-items-center">
@@ -72,10 +71,10 @@ class BudgetWidget extends Component {
                                 <MfwNumber value={this.state.info[0].spent}/>
                             </Descriptions.Item>
                         </Descriptions>
-                        <a onClick={() => {this.setState({addSpending: true})}}>{this.props.t('budget.spendings.add')}</a>
+                        <a onClick={() => this.setState({addSpending: true})}>{this.props.t('budget.spendings.add')}</a>
                     </React.Fragment>
             )}
-            {this.state.addSpending ? <AddSpending/>: null}
+            {this.state.addSpending ? <SpendingCreate cancel={() => this.setState({addSpending: false})}/>: null}
         </Card>
     }
 }

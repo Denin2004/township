@@ -7,29 +7,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 use App\Entity\Budget as BudgetDB;
-use App\Form\Budget\Discount as DiscountForm;
+use App\Form\Budget\SpendingCreate;
 
-class Spendint extends AbstractController
+class Spending extends AbstractController
 {
-    public function form($land_id, $item_name_id, BudgetDB $budgetDB)
+    public function createF(BudgetDB $budgetDB)
     {
-        $data = [
-            'land_id' => $land_id,
-            'item_name_id' => $item_name_id
-        ];
-        if ($land_id != -1) {
-            $data = $budgetDB->discount($data);
-            if (!$data) {
-                return new JsonResponse([
-                    'success' => false,
-                    'error' => 'budget.errors.discount_not_found'
-                ]);
-
-            }
-        }
         $form = $this->createForm(
-            DiscountForm::class,
-            $data
+            SpendingCreate::class
         );
         $view = $form->createView();
         return new JsonResponse([

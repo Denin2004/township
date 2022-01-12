@@ -67,6 +67,15 @@ budgetItemNameAdd:
     methods: [GET]
     defaults:
         name: ''
+        
+budgetItemChoices:
+    path: /item/choices/{budget_id}
+    controller: App\Controller\Budget\Item::choices
+    methods: [GET]
+    defaults:
+        budget_id: 0
+    requirements:
+        budget_id: \d+
     
 budgetDiscountsPage:
     path: /discounts/page
@@ -107,7 +116,7 @@ budgetDiscountDelete:
     
 budgetSpendingCreateForm:
     path: /spending/create/form
-    controller: App\Controller\Budget\Spending::createForm
+    controller: App\Controller\Budget\Spending::createF
     methods: [GET]
     
 budgetSpendingEditForm:
