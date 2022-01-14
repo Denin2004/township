@@ -13,9 +13,7 @@ class Spending extends AbstractController
 {
     public function createF(BudgetDB $budgetDB)
     {
-        $form = $this->createForm(
-            SpendingCreate::class
-        );
+        $form = $this->createForm(SpendingCreate::class);
         $view = $form->createView();
         return new JsonResponse([
             'success' => true,
@@ -32,7 +30,7 @@ class Spending extends AbstractController
                 'error' => 'form.errors.noData'
             ]);
         }
-        $form = $this->createForm(DiscountForm::class, [], ['request' => true]);
+        $form = $this->createForm(SpendingCreate::class, [], ['request' => true]);
         $form->submit($formRequest);
         if (!$form->isValid()) {
             $errors = '';
@@ -45,7 +43,7 @@ class Spending extends AbstractController
             ]);
         }
         $formData = $form->getData();
-        $res = $budgetDB->discountPost($formData);
+        $res = $budgetDB->spendingPost($formData);
         if ($budgetDB->isError()) {
             return new JsonResponse([
                 'success' => false,
