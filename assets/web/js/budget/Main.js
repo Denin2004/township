@@ -12,6 +12,7 @@ import useWithParams from '@app/hooks/useWithParams';
 import MfwNumber from '@app/mfw/MfwNumber';
 import ItemEdit from'@app/web/js/budget/ItemEdit';
 import ItemCreate from'@app/web/js/budget/ItemCreate';
+import ItemSpending from'@app/web/js/budget/ItemSpending';
 
 class Budgets extends Component {
     constructor(props){
@@ -23,6 +24,7 @@ class Budgets extends Component {
             budgetID: null,
             editItem: null,
             createItem: null,
+            spendingItem: null,
             columns: [
                 {
                     title: this.props.t('budget.item._'),
@@ -62,6 +64,16 @@ class Budgets extends Component {
                     dataIndex: 'comments'
                 },
                 {
+                    title: this.props.t('budget.spent'),
+                    dataIndex: 'spent',
+                    align: 'right',
+                    render: (text, record) => {
+                        return record.spent != null ? <a onClick={() => this.setState({spendingItem: record.id})} >
+                            <MfwNumber value={record.spent}/>
+                        </a>: null
+                    }
+                },
+                {
                     title: this.props.t('action.s'),
                     key: 'actions',
                     render: (text, record) => {
@@ -75,7 +87,7 @@ class Budgets extends Component {
                         </Space>) : null
                     }
                 }                
-            ].filter(col =>  col.key == 'actions' ? window.mfwApp.user.security.routes['budget.edit'].access : true)
+            ].filter(col => col != undefined ? (col.key == 'actions' ? window.mfwApp.user.security.routes['budget.edit'].access : true) : true)
         };
         this.showBudget = this.showBudget.bind(this);
         this.deleteItem = this.deleteItem.bind(this);
@@ -196,7 +208,10 @@ class Budgets extends Component {
                     budgetID={this.state.budgetID} 
                     parentID={this.state.createItem}
                     cancel={() => this.setState({createItem: null})}
-                    success={() => this.showBudget(this.state.budgetID)}/> : null}                    
+                    success={() => this.showBudget(this.state.budgetID)}/> : null}
+                {this.state.spendingItem != null ? <ItemSpending
+                    id={this.state.spendingItem} 
+                    cancel={() => this.setState({spendingItem: null})}/> : null}                    
             </React.Fragment>
         : null;
     }

@@ -43,6 +43,7 @@ class Spending extends AbstractController
             ]);
         }
         $formData = $form->getData();
+        $formData['id'] = -1;
         $res = $budgetDB->spendingPost($formData);
         if ($budgetDB->isError()) {
             return new JsonResponse([

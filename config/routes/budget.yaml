@@ -76,6 +76,15 @@ budgetItemChoices:
         budget_id: 0
     requirements:
         budget_id: \d+
+
+budgetItemSpending:
+    path: /item/spending/{id}
+    controller: App\Controller\Budget\Item::spending
+    methods: [GET]
+    defaults:
+        id: 0
+    requirements:
+        id: \d+    
     
 budgetDiscountsPage:
     path: /discounts/page
@@ -142,4 +151,5 @@ budgetSpendingDelete:
         id: \d+|-1
     defaults: 
         id: -1
+        
   

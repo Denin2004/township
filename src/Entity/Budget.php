@@ -10,7 +10,7 @@ class Budget extends Entity
         $dt = new \DateTime();
         return $this->provider->fetchAll(
             'select bd.id, bd.amount, bd.accrued, bd.collected, bd.spent,
-                to_char(bd.dt_from, :format)||\' - \'||to_char(bd.dt_to, :format) as name
+                to_char(bd.dt_from, :format)||\' - \'||to_char(bd.dt_to, :format)||\' \'||bd.comment as name
                 from budget.budgets bd
                   where (to_date(:dt, :format) between bd.dt_from and bd.dt_to)',
             [
@@ -170,6 +170,36 @@ class Budget extends Entity
         );
     }
 
+    public function itemSpending($id)
+    {
+        $data = $this->provider->fetchAll(
+            'select to_char(bs.dt, :format),
+                bs.amount, bs.comment,
+                bin.name
+                from budget.items bi
+                inner join budget.spendings bs on(bs.item_id=bi.id)
+                inner join budget.item_names bin on(bin.id=bi.item_name_id)
+                where(bi.id in (
+                    with recursive budget AS (
+                    select itms.id
+                    from budget.items itms
+                    where itms.id=:id
+                    union
+                    select childs.id
+                    from budget.items childs
+                       inner JOIN budget bd ON childs.parent_id = bd.id
+                    )
+                    select * from budget
+                ))order by bs.dt',
+            [
+                'id' => $id,
+                'format' => $this->provider->dateFormat()
+            ]
+        );
+        $res = [];
+        return $res;
+    }
+
     public function discounts()
     {
         return $this->provider->fetchAll(
@@ -253,5 +283,19 @@ class Budget extends Entity
             $data[$row['name']] = $row['id'];
         }
         return $data;
+    }
+
+    public function spendingPost($params)
+    {
+        $params['format'] = $this->provider->dateFormat();
+        if ($params['id'] == -1) {
+            $this->provider->executeQuery(
+                'insert into budget.spendings (dt, item_id, amount, comment)
+                    values(to_date(:date, :format), :item_id, :amount, :comment)',
+                $params
+            );
+        } else {
+            $this->provider->executeQuery('', $params);
+        }
     }
 }

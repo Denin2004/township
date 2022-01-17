@@ -168,4 +168,19 @@ class Item extends AbstractController
             'value' => count($choices) != 0 ? $choices[0]['value'] : null
         ]);
     }
+
+    public function itemSpending(Budget $budgetDB, $id)
+    {
+        $res = $budgetDB->itemSpending($id);
+        if ($budgetDB->isError()) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => $budgetDB->getError()
+            ]);
+        }
+        return new JsonResponse([
+            'success' => true,
+            'res' => $res
+        ]);
+    }
 }

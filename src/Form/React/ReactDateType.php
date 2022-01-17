@@ -2,7 +2,7 @@
 namespace App\Form\React;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Validator\Constraints\Callback;
@@ -24,7 +24,7 @@ class ReactDateType extends AbstractType
 
     public function getParent()
     {
-        return TextType::class;
+        return HiddenType::class;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -45,8 +45,7 @@ class ReactDateType extends AbstractType
     {
         $resolver->setDefaults([
             'constraints' => [ new Callback(['callback' => [$this, 'checkDate']])],
-            'request' => false,
-            'compound' => true
+            'request' => false
         ]);
     }
 

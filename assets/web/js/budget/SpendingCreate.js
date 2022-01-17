@@ -9,7 +9,7 @@ import moment from 'moment-timezone';
 import useWithForm from '@app/hooks/useWithForm';
 
 class SpendingCreate extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             form: null,
@@ -59,7 +59,7 @@ class SpendingCreate extends Component {
                 }).then(res => {
                     if (res.data.success) {
                         this.props.success();
-                        message.success(this.props.t('account.password.changed'));
+                        message.success(this.props.t('common.create_success'));
                     } else {
                         message.error(this.props.t(res.data.error));
                     }
@@ -121,7 +121,7 @@ class SpendingCreate extends Component {
                 </Form.Item>
                 <Form.Item name="date"
                     label={this.props.t('calendar.date')}
-                    initialValue={this.state.form.date.value == null ? moment() : moment(this.state.form.date.value, window.mfwApp.formats.date)}>
+                    initialValue={this.state.form.date.value == '' ? moment() : moment(this.state.form.date.value, window.mfwApp.formats.date)}>
                     <DatePicker format={window.mfwApp.formats.date}/>
                 </Form.Item>
                 <Form.Item name="amount"
@@ -134,7 +134,7 @@ class SpendingCreate extends Component {
                   ]}>
                     <InputNumber precision="2"/>
                 </Form.Item>
-                <Form.Item name="comments"
+                <Form.Item name="comment"
                    label={this.props.t('common.comment')}>
                     <Input/>
                 </Form.Item>
