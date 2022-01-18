@@ -75,7 +75,7 @@ class BudgetWidget extends Component {
                           value={this.state.budgetIndex} />
                         <Descriptions layout="horizontal" column={1}>
                             <Descriptions.Item label={this.props.t('finance.sum')} contentStyle={{justifyContent: 'end'}}>
-                                <Link to={window.mfwApp.urls.budget.page}>
+                                <Link to={window.mfwApp.urls.budget.page+'/'+this.state.info[this.state.budgetIndex].id}>
                                     <MfwNumber value={this.state.info[this.state.budgetIndex].amount}/>
                                 </Link>
                             </Descriptions.Item>

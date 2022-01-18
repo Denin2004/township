@@ -103,6 +103,7 @@ class Budgets extends Component {
             }
         ).then(res => {
             if (res.data.success) {
+                res.data.list.default = this.props.params.id ? this.props.params.id*1 : res.data.list.default;
                 this.setState({
                     list: res.data.list
                 });
@@ -217,4 +218,4 @@ class Budgets extends Component {
     }
 }
 
-export default useWithForm(withTranslation()(Budgets));
+export default useWithParams(useWithForm(withTranslation()(Budgets)));

@@ -48,7 +48,7 @@ class Invoice extends Component {
 
     componentDidMount() {
         axios.get(
-            window.mfwApp.urls.finance.invoice+'/'+this.props.id,
+            window.mfwApp.urls.finance.invoice.data+'/'+this.props.id,
             {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'

@@ -10,7 +10,7 @@
         "passwordForm": "{{ path('accMngrPasswordForm') }}",
         "setPassword": "{{ path('accMngrSetPassword') }}",
         "passwordChangeForm": "{{ path('accMngrPasswordChangeForm') }}",
-        "changePassword": "{{ path('accMngrChangePassword') }}"        
+        "changePassword": "{{ path('accMngrChangePassword') }}"
     },
     "electricity": {
         "uploadForm": "{{ path('electricityUploadForm') }}",
@@ -52,7 +52,10 @@
         "debtByType": "{{ path('lmByTypeDebt') }}"
     },
     "finance": {
-        "invoice": "{{ path('financeInvoice') }}"
+        "invoice": {
+            "data": "{{ path('financeInvoice') }}",
+            "page": "{{ path('financeInvoicePage') }}"
+        }
     },
     "budget": {
         "page": "{{ path('budgetPage') }}",
@@ -65,7 +68,8 @@
             "post": "{{ path('budgetItemPost') }}",
             "delete": "{{ path('budgetItemDelete') }}",
             "nameAdd": "{{ path('budgetItemNameAdd') }}",
-            "create": "{{ path('budgetItemCreate') }}"
+            "create": "{{ path('budgetItemCreate') }}",
+            "spending": "{{ path('budgetItemSpending') }}"
         },
         "discount": {
             "page": "{{ path('budgetDiscountsPage') }}",
@@ -80,6 +84,6 @@
             "delete": "{{ path('budgetSpendingDelete') }}",
             "create": "{{ path('budgetSpendingCreate') }}",
             "getItems": "{{ path('budgetItemChoices') }}"
-        }        
+        }
     }
 }

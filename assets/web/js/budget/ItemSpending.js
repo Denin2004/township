@@ -5,16 +5,44 @@ import { PlusOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
 
+import MfwNumber from '@app/mfw/MfwNumber';
+
 class ItemSpending extends Component {
     constructor(props){
         super(props);
         this.state = {
-            loading: false
+            loading: false,
+            spending: [],
+            columns: [
+                {
+                    title: this.props.t('calendar.date'),
+                    dataIndex: 'dt',
+                    width: 100
+                },
+                 {
+                    title: this.props.t('budget.item._'),
+                    dataIndex: 'name'
+                },
+                {
+                    title: this.props.t('finance.sum'),
+                    key: 'amount',
+                    align: 'right',
+                    render: (text, record) => {
+                        return <MfwNumber value={record.amount}/>
+                    }
+                },
+                {
+                    title: this.props.t('common.comment'),
+                    dataIndex: 'comment',
+                    ellipsis: true,
+                    width: 150
+                }                
+            ]
         };
     }
 
     componentDidMount() {
-/*        axios.get(
+        axios.get(
             window.mfwApp.urls.budget.item.spending+'/'+this.props.id,
             {
                 headers: {
@@ -25,8 +53,7 @@ class ItemSpending extends Component {
             if (res.data.success) {
                 this.setState({
                     loading: false,
-                    form: res.data.form,
-                    byMonth: res.data.byMonth
+                    spending: res.data.res
                 });
             } else {
                 message.error(this.props.t(res.data.error));
@@ -40,18 +67,25 @@ class ItemSpending extends Component {
                 message.error(error.toString());
                 this.props.cancel();
             }
-        });*/
+        });
     }
     
     render() {
-        return  this.state.loading ? null : <Modal
+        return <Modal
           title={this.props.t('budget.item.spending')}
           visible={true}
           closable={false}
           okText={null}
+          width={1000}
           okButtonProps={{className: 'd-none'}}
           cancelText={this.props.t('modal.close')}
           onCancel={this.props.cancel}>
+          <Table rowKey="id" 
+            loading={this.state.loading}
+            columns={this.state.columns} 
+            dataSource={this.state.spending}
+            scroll={{ x: 'max-content', y: 600 }}
+            pagination={false}/>
         </Modal>
     }
 }

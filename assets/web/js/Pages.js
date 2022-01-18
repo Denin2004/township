@@ -142,6 +142,7 @@ class Pages extends Component {
                             <Route path={window.mfwApp.urls.township.land.debtType+'/:land_id/:type_id'} element={<LandByType/>}/>
                             <Route path={window.mfwApp.urls.township.user.moneyMove} element={<UserMoneyMove/>}/>
                             <Route path={window.mfwApp.urls.budget.page} element={<Budgets/>}/>
+                            <Route path={window.mfwApp.urls.budget.page+'/:id'} element={<Budgets/>}/>
                             <Route path={window.mfwApp.urls.township.land.owner.page} element={<Owners/>}/>
                             <Route path={window.mfwApp.urls.budget.discount.page} element={<Discounts/>}/>
                             <Route path="/error/403" element={<Error403/>}/>

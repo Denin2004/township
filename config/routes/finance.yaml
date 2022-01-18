@@ -6,3 +6,13 @@ financeInvoice:
         id: \d+
     defaults: 
         id: -1
+
+financeInvoicePage:
+    path: /invoice/page/{id}
+    controller: App\Controller\Application::index
+    methods: [GET]
+    requirements:
+        id: \d+
+    defaults: 
+        id: -1
+    

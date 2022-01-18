@@ -172,8 +172,8 @@ class Budget extends Entity
 
     public function itemSpending($id)
     {
-        $data = $this->provider->fetchAll(
-            'select to_char(bs.dt, :format),
+        return $this->provider->fetchAll(
+            'select bs.id, to_char(bs.dt, :format) as dt,
                 bs.amount, bs.comment,
                 bin.name
                 from budget.items bi
@@ -196,8 +196,6 @@ class Budget extends Entity
                 'format' => $this->provider->dateFormat()
             ]
         );
-        $res = [];
-        return $res;
     }
 
     public function discounts()

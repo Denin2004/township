@@ -169,7 +169,7 @@ class Item extends AbstractController
         ]);
     }
 
-    public function itemSpending(Budget $budgetDB, $id)
+    public function spending(Budget $budgetDB, $id)
     {
         $res = $budgetDB->itemSpending($id);
         if ($budgetDB->isError()) {

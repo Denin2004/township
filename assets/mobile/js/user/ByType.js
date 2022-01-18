@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Link, generatePath } from 'react-router-dom';
-import { Toast, Loading, List, Popup } from 'antd-mobile';
+import { Toast, Loading, List } from 'antd-mobile';
 import axios from 'axios';
 
 import { withTranslation } from 'react-i18next';
@@ -12,8 +12,7 @@ class UserByType extends Component {
         super(props);
         this.state = {
             debt: [],
-            loading: true,
-            viewInvoice: null
+            loading: true
         };
     }
 
@@ -55,20 +54,18 @@ class UserByType extends Component {
 
     render() {
         return this.state.loading ? <Loading/> :
-            <React.Fragment>
-                <List>
-                   {this.state.debt.map(record => {
-                        return <List.Item key={record.id} extra={<a onClick={() => this.setState({viewInvoice: record})}><MfwNumber value={record.debt}/></a>}>{record.invoice_num}</List.Item>
-                    })}
-                </List>
-                {this.state.viewInvoice != null ? <Popup visible={true} onMaskClick={() => this.setState({viewInvoice: null})}>
-                    <List>
-                        <List.Item key={1} extra={<MfwNumber value={this.state.viewInvoice.amount}/>}>{this.props.t('finance.sum')}</List.Item>
-                        <List.Item key={2} extra={<MfwNumber value={this.state.viewInvoice.payed}/>}>{this.props.t('finance.payed')}</List.Item>
-                        <List.Item key={3} extra={<MfwNumber value={this.state.viewInvoice.debt}/>}>{this.props.t('finance.debt')}</List.Item>
-                    </List>
-                </Popup> : null}
-            </React.Fragment>
+            <List>
+               {this.state.debt.map(record => {
+                    return <List.Item 
+                      key={record.id} 
+                      extra={<Link to={generatePath(
+                        window.mfwApp.urls.finance.invoice.page+'/:id',
+                        { 
+                            id: record.id
+                        }
+                      )}><MfwNumber value={record.debt}/></Link>}>{record.invoice_num}</List.Item>
+                })}
+            </List>
     }
 }
 

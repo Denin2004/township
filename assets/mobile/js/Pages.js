@@ -8,6 +8,7 @@ import { NavBar, Loading, Popup, List, Modal, Toast, Form, Input, Button, Space}
 import Dashboard from '@app/mobile/js/Dashboard';
 import LineByType from '@app/mobile/js/line/ByType';
 import LandByType from '@app/mobile/js/land/ByType';
+import Invoice from '@app/mobile/js/user/Invoice';
 import useWithNavigate from '@app/hooks/useWithNavigate';
 
 class Pages extends Component {
@@ -210,6 +211,7 @@ class Pages extends Component {
                 <Route path="/" element={<Dashboard/>}/>
                 <Route path={window.mfwApp.urls.township.line.debtByType+'/:line/:type_id'} element={<LineByType/>}/>
                 <Route path={window.mfwApp.urls.township.land.debtType+'/:land_id/:charge_type_id'} element={<LandByType/>}/>
+                <Route path={window.mfwApp.urls.finance.invoice.page+'/:id'} element={<Invoice/>}/>
             </Routes>
         </React.Fragment>;
     }

@@ -1,7 +1,11 @@
 budgetPage:
-    path: /page
+    path: /page/{id}
     controller: App\Controller\Application::index
     methods: [GET]
+    defaults:
+        id: 0
+    requirements:
+        id: \d+
 
 budgetWidget:
     path: /widget
