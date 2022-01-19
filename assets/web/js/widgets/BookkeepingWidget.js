@@ -1,13 +1,14 @@
 import React, {Component} from 'react';
 import { Link, generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import { Card, message, Modal, Form, Input, Select, Upload, Button, Spin, Descriptions } from 'antd';
+import { Card, message, Modal, Form, Input, Select, Upload, Button, Spin, Descriptions, List } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
 
 import useWithForm from '@app/hooks/useWithForm';
 import MfwNumber from '@app/mfw/MfwNumber';
+import Charge from '@app/web/js/budget/Charge';
 
 class BookkeepingWidgets extends Component {
     constructor(props){
@@ -17,7 +18,8 @@ class BookkeepingWidgets extends Component {
                 state: 0,
                 form: false,
                 result: false
-            }
+            },
+            charge: false
         }
         this.electricityForm = this.electricityForm.bind(this);
         this.electricityUpload = this.electricityUpload.bind(this);
@@ -110,7 +112,14 @@ class BookkeepingWidgets extends Component {
     render() {
         return <React.Fragment>
             <Card title={this.props.t('bookkeeping._')}>
-                <a onClick={() => this.electricityForm()}>{this.props.t('electricity.load_bills')}</a>
+                <List>
+                    <List.Item>
+                        <a onClick={() => this.electricityForm()}>{this.props.t('electricity.load_bills')}</a>
+                    </List.Item>
+                    <List.Item>
+                        <a onClick={() => this.setState({charge: true})}>{this.props.t('budget.charge')}</a>
+                    </List.Item>
+                </List>
             </Card>
             {this.state.electricity.state != 0 ? (
                 <Modal
@@ -168,7 +177,8 @@ class BookkeepingWidgets extends Component {
                         </Descriptions.Item>
                     </Descriptions> : null}
                 </Modal>) :
-            ''}
+            null}
+            {this.state.charge ? <Charge success={() => this.setState({charge: false})}/> : null}
         </React.Fragment>
     }
 }

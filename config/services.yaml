@@ -107,3 +107,8 @@ services:
         arguments: ['@App\Entity\Budget']
         tags: [form.type]
         
+    App\Form\Budget\Charge:
+        class: App\Form\Budget\Charge
+        arguments: ['@App\Entity\Land']
+        tags: [form.type]
+        

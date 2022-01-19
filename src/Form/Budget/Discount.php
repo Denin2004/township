@@ -7,8 +7,6 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use App\Form\React\ReactForm;
 use App\Form\React\ReactTextType;
 use App\Form\React\ReactChoiceType;
-use App\Form\React\ReactHiddenType;
-
 
 use App\Entity\Land;
 use App\Entity\Budget;

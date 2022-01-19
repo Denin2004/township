@@ -53,7 +53,6 @@ class Invoice extends Component {
     }
 
     render() {
-        console.log(this.state);
         return this.state.loading ? <Loading/> :
             <React.Fragment>
                 {this.state.invoice.chargeType == 1 ?
@@ -75,6 +74,13 @@ class Invoice extends Component {
                     <List.Item key={1} extra={<MfwNumber value={this.state.invoice.amount}/>}>{this.props.t('finance.sum')}</List.Item>
                     <List.Item key={2} extra={<MfwNumber value={this.state.invoice.payed}/>}>{this.props.t('finance.payed')}</List.Item>
                     <List.Item key={3} extra={<MfwNumber value={this.state.invoice.amount-this.state.invoice.payed}/>}>{this.props.t('finance.debt')}</List.Item>
+                    <List.Item key={4}>
+                        <List header={this.props.t('finance.charge')}>
+                            {this.state.invoice.specs.map( (spec, i) =>
+                                    <List.Item title={spec.itemName} key={i} extra={<MfwNumber value={spec.tax*spec.square*(1-spec.discount)}/>}>{this.props.t('budget.tax')+' '}<MfwNumber value={spec.tax}/></List.Item>
+                            )}
+                        </List>
+                    </List.Item>
                 </List>
                 : null}
             </React.Fragment>

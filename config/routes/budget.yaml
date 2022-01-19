@@ -156,4 +156,12 @@ budgetSpendingDelete:
     defaults: 
         id: -1
         
-  
+budgetChargeForm:
+    path: /charge/form
+    controller: App\Controller\Budget\Main::chargeForm
+    methods: [GET]
+
+budgetCharge:
+    path: /charge
+    controller: App\Controller\Budget\Main::charge
+    methods: [POST]

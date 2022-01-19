@@ -31,7 +31,7 @@ class Invoice extends Component {
                     key: 'sum',
                     align: 'right',
                     render: (text, record) => {
-                        return <MfwNumber value={record.square*record.tax*record.discount}/>
+                        return <MfwNumber value={record.square*record.tax*(1-record.discount)}/>
                     }
                 },
                 {
@@ -39,7 +39,7 @@ class Invoice extends Component {
                     dataIndex: 'discount',
                     align: 'right',
                     render: (text, record) => { 
-                        return record.discount*1 == 1 ? null :  <MfwNumber value={record.square*record.tax*(1-record.discount)}/>
+                        return record.discount*1 == 1 ? null :  <MfwNumber value={record.square*record.tax*record.discount}/>
                     }
                 }
             ]

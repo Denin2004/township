@@ -296,4 +296,12 @@ class Budget extends Entity
             $this->provider->executeQuery('', $params);
         }
     }
+
+    public function charge($params)
+    {
+        $this->provider->executeQuery(
+            'select charges.charge_budget(:month, :year, :land_id)',
+            $params
+        );
+    }
 }
