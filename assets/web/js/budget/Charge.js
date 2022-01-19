@@ -50,7 +50,6 @@ class Charge extends Component {
     }
     
     post() {
-        console.log('ssss');
         this.props.form
             .validateFields()
             .then(values => {

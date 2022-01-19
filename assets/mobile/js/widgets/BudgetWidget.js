@@ -30,7 +30,6 @@ class BudgetWidget extends Component {
             }
         ).then(res => {
             if (res.data.success) {
-                console.log(res.data);
                 this.setState(state => {
                     state.loading = false;
                     state.info = res.data.info;
