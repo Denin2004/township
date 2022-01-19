@@ -16,7 +16,7 @@ class BudgetWidget extends Component {
             budgetIndex: null,
             info: null,
             picker: false
-        }
+        };
         this.budgetOptions = this.budgetOptions.bind(this);
     }
 
