@@ -61,7 +61,7 @@ class ItemEdit extends Component {
                 }).then(res => {
                     if (res.data.success) {
                         this.props.success();
-                        message.success(this.props.t('account.password.changed'));
+                        message.success(this.props.t('modal.saved'));
                     } else {
                         message.error(this.props.t(res.data.error));
                     }
@@ -87,6 +87,7 @@ class ItemEdit extends Component {
                    label={this.props.t('budget.item._')}
                    initialValue={this.state.form.item_name_id.value*1}>
                     <SelectItemName 
+                       initialValue={this.state.form.item_name_id.value*1}
                        options={this.state.form.item_name_id.choices}
                        onAdd={(value) => this.props.form.setFieldsValue({item_name_id: value})}/>
                 </Form.Item>

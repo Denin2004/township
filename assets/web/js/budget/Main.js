@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 //import { useMatch } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import {message, Table, Select, Space, Button, Modal} from 'antd';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import {message, Table, Select, Space, Button, Modal, Menu, Dropdown} from 'antd';
+import { ExclamationCircleOutlined, DownOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
 import moment from 'moment-timezone';
@@ -28,7 +28,9 @@ class Budgets extends Component {
             columns: [
                 {
                     title: this.props.t('budget.item._'),
-                    dataIndex: 'name'
+                    dataIndex: 'name',
+                    width: '30%',
+                    ellipsis: true
                 },
                 {
                     title: this.props.t('budget.planned_expense'),
@@ -37,6 +39,7 @@ class Budgets extends Component {
                             title: () => this.props.t('budget.month'),
                             key: 'month',
                             align: 'right',
+                            width: 100,
                             render: (text, record) => {
                                 return record.by_month ? <MfwNumber value={record.amount}/> : null
                             }
@@ -45,6 +48,7 @@ class Budgets extends Component {
                             title: () => this.props.t('budget.period'),
                             key: 'amount',
                             align: 'right',
+                            width: 150,
                             render: (text, record) => {
                                 return <MfwNumber value={record.by_month ? record.amount*record.months : record.amount}/>
                             }
@@ -53,6 +57,7 @@ class Budgets extends Component {
                             title: () => this.props.t('budget.tax'),
                             dataIndex: 'tax',
                             align: 'right',
+                            width: 150,
                             render: (text, record) => {
                                 return record.tax != null ? <MfwNumber value={record.tax}/> : null
                             }
@@ -61,12 +66,15 @@ class Budgets extends Component {
                 },
                 {
                     title: this.props.t('common.comments'),
-                    dataIndex: 'comments'
+                    dataIndex: 'comments',
+                    ellipsis: true,
+                    width: '30%'
                 },
                 {
                     title: this.props.t('budget.spent'),
                     dataIndex: 'spent',
                     align: 'right',
+                    width: 150,
                     render: (text, record) => {
                         return record.spent != null ? <a onClick={() => this.setState({spendingItem: record.id})} >
                             <MfwNumber value={record.spent}/>
@@ -77,20 +85,44 @@ class Budgets extends Component {
                     title: this.props.t('action.s'),
                     key: 'actions',
                     render: (text, record) => {
-                        return window.mfwApp.user.security.routes['budget.edit'].access ? (record.tax != null ? <Space>
-                            <a onClick={() => this.setState({editItem: record.id})} >{this.props.t('action.edit')}</a>
-                            <a onClick={() => this.deleteItem(record.id)}>{this.props.t('action.delete')}</a>
-                        </Space> : <Space>
-                            <a onClick={() => this.setState({editItem: record.id})}>{this.props.t('action.edit')}</a>
-                            <a onClick={() => this.setState({createItem: record.id})}>{this.props.t('budget.add_child')}</a>
-                            <a onClick={() => this.deleteItem(record.id)}>{this.props.t('action.delete')}</a>
-                        </Space>) : null
-                    }
+                        return window.mfwApp.user.security.routes['budget.edit'].access ? this.actions(record) : null
+                    },
+                    fixed: 'right',
+                    width: 100
                 }                
             ].filter(col => col != undefined ? (col.key == 'actions' ? window.mfwApp.user.security.routes['budget.edit'].access : true) : true)
         };
         this.showBudget = this.showBudget.bind(this);
         this.deleteItem = this.deleteItem.bind(this);
+        this.actions = this.actions.bind(this);
+    }
+
+    actions(record) {
+        
+        return (record.tax != null ? <Dropdown overlay={
+                <Menu>
+                    <Menu.Item key={1}>
+                        <a onClick={() => this.setState({editItem: record.id})} >{this.props.t('action.edit')}</a>
+                    </Menu.Item>
+                    <Menu.Item key={2}>
+                        <a onClick={() => this.deleteItem(record.id)}>{this.props.t('action.delete')}</a>
+                     </Menu.Item>
+                </Menu>}>
+                <a className="ant-dropdown-link" onClick={e => e.preventDefault()} >{this.props.t('action.s')}<DownOutlined /></a>
+            </Dropdown> : <Dropdown overlay={
+            <Menu>
+                <Menu.Item key={1}>
+                    <a onClick={() => this.setState({editItem: record.id})}>{this.props.t('action.edit')}</a>
+                </Menu.Item>
+                <Menu.Item key={2}>
+                    <a onClick={() => this.setState({createItem: record.id})}>{this.props.t('budget.add_child')}</a>
+                </Menu.Item>
+                <Menu.Item key={3}>
+                    <a onClick={() => this.deleteItem(record.id)}>{this.props.t('action.delete')}</a>
+                </Menu.Item>
+            </Menu>}>
+            <a className="ant-dropdown-link" onClick={e => e.preventDefault()} >{this.props.t('action.s')}<DownOutlined /></a>
+        </Dropdown>);
     }
 
     componentDidMount() {
@@ -199,7 +231,7 @@ class Budgets extends Component {
                   loading={this.state.loading}
                   columns={this.state.columns} 
                   dataSource={this.state.budget}
-                  scroll={{ x: 'max-content', y: 600 }}
+                  scroll={{ x: '100%', y: 600 }}
                   pagination={false}/>
                 {this.state.editItem != null ? <ItemEdit
                     id={this.state.editItem} 

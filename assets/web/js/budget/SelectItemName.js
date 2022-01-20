@@ -60,7 +60,10 @@ class SelectItemName extends Component {
           dropdownRender={this.dropdownRender}
           value={this.state.value}
           defaultValue={this.state.value}
-          onSelect={(value) => this.setState({value: value})}
+          onSelect={(value) => {
+              this.setState({value: value});
+              this.props.onAdd(value*1);
+          }}
           options={this.state.options}/>
     }
 }
