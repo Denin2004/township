@@ -62,10 +62,6 @@ class LandByType extends Component {
             <React.Fragment>
                 <List>
                    {this.state.debt.map(record => {
-                        switch (record.charge_type_id) {
-                            case 2:
-                                record.invoice_num = record.name+' '+moment().set({month: record.month,year: record.year}).format('MMMM YYYY');
-                        }    
                         return <List.Item key={record.id} extra={<a onClick={() => this.setState({viewInvoice: record})}><MfwNumber value={record.debt}/></a>}>{record.invoice_num}</List.Item>
                     })}
                 </List>

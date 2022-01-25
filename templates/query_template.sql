@@ -1,3 +1,18 @@
+select charges.charge_electricity (
+                22,
+                8,
+                2021,
+                0.00,
+                0.00,
+                0.00,
+                0.00,
+                0.00,
+                0.00,
+                0.00,
+                0.00,
+                'aaaa')
+
+
 CREATE OR REPLACE FUNCTION balances.money_move(IN p_user_id integer, in date_from date, in date_to date)
   RETURNS TABLE(
     dt date,

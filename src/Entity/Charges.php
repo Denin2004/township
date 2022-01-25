@@ -8,22 +8,10 @@ class Charges extends Entity
     public function addElectricityBill($data)
     {
         $this->provider->executeQuery(
-            'insert into charges.electricity (
-                land_id,
-                month,
-                year,
-                day_meter_start,
-                day_meter_end,
-                day_rate,
-                day_amount,
-                night_meter_start,
-                night_meter_end,
-                night_rate,
-                night_amount,
-                invoice_num)values(
-                :land_id,
+            'select charges.charge_electricity (
                 :month,
                 :year,
+                :land_id,
                 :dayStart,
                 :dayEnd,
                 :dayRate,
@@ -32,15 +20,7 @@ class Charges extends Entity
                 :nightEnd,
                 :nightRate,
                 :nightAmount,
-                :billNum) on conflict (invoice_num) do update set
-                day_meter_start=:dayStart,
-                day_meter_end=:dayEnd,
-                day_rate=:dayRate,
-                day_amount=:dayAmount,
-                night_meter_start=:nightStart,
-                night_meter_end=:nightEnd,
-                night_rate=:nightRate,
-                night_amount=:nightAmount where (charges.electricity.invoice_num=:billNum)',
+                :billNum)',
             $data
         );
     }
@@ -48,7 +28,7 @@ class Charges extends Entity
     public function electricityBillsSum($params)
     {
         return $this->provider->fetchAll(
-            'select sum(el.night_amount+el.day_amount) from charges.electricity el where (el.month=:month)and(el.year=:year)',
+            'select sum(b_i.amount) from balances.invoices b_i where (b_i.month=:month)and(b_i.year=:year)and(b_i.charge_type_id=1)',
             $params
         );
     }
@@ -56,16 +36,16 @@ class Charges extends Entity
     public function monthBills($params)
     {
         return $this->provider->fetchAll(
-            'select el.id, el.night_meter_start, el.day_meter_start,
-                el.night_meter_end, el.day_meter_end,
-                el.night_rate, el.day_rate,
-                el.night_amount, el.day_amount,
+            'select c_e.id, c_e.night_meter_start, c_e.day_meter_start,
+                c_e.night_meter_end, c_e.day_meter_end,
+                c_e.night_rate, c_e.day_rate,
+                c_e.night_amount, c_e.day_amount,
                 land.num,
-                inv.amount, inv.payed
-                    from charges.electricity el
-                       left join lands.lands land on(land.id=el.land_id)
-                       left join balances.invoices inv on(inv.id=el.invoice_id)
-                where (el.month=:month)and(el.year=:year)
+                b_i.amount, b_i.payed
+                    from balances.invoices b_i
+                       left join charges.electricity c_e on(b_i.id=c_e.invoice_id)
+                       left join lands.lands land on(land.id=b_i.land_id)
+                where (b_i.month=:month)and(b_i.year=:year)and(b_i.charge_type=1)
                 order by land.num',
             $params
         );

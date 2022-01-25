@@ -8,7 +8,7 @@ import BudgetWidget from '@app/web/js/widgets/BudgetWidget';
 var widgets = {
     "account.s": {
         node: AccountsWidget,
-        width: 3
+        width: 5
     },
     "bookkeeping._": {
         node: BookkeepingWidget,
@@ -16,19 +16,19 @@ var widgets = {
     },
     "township._": {
         node: TownshipWidget,
-        width: 6
+        width: 9
     },
     "line._": {
         node: LineWidget,
-        width: 6
+        width: 9
     },
     "user._": {
         node: UserWidget,
-        width: 6
+        width: 9
     },
     "budget._": {
         node: BudgetWidget,
-        width: 5
+        width: 7
     }    
 };
 export default widgets;

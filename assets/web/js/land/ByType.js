@@ -20,16 +20,7 @@ class LandByType extends Component {
             columns: [
                 {
                     title: this.props.t('finance.invoice.num'),
-                    dataIndex: 'invoice_num',
-                    render: (text, record) => {
-                        switch (record.charge_type_id) {
-                            case 1:
-                                return text;
-                            case 2:
-                                return record.name+' '+moment().set({month: record.month,year: record.year}).format('MMMM YYYY')
-                        }
-                        return text;
-                    }
+                    dataIndex: 'invoice_num'
                 },
                 {
                     title: this.props.t('finance.sum'),

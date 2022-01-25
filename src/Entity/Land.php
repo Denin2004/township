@@ -12,7 +12,7 @@ class Land extends Entity
         }
         return $this->provider->fetchAll(
             'select inv.id,
-                case when inv.charge_type_id = 1 then el.invoice_num
+                case when inv.charge_type_id = 1 then ct.name||\' \'||to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMONTH YYYY\')
                      when inv.charge_type_id = 2 then b_b.comment||\' \'||to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMONTH YYYY\')
                 else \'\'
                 end

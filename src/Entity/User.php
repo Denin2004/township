@@ -25,7 +25,7 @@ class User extends Entity
         $params['user_id'] = $this->provider->user()->getId();
         return $this->provider->fetchAll(
             'select inv.id,
-                case when inv.charge_type_id = 1 then el.invoice_num
+                case when inv.charge_type_id = 1 then c_t.name||\' \'||to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMONTH YYYY\')
                      when inv.charge_type_id = 2 then b_b.comment||\' \'||to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMONTH YYYY\')
                 else \'\'
                 end
@@ -36,6 +36,7 @@ class User extends Entity
                          ((inv.amount-inv.payed) > 0)and(inv.charge_type_id=:type_id)
                     left join charges.electricity el on (el.invoice_id=inv.id)
                     left join budget.budgets b_b on (b_b.id=inv.budget_id)
+                    left join charges.types c_t on (c_t.id=inv.charge_type_id)
                  where land.user_id = :user_id',
             $params
         );
