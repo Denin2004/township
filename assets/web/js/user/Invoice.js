@@ -4,6 +4,7 @@ import { withTranslation } from 'react-i18next';
 import { Modal, Spin, message, Descriptions, Table } from 'antd';
 
 import axios from 'axios';
+import moment from 'moment-timezone';
 
 import MfwNumber from '@app/mfw/MfwNumber';
 
@@ -73,7 +74,8 @@ class Invoice extends Component {
     }
 
     render() {
-        return <Modal title={this.props.t('finance.invoice.num')}
+        return <Modal title={this.state.loading ? this.props.t('finance.invoice.num') : 
+                this.state.invoice.chargeName+' '+moment(this.state.invoice.month+'.'+this.state.invoice.year, 'MM.YYYY').format('MMMM YYYY').toUpperCase()}
             width={800}
             visible={true}
             closable={false}
@@ -91,7 +93,7 @@ class Invoice extends Component {
                     <Descriptions.Item label={this.props.t('finance.sum')}><MfwNumber value={this.state.invoice.amount}/></Descriptions.Item>
                     <Descriptions.Item label={this.props.t('finance.payed')}><MfwNumber value={this.state.invoice.payed}/></Descriptions.Item>
                     <Descriptions.Item label={this.props.t('finance.debt')}><MfwNumber value={this.state.invoice.amount-this.state.invoice.payed}/></Descriptions.Item>
-                    <Descriptions.Item label={this.props.t('finance.charge')} span={3}></Descriptions.Item>
+                    <Descriptions.Item label={this.props.t('common.included')} span={3}></Descriptions.Item>
                     <Descriptions.Item label={this.props.t('calendar.day')}><MfwNumber value={this.state.invoice.day}/></Descriptions.Item>
                     <Descriptions.Item label={this.props.t('calendar.night')}><MfwNumber value={this.state.invoice.night}/></Descriptions.Item>
                 </Descriptions>

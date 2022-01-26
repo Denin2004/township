@@ -1,0 +1,24 @@
+extDataUploadForm:
+    path: /upload/form
+    controller: App\Controller\extData\Upload::forn
+    methods: [GET]
+
+extDataUpload:
+    path: /upload/post
+    controller: App\Controller\extData\Upload::post
+    methods: [POST]
+
+extDataPage:
+    path: /page
+    controller: App\Controller\Application::index
+    methods: [GET]
+    
+extDataData:
+    path: /data
+    controller: App\Controller\extData\Main::data
+    methods: [GET]
+    
+extDataPost:
+    path: /post
+    controller: App\Controller\extData\Main::post
+    methods: [POST]

@@ -54,6 +54,10 @@ budget:
     resource: 'routes/budget.yaml'
     prefix: /budget
 
+extData:
+    resource: 'routes/extData.yaml'
+    prefix: /extdata
+
 error403:
     path: /error/403
     controller: App\Controller\Application::index

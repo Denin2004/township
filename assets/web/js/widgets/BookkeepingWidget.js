@@ -9,6 +9,7 @@ import axios from 'axios';
 import useWithForm from '@app/hooks/useWithForm';
 import MfwNumber from '@app/mfw/MfwNumber';
 import Charge from '@app/web/js/budget/Charge';
+import ExtDataUpload from '@app/web/js/externalData/Upload';
 
 class BookkeepingWidgets extends Component {
     constructor(props){
@@ -19,8 +20,9 @@ class BookkeepingWidgets extends Component {
                 form: false,
                 result: false
             },
-            charge: false
-        }
+            charge: false,
+            extDataUpload: false
+        };
         this.electricityForm = this.electricityForm.bind(this);
         this.electricityUpload = this.electricityUpload.bind(this);
     }
@@ -119,6 +121,9 @@ class BookkeepingWidgets extends Component {
                     <List.Item>
                         <a onClick={() => this.setState({charge: true})}>{this.props.t('budget.charge')}</a>
                     </List.Item>
+                    <List.Item>
+                        <a onClick={() => this.setState({externalData: true})}>{this.props.t('externalData.upload')}</a>
+                    </List.Item>
                 </List>
             </Card>
             {this.state.electricity.state != 0 ? (
@@ -179,6 +184,7 @@ class BookkeepingWidgets extends Component {
                 </Modal>) :
             null}
             {this.state.charge ? <Charge success={() => this.setState({charge: false})}/> : null}
+            {this.state.extDataUpload ? <ExtDataUpload close={() => this.setState({extDataUpload: false})}/> : null}
         </React.Fragment>
     }
 }
