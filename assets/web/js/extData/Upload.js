@@ -1,20 +1,24 @@
 import React, {Component} from 'react';
 import { Link, generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import { Modal, Spin, message, Descriptions, Table } from 'antd';
+import { Modal, Spin, message, Form, Upload, Button, Input, Result } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
 import moment from 'moment-timezone';
 
-import MfwNumber from '@app/mfw/MfwNumber';
+import useWithForm from '@app/hooks/useWithForm';
 
 class ExtDataUpload extends Component {
     constructor(props){
         super(props);
         this.state = {
-            loading: true
+            status: 0,
+            form: null,
+            result: null
         };
         this.upload = this.upload.bind(this);
+        this.uploadMore = this.uploadMore.bind(this);
     }
 
     componentDidMount() {
@@ -28,7 +32,8 @@ class ExtDataUpload extends Component {
         ).then(res => {
             if (res.data.success) {
                 this.setState({
-                    loading: false
+                    status: 1,
+                    form: res.data.form
                 })
             } else {
                 message.error(this.props.t(res.data.error));
@@ -40,6 +45,10 @@ class ExtDataUpload extends Component {
                 message.error(error.toString());
             }
         });
+    }
+    
+    uploadMore() {
+        this.setState({status: 1, result: null}); 
     }
     
     normFile(e) {
@@ -61,7 +70,7 @@ class ExtDataUpload extends Component {
                     headers: { 'Content-Type': 'multipart/form-data','Accept': 'application/json'}
                 }).then(res => {
                     if (res.data.success) {
-                        this.props.close();
+                        this.setState({status: 2, result: res.data.result});
                     } else {
                         message.error(this.props.t(res.data.error)+(res.data.errorData ? res.data.errorData : ''));
                     }
@@ -73,17 +82,19 @@ class ExtDataUpload extends Component {
 
     render() {
         return <Modal title={this.props.t('extData.upload')}
-            width={800}
             visible={true}
-            closable={false}
-            cancelButtonProps={{className: 'd-none'}}
-            okText={this.props.t('modal.close')}
+            closable={true}
+            cancelText={this.props.t('modal.close')}
+            okText={this.props.t('modal.upload')}
+            onCancel={this.props.close}
+            okButtonProps={{disabled: this.state.status != 1}}
             onOk={this.upload}>
-            {this.state.loading ? (
+            {this.state.status == 0 ? 
                 <div className="d-flex justify-content-center align-items-center">
                     <Spin/>
                 </div>
-            ) : (
+                : null}
+            {this.state.status == 1 ? 
                 <Form form={this.props.form}
                   name="extData"
                   encType="multipart/form-data"
@@ -99,20 +110,54 @@ class ExtDataUpload extends Component {
                                message: this.props.t('extData.errors.file_blank')
                            }
                         ]}>
-                         <Upload
+                        <Upload
                            beforeUpload={() => {return false;}}
                            maxCount={1}
                            accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
                              <Button icon={<UploadOutlined />}>{this.props.t('modal.select_file')}</Button>
-                         </Upload>                        
-                     </Form.Item> 
-                     <Form.Item name="_token"
+                        </Upload>                        
+                    </Form.Item> 
+                    <Form.Item name="_token"
                        hidden={true} 
                        initialValue={this.state.form._token.value}>
                          <Input/>
-                     </Form.Item>
-                 </Form>            
-            )}
+                    </Form.Item>
+                </Form>
+                : null}
+            {this.state.status == 2 ? 
+                <React.Fragment>
+                {this.state.result.unknowns == 0 && this.state.result.errors.length == 0 ? 
+                   <Result 
+                     status="success" 
+                     title={this.props.t('extData.result.success')}
+                     extra={[<Button key="more" onClick={this.uploadMore}>{this.props.t('modal.upupload_more')}</Button>]}/>
+                   : null}
+                {this.state.result.unknowns != 0 && this.state.result.errors.length == 0 ? 
+                   <Result 
+                     status="warning" 
+                     title={this.props.t('extData.result.unknowns')+this.state.result.unknowns}
+                     extra={[<Button key="show">{this.props.t('extData.show')}</Button>,
+                         <Button key="more" onClick={this.uploadMore}>{this.props.t('modal.upload_more')}</Button>]}/>
+                   : null}
+                {this.state.result.unknowns == 0 && this.state.result.errors.length != 0 ? 
+                   <Result 
+                     status="error" 
+                     title={this.props.t('extData.result.system_errors')}
+                     subTitle={this.props.t('extData.errors.system_message')}
+                     extra={[<Input.TextArea key="text">{this.state.result.errors}</Input.TextArea>, 
+                         <Button key="more" onClick={this.uploadMore}>{this.props.t('modal.upload_more')}</Button>]}/>
+                   : null}
+                {this.state.result.unknowns != 0 && this.state.result.errors.length != 0 ? 
+                   <Result 
+                     status="error" 
+                     title={this.props.t('extData.result.system_errors')+' '+this.props.t('extData.result.unknowns')+this.state.result.unknowns}
+                     subTitle={this.props.t('extData.errors.system_message')}
+                     extra={[<Input.TextArea key="text">{this.state.result.errors}</Input.TextArea>, 
+                         <Button key="show">{this.props.t('extData.show')}</Button>,
+                         <Button key="more" onClick={this.uploadMore}>{this.props.t('modal.upload_more')}</Button>]}/>
+                   : null}
+                </React.Fragment>
+                : null}
         </Modal>
     }
 }

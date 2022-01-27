@@ -12,6 +12,8 @@ select charges.charge_electricity (
                 0.00,
                 'aaaa')
 
+select ext_data.add(-1, to_date('23.09.2021', 'DD.MM.YYYY'), 1000, 9, 2021, '34', 'Электричество', null, null);
+
 
 CREATE OR REPLACE FUNCTION balances.money_move(IN p_user_id integer, in date_from date, in date_to date)
   RETURNS TABLE(

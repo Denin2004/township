@@ -9,7 +9,7 @@ import axios from 'axios';
 import useWithForm from '@app/hooks/useWithForm';
 import MfwNumber from '@app/mfw/MfwNumber';
 import Charge from '@app/web/js/budget/Charge';
-import ExtDataUpload from '@app/web/js/externalData/Upload';
+import ExtDataUpload from '@app/web/js/extData/Upload';
 
 class BookkeepingWidgets extends Component {
     constructor(props){
@@ -122,7 +122,7 @@ class BookkeepingWidgets extends Component {
                         <a onClick={() => this.setState({charge: true})}>{this.props.t('budget.charge')}</a>
                     </List.Item>
                     <List.Item>
-                        <a onClick={() => this.setState({externalData: true})}>{this.props.t('externalData.upload')}</a>
+                        <a onClick={() => this.setState({extDataUpload: true})}>{this.props.t('extData.upload')}</a>
                     </List.Item>
                 </List>
             </Card>

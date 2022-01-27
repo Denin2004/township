@@ -1,11 +1,11 @@
 extDataUploadForm:
     path: /upload/form
-    controller: App\Controller\extData\Upload::forn
+    controller: App\Controller\ExtData\Upload::form
     methods: [GET]
 
 extDataUpload:
     path: /upload/post
-    controller: App\Controller\extData\Upload::post
+    controller: App\Controller\ExtData\Upload::post
     methods: [POST]
 
 extDataPage:
@@ -15,10 +15,10 @@ extDataPage:
     
 extDataData:
     path: /data
-    controller: App\Controller\extData\Main::data
+    controller: App\Controller\ExtData\Main::data
     methods: [GET]
     
 extDataPost:
     path: /post
-    controller: App\Controller\extData\Main::post
+    controller: App\Controller\ExtData\Main::post
     methods: [POST]

@@ -1,5 +1,5 @@
 <?php
-namespace App\Form\Electricity;
+namespace App\Form\ExtData;
 
 use Symfony\Component\Form\FormBuilderInterface;
 
