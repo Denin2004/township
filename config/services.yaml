@@ -111,4 +111,8 @@ services:
         class: App\Form\Budget\Charge
         arguments: ['@App\Entity\Land']
         tags: [form.type]
-        
+
+    App\Form\ExtData\Edit:
+        class: App\Form\ExtData\Edit
+        arguments: ['@App\Entity\ExtData']
+        tags: [form.type]        

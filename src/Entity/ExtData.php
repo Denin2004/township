@@ -48,4 +48,34 @@ class ExtData extends Entity
             ]
         );
     }
+
+    public function unknown($params)
+    {
+        $params['format'] = $this->provider->dateFormat();
+        $res = $this->provider->fetchAll(
+            'select
+                id,
+                to_char(dt, :format) as dt,
+                amount,
+                month,
+                year,
+                land,
+                tp,
+                budget,
+                budget_item
+             from ext_data.unknown where id=:id',
+            $params
+        );
+        return count($res) != 0 ? $res[0] : false;
+    }
+
+    public function budgetChoices()
+    {
+        $res = $this->provider->fetchAll('select distinct comment from budget.budgets');
+        $options = [];
+        foreach ($res as $row) {
+            $options[$row['comment']] = $row['comment'];
+        }
+        return $options;
+    }
 }

@@ -109,7 +109,7 @@ class ExtDataPage extends Component {
               columns={this.state.columns}
               dataSource={this.state.data}
               pagination={false}/>
-            {this.state.editId != -1 ? <EditExtData id={this.state.editId} /> : null}
+            {this.state.editId != -1 ? <EditExtData id={this.state.editId} cancel={() => this.setState({editId: -1})} /> : null}
         </React.Fragment>
     }
 }

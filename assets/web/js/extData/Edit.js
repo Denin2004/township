@@ -11,15 +11,14 @@ class EditExtData extends Component {
         super(props);
         this.state = {
             form: null,
-            loading: true,
-            byMonth: false
+            loading: true
         };
         this.itemPost = this.itemPost.bind(this);
     }
 
     componentDidMount() {
         axios.get(
-            window.mfwApp.urls.budget.item.form+'/'+this.props.id,
+            window.mfwApp.urls.extData.page.form+'/'+this.props.id,
             {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
@@ -29,8 +28,7 @@ class EditExtData extends Component {
             if (res.data.success) {
                 this.setState({
                     loading: false,
-                    form: res.data.form,
-                    byMonth: res.data.byMonth
+                    form: res.data.form
                 });
             } else {
                 message.error(this.props.t(res.data.error));
@@ -53,7 +51,7 @@ class EditExtData extends Component {
             .then(values => {
                 axios({
                     method: 'post',
-                    url: window.mfwApp.urls.budget.item.post,
+                    url: window.mfwApp.urls.extData.page.post,
                     data: values,
                     headers: {'Content-Type': 'application/json','X-Requested-With': 'XMLHttpRequest'}
                 }).then(res => {
@@ -69,6 +67,21 @@ class EditExtData extends Component {
             });
     }
     render() {
+        console.log(this.state);
+        return  this.state.loading ? null : <Modal
+          title={this.props.t('budget.item.edit')}
+          visible={true}
+          closable={false}
+          okText={this.props.t('modal.save')}
+          cancelText={this.props.t('modal.cancel')}
+          onCancel={this.props.cancel}
+          onOk={this.itemPost}>
+          asaaa
+        </Modal>;
+        
+        
+        
+        
         return  this.state.loading ? null : <Modal
           title={this.props.t('budget.item.edit')}
           visible={true}
