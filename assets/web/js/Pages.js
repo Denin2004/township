@@ -15,6 +15,7 @@ import UserMoneyMove from '@app/web/js/user/MoneyMove';
 import Budgets from '@app/web/js/budget/Main';
 import Owners from '@app/web/js/land/Owners';
 import Discounts from '@app/web/js/budget/Discounts';
+import ExtDataPage from '@app/web/js/extData/Page';
 import Error403 from '@app/web/js/Error403';
 
 class Pages extends Component {
@@ -145,6 +146,7 @@ class Pages extends Component {
                             <Route path={window.mfwApp.urls.budget.page+'/:id'} element={<Budgets/>}/>
                             <Route path={window.mfwApp.urls.township.land.owner.page} element={<Owners/>}/>
                             <Route path={window.mfwApp.urls.budget.discount.page} element={<Discounts/>}/>
+                            <Route path={window.mfwApp.urls.extData.page._} element={<ExtDataPage/>}/>
                             <Route path="/error/403" element={<Error403/>}/>
                         </Routes>
                     </Layout.Content>

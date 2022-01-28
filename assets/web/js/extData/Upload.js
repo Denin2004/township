@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Link, generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import { Modal, Spin, message, Form, Upload, Button, Input, Result } from 'antd';
+import { Modal, Spin, message, Form, Upload, Button, Input, Result, Table } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
@@ -46,15 +46,15 @@ class ExtDataUpload extends Component {
             }
         });
     }
-    
+
     uploadMore() {
-        this.setState({status: 1, result: null}); 
+        this.setState({status: 1, result: null});
     }
-    
+
     normFile(e) {
         return e && (e.fileList.length > 0 ? e.fileList[0].originFileObj : null);
-    };    
-    
+    };
+
     upload() {
         this.props.form
             .validateFields()
@@ -89,12 +89,12 @@ class ExtDataUpload extends Component {
             onCancel={this.props.close}
             okButtonProps={{disabled: this.state.status != 1}}
             onOk={this.upload}>
-            {this.state.status == 0 ? 
+            {this.state.status == 0 ?
                 <div className="d-flex justify-content-center align-items-center">
                     <Spin/>
                 </div>
                 : null}
-            {this.state.status == 1 ? 
+            {this.state.status == 1 ?
                 <Form form={this.props.form}
                   name="extData"
                   encType="multipart/form-data"
@@ -115,46 +115,110 @@ class ExtDataUpload extends Component {
                            maxCount={1}
                            accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
                              <Button icon={<UploadOutlined />}>{this.props.t('modal.select_file')}</Button>
-                        </Upload>                        
-                    </Form.Item> 
+                        </Upload>
+                    </Form.Item>
                     <Form.Item name="_token"
-                       hidden={true} 
+                       hidden={true}
                        initialValue={this.state.form._token.value}>
                          <Input/>
                     </Form.Item>
                 </Form>
                 : null}
-            {this.state.status == 2 ? 
+            {this.state.status == 2 ?
                 <React.Fragment>
-                {this.state.result.unknowns == 0 && this.state.result.errors.length == 0 ? 
-                   <Result 
-                     status="success" 
+                {this.state.result.errors.length != 0 ?
+                   <Result
+                      status="error"
+                      title={this.props.t('extData.errors.excel')}
+                      extra={[<Table
+                        key="table"
+                        rowKey="id"
+                        size="small"
+                        pagination={false}
+                        scroll={{y: 80}}
+                        columns={[
+                            {
+                                title: this.props.t('common.line'),
+                                dataIndex: 'line'
+                            },
+                            {
+                                title: this.props.t('errors.error'),
+                                dataIndex: 'error',
+                                render: (text, record) => {
+                                    return this.props.t(text)
+                                }
+                            }
+                        ]}
+                        dataSource={this.state.result.errors} />,
+                        <Button
+                          key="more"
+                          type="primary"
+                          className="mfw-mt-1"
+                          onClick={this.uploadMore}>{this.props.t('modal.upload_more')}</Button>
+                      ]}/>
+                   : null}
+
+                {this.state.result.unknowns == 0 && this.state.result.sys_errors.length == 0 && this.state.result.errors.length == 0 ?
+                   <Result
+                     status="success"
                      title={this.props.t('extData.result.success')}
-                     extra={[<Button key="more" onClick={this.uploadMore}>{this.props.t('modal.upupload_more')}</Button>]}/>
+                     extra={[<Button
+                         key="more"
+                         type="primary"
+                         className="mfw-mt-1"
+                         onClick={this.uploadMore}>{this.props.t('modal.upload_more')}</Button>]}/>
                    : null}
-                {this.state.result.unknowns != 0 && this.state.result.errors.length == 0 ? 
-                   <Result 
-                     status="warning" 
+                {this.state.result.unknowns != 0 && this.state.result.sys_errors.length == 0 ?
+                   <Result
+                     status="warning"
                      title={this.props.t('extData.result.unknowns')+this.state.result.unknowns}
-                     extra={[<Button key="show">{this.props.t('extData.show')}</Button>,
-                         <Button key="more" onClick={this.uploadMore}>{this.props.t('modal.upload_more')}</Button>]}/>
+                     extra={[<Button
+                         key="show"
+                         href={window.mfwApp.urls.extData.page._}
+                         target="_blank"
+                         className="mfw-mt-1">{this.props.t('extData.show')}</Button>,
+                         <Button
+                           key="more"
+                           type="primary"
+                           className="mfw-mt-1"
+                           onClick={this.uploadMore}>{this.props.t('modal.upload_more')}</Button>]}/>
                    : null}
-                {this.state.result.unknowns == 0 && this.state.result.errors.length != 0 ? 
-                   <Result 
-                     status="error" 
+                {this.state.result.unknowns == 0 && this.state.result.sys_errors.length != 0 ?
+                   <Result
+                     status="error"
                      title={this.props.t('extData.result.system_errors')}
                      subTitle={this.props.t('extData.errors.system_message')}
-                     extra={[<Input.TextArea key="text">{this.state.result.errors}</Input.TextArea>, 
-                         <Button key="more" onClick={this.uploadMore}>{this.props.t('modal.upload_more')}</Button>]}/>
+                     extra={[<Input.TextArea
+                          key="text"
+                          rows={8}
+                          value={JSON.stringify(this.state.result.sys_errors)}
+                          className="mfw-resize-none"/>,
+                         <Button
+                            key="more"
+                            type="primary"
+                            className="mfw-mt-1"
+                            onClick={this.uploadMore}>{this.props.t('modal.upload_more')}</Button>]}/>
                    : null}
-                {this.state.result.unknowns != 0 && this.state.result.errors.length != 0 ? 
-                   <Result 
-                     status="error" 
+                {this.state.result.unknowns != 0 && this.state.result.sys_errors.length != 0 ?
+                   <Result
+                     status="error"
                      title={this.props.t('extData.result.system_errors')+' '+this.props.t('extData.result.unknowns')+this.state.result.unknowns}
                      subTitle={this.props.t('extData.errors.system_message')}
-                     extra={[<Input.TextArea key="text">{this.state.result.errors}</Input.TextArea>, 
-                         <Button key="show">{this.props.t('extData.show')}</Button>,
-                         <Button key="more" onClick={this.uploadMore}>{this.props.t('modal.upload_more')}</Button>]}/>
+                     extra={[<Input.TextArea
+                           key="text"
+                           rows={8}
+                           value={JSON.stringify(this.state.result.sys_errors)}
+                           className="mfw-resize-none"/>,
+                         <Button
+                           key="show"
+                           href={window.mfwApp.urls.extData.page._}
+                           target="_blank"
+                           className="mfw-mt-1">{this.props.t('extData.show')}</Button>,
+                         <Button
+                           key="more"
+                           type="primary"
+                           className="mfw-mt-1"
+                           onClick={this.uploadMore}>{this.props.t('modal.upload_more')}</Button>]}/>
                    : null}
                 </React.Fragment>
                 : null}

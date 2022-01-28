@@ -124,6 +124,10 @@ class BookkeepingWidgets extends Component {
                     <List.Item>
                         <a onClick={() => this.setState({extDataUpload: true})}>{this.props.t('extData.upload')}</a>
                     </List.Item>
+                    <List.Item>
+                        <a target="_blank" href={window.mfwApp.urls.extData.page._}>{this.props.t('extData._')}</a>
+                    </List.Item>
+                    
                 </List>
             </Card>
             {this.state.electricity.state != 0 ? (

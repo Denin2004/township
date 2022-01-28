@@ -27,4 +27,25 @@ class ExtData extends Entity
     {
         return $this->provider->fetchAll('select count(*) as cnt from ext_data.unknown')[0]['cnt'];
     }
+
+    public function unknowns()
+    {
+        return $this->provider->fetchAll(
+            'select
+                id,
+                to_char(dt, :format) as dt,
+                amount,
+                month,
+                year,
+                land,
+                tp,
+                budget,
+                budget_item,
+                error
+             from ext_data.unknown order by id desc',
+            [
+                'format' => $this->provider->dateFormat()
+            ]
+        );
+    }
 }

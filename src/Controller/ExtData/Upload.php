@@ -48,12 +48,14 @@ class Upload extends AbstractController
             $dt = \DateTime::createFromFormat($siteConfig->get('php_date_format'), $date);
             if (!$dt) {
                 $errors[] = [
+                    'id' => count($errors),
                     'line' => $rowIndex,
                     'error' => 'extData.errors.wrong_date'
                 ];
             }
             if (!$this->getFloat('B'.$rowIndex)) {
                 $errors[] = [
+                    'id' => count($errors),
                     'line' => $rowIndex,
                     'error' => 'extData.errors.wrong_amount'
                 ];
@@ -64,7 +66,11 @@ class Upload extends AbstractController
         if (count($errors) != 0) {
             return new JsonResponse([
                 'success' => true,
-                'errors' => $errors
+                'result' => [
+                   'sys_errors' => [],
+                   'unknowns' => 0,
+                   'errors' => $errors
+                ]
             ]);
         }
         $rowIndex = 2;
@@ -84,6 +90,7 @@ class Upload extends AbstractController
             ]);
             if ($extDataDB->isError()) {
                 $errors[] = [
+                    'id' => count($errors),
                     'line' => $rowIndex,
                     'error' => $extDataDB->getError(),
                     'data' => [
@@ -106,8 +113,9 @@ class Upload extends AbstractController
         return new JsonResponse([
             'success' => true,
             'result' => [
-               'errors' => $errors,
-               'unknowns' => $unknownsNew-$unknownsOld
+               'sys_errors' => $errors,
+               'unknowns' => $unknownsNew-$unknownsOld,
+               'errors' => []
             ]
         ]);
     }

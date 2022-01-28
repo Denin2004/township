@@ -14,11 +14,20 @@ extDataPage:
     methods: [GET]
     
 extDataData:
-    path: /data
-    controller: App\Controller\ExtData\Main::data
+    path: /page/data
+    controller: App\Controller\ExtData\Page::data
     methods: [GET]
     
 extDataPost:
-    path: /post
-    controller: App\Controller\ExtData\Main::post
+    path: /page/post
+    controller: App\Controller\ExtData\Page::post
     methods: [POST]
+
+extDataEditForm:
+    path: /page/editform/{id}
+    controller: App\Controller\ExtData\Page::form
+    methods: [GET]
+    requirements:
+        id: \d+
+    defaults: 
+        id: -1    
