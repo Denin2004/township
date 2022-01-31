@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import { withTranslation } from 'react-i18next';
-import { message, Form, Input, Modal, Select } from 'antd';
+import { message, Form, Input, Modal, Select, InputNumber, DatePicker } from 'antd';
 
 import axios from 'axios';
+import moment from 'moment-timezone';
 
 import useWithForm from '@app/hooks/useWithForm';
 
@@ -26,6 +27,9 @@ class EditExtData extends Component {
             }
         ).then(res => {
             if (res.data.success) {
+                res.data.form.month.choices.map(choice => {
+                    choice.label = this.props.t('calendar.months.'+choice.value);
+                });
                 this.setState({
                     loading: false,
                     form: res.data.form
@@ -67,21 +71,6 @@ class EditExtData extends Component {
             });
     }
     render() {
-        console.log(this.state);
-        return  this.state.loading ? null : <Modal
-          title={this.props.t('budget.item.edit')}
-          visible={true}
-          closable={false}
-          okText={this.props.t('modal.save')}
-          cancelText={this.props.t('modal.cancel')}
-          onCancel={this.props.cancel}
-          onOk={this.itemPost}>
-          asaaa
-        </Modal>;
-        
-        
-        
-        
         return  this.state.loading ? null : <Modal
           title={this.props.t('budget.item.edit')}
           visible={true}
@@ -94,54 +83,77 @@ class EditExtData extends Component {
                name="item"
                labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}>
-                <Form.Item name="item_name_id"
-                   label={this.props.t('budget.item._')}
-                   initialValue={this.state.form.item_name_id.value*1}>
-                    <SelectItemName 
-                       initialValue={this.state.form.item_name_id.value*1}
-                       options={this.state.form.item_name_id.choices}
-                       onAdd={(value) => this.props.form.setFieldsValue({item_name_id: value})}/>
+                <Form.Item name="dt"
+                    label={this.props.t('calendar.date')}
+                    initialValue={moment(this.state.form.dt.value, window.mfwApp.formats.date)}
+                    rules={[
+                      {
+                        required: true,
+                         message: this.props.t('calendar.errors.blank')
+                      }
+                    ]}>
+                    <DatePicker allowClear={false} format={window.mfwApp.formats.date}/>
                 </Form.Item>
-                {this.state.form.tax.type != 'mfw-hidden' ? 
-                    <Form.Item name="tax"
-                      label={this.props.t('budget.tax')}
-                      initialValue={this.state.form.tax.value}
-                      rules={[
-                        {
-                          required: true,
-                          message: this.props.t('budget.errors.tax_blank')
-                        }
-                      ]}>
-                        <InputNumber precision="2"/>
-                    </Form.Item> :
-                    <Form.Item name="tax"
-                      hidden={true} 
-                      initialValue={this.state.form.tax.value}>
-                        <Input/>
-                    </Form.Item>
-                }
-                {this.state.form.amount.type != 'mfw-hidden' ? 
-                    <Form.Item name="amount"
-                      label={this.props.t('finance.sum')+(this.state.byMonth ? '('+this.props.t('budget.month').toLowerCase()+')' : '')}
-                      initialValue={this.state.form.amount.value}
-                      rules={[
-                        {
-                          required: true,
-                          message: this.props.t('budget.errors.amount_blank')
-                        }
-                      ]}>
-                        <InputNumber precision="2"/>
-                    </Form.Item> :
-                    <Form.Item name="amount"
-                      hidden={true} 
-                      initialValue={this.state.form.amount.value}>
-                        <Input/>
-                    </Form.Item>
-                }
-                <Form.Item name="comments"
-                   label={this.props.t('common.comment')}
-                   initialValue={this.state.form.comments.value}>
-                    <Input/>
+                <Form.Item name="year"
+                  label={this.props.t('calendar.year')}
+                  initialValue={this.state.form.year.value}
+                  rules={[
+                    {
+                      required: true,
+                      message: this.props.t('calendar.errors.year')
+                    }
+                  ]}>
+                    <InputNumber/>
+                </Form.Item>
+                <Form.Item name="month"
+                  label={this.props.t('calendar.month')}
+                  initialValue={this.state.form.month.value*1}
+                  rules={[
+                    {
+                      required: true,
+                      message: this.props.t('calendar.errors.month_blank')
+                    }
+                  ]}>
+                    <Select options={this.state.form.month.choices}/>
+                </Form.Item>
+                <Form.Item name="amount"
+                  label={this.props.t('finance.sum')}
+                  initialValue={this.state.form.amount.value}
+                  rules={[
+                    {
+                      required: true,
+                      message: this.props.t('budget.errors.amount_blank')
+                    }
+                  ]}>
+                    <InputNumber precision="2"/>
+                </Form.Item>
+                <Form.Item name="budget"
+                   label={this.props.t('budget._')}
+                   initialValue={this.state.form.budget.value}>
+                    <Select allowClear={true} options={this.state.form.budget.choices}/>
+                </Form.Item>
+                <Form.Item name="budget_item"
+                   label={this.props.t('budget.item._')}
+                   initialValue={this.state.form.budget_item.value}>
+                    <Select
+                       showSearch
+                       allowClear={true}
+                       options={this.state.form.budget_item.choices}/>
+                </Form.Item>
+                <Form.Item name="tp"
+                   label={this.props.t('land.charge')}
+                   initialValue={this.state.form.tp.value}>
+                    <Select
+                       allowClear={true}
+                       options={this.state.form.tp.choices}/>
+                </Form.Item>
+                <Form.Item name="land"
+                   label={this.props.t('land._')}
+                   initialValue={this.state.form.land.value}>
+                    <Select
+                       showSearch
+                       allowClear={true}
+                       options={this.state.form.land.choices}/>
                 </Form.Item>
                 <Form.Item name="id"
                   hidden={true} 

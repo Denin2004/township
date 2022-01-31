@@ -31,3 +31,16 @@ extDataEditForm:
         id: \d+
     defaults: 
         id: -1    
+
+extDataBudgetItems:
+    path: /budget/items/{month}/{year}/{name}
+    controller: App\Controller\ExtData\Page::budgetItemOptions
+    methods: [GET]
+    requirements:
+        month: \d+
+        year: \d+
+    defaults: 
+        month: -1    
+        year: -1
+        name: ''
+    

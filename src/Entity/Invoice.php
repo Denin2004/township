@@ -12,7 +12,7 @@ class Invoice extends Entity
             'select * from balances.get_invoice(:user_id, :id)',
             $params
         );
-        if (count($data) == 0) {
+        if ($this->isError() or (count($data) == 0)) {
             return false;
         }
         $res = json_decode($data[0]['invoice'], true);

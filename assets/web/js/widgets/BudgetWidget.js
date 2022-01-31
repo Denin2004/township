@@ -89,7 +89,8 @@ class BudgetWidget extends Component {
                                 <MfwNumber value={this.state.info[this.state.budgetIndex].spent}/>
                             </Descriptions.Item>
                         </Descriptions>
-                        <a onClick={() => this.setState({addSpending: true})}>{this.props.t('budget.spendings.add')}</a>
+                        { window.mfwApp.user.security.routes['budget.spending'].access ?
+                            <a onClick={() => this.setState({addSpending: true})}>{this.props.t('budget.spendings.add')}</a> : null }
                     </React.Fragment>
             )}
             {this.state.addSpending ? <SpendingCreate cancel={() => this.setState({addSpending: false})} success={this.getInfo}/>: null}

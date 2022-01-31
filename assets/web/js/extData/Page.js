@@ -24,7 +24,7 @@ class ExtDataPage extends Component {
                     dataIndex: 'dt'
                 },
                 {
-                    title: this.props.t('common.type'),
+                    title: this.props.t('finance.sum'),
                     dataIndex: 'amount',
                     align: 'right',
                     render: (text, record) => {
@@ -73,9 +73,14 @@ class ExtDataPage extends Component {
                 }
             ]
         };
+        this.showData = this.showData.bind(this);
     }
 
     componentDidMount() {
+        this.showData();
+    }
+    
+    showData() {
         axios.get(
             window.mfwApp.urls.extData.page.data,
             {
@@ -87,7 +92,8 @@ class ExtDataPage extends Component {
             if (res.data.success) {
                 this.setState({
                     loading: false,
-                    data: res.data.data
+                    data: res.data.data,
+                    editId: -1
                 });
             } else {
                 message.error(this.props.t(res.data.error));
@@ -109,7 +115,10 @@ class ExtDataPage extends Component {
               columns={this.state.columns}
               dataSource={this.state.data}
               pagination={false}/>
-            {this.state.editId != -1 ? <EditExtData id={this.state.editId} cancel={() => this.setState({editId: -1})} /> : null}
+            {this.state.editId != -1 ? <EditExtData 
+               id={this.state.editId} 
+               cancel={() => this.setState({editId: -1})}
+               success={this.showData}/> : null}
         </React.Fragment>
     }
 }

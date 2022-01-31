@@ -3,6 +3,7 @@ namespace App\Form\ExtData;
 
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 use App\Form\React\ReactForm;
 use App\Form\React\ReactTextType;
@@ -27,39 +28,60 @@ class Edit extends ReactForm
             $builder->add('land', TextType::class)
                 ->add('tp', TextType::class)
                 ->add('budget', TextType::class)
-                ->add('budget_item', TextType::class);
+                ->add('budget_item', TextType::class)
+                ->add('month', IntegerType::class);
         } else {
-            $builder->add('budget', ReactTextType::class)
-                ->add('budget_item', ReactTextType::class);
-
-            $budgets = $this->extDataDB->budgetChoices();
-/*            $budgetID = '';
-            $itemID = '';
-            $itemChoices = [];
-            if (key($budgets) != null) {
-                $budgetID = $budgets[key($budgets)];
-                $itemChoices = $this->budgetDB->childItemChoices($budgets[key($budgets)]);
-                $itemID = key($itemChoices) != null ? $itemChoices[key($itemChoices)] : '';
-            }
             $builder->add(
                 'budget',
                 ReactChoiceType::class,
                 [
-                    'choices' => $budgets,
-                    'data' => $budgetID
+                    'choices' => $this->extDataDB->budgetChoices()
                 ]
             )->add(
-                'item_id',
+                'budget_item',
                 ReactChoiceType::class,
                 [
-                    'choices' => $itemChoices,
-                    'data' => $itemID
+                    'choices' => $options['data']['budget'] != '' ? $this->extDataDB->budgetItemChoices([
+                        'budget' => $options['data']['budget'],
+                        'month' => $options['data']['month'],
+                        'year' => $options['data']['year']
+                    ]) : []
                 ]
-            );*/
+            )->add(
+                'land',
+                ReactChoiceType::class,
+                [
+                    'choices' => $this->extDataDB->landChoices()
+                ]
+            )->add(
+                'month',
+                ReactChoiceType::class,
+                [
+                    'choices' => [
+                        'calendar.months.1' => 1,
+                        'calendar.months.2' => 2,
+                        'calendar.months.3' => 3,
+                        'calendar.months.4' => 4,
+                        'calendar.months.5' => 5,
+                        'calendar.months.6' => 6,
+                        'calendar.months.7' => 7,
+                        'calendar.months.8' => 8,
+                        'calendar.months.9' => 9,
+                        'calendar.months.10' => 10,
+                        'calendar.months.11' => 11,
+                        'calendar.months.12' => 12
+                    ]
+                ]
+            )->add(
+                'tp',
+                ReactChoiceType::class,
+                [
+                    'choices' => $this->extDataDB->typeChoices()
+                ]
+            );
         }
         $builder->add('id', ReactHiddenType::class)
             ->add('dt', ReactDateType::class)
-            ->add('month', ReactTextType::class)
             ->add('year', ReactTextType::class)
             ->add('amount', ReactTextType::class);
     }

@@ -78,4 +78,58 @@ class ExtData extends Entity
         }
         return $options;
     }
+
+    public function budgetItemChoices($params)
+    {
+        $res = $this->provider->fetchAll(
+            'select b_in.name
+                from budget.budgets b_b
+                inner join budget.items b_bi on (b_bi.budget_id=b_b.id)
+                inner join budget.item_names b_in on (b_in.id=b_bi.item_name_id)
+            where (b_b.comment=:budget)and
+               (to_date(:month||\'.\'||:year, \'MM.YYYY\') between b_b.dt_from and b_b.dt_to)',
+            $params
+        );
+        $options = [];
+        foreach ($res as $row) {
+            $options[$row['name']] = $row['name'];
+        }
+        return $options;
+    }
+
+    public function landChoices()
+    {
+        $res = $this->provider->fetchAll('select num from lands.lands');
+        $options = [];
+        foreach ($res as $row) {
+            $options[$row['num']] = $row['num'];
+        }
+        return $options;
+    }
+
+    public function typeChoices()
+    {
+        $res = $this->provider->fetchAll('select name from charges.types');
+        $options = [];
+        foreach ($res as $row) {
+            $options[$row['name']] = $row['name'];
+        }
+        return $options;
+    }
+
+    public function post($params)
+    {
+        $params['format'] = $this->provider->dateFormat();
+        $this->provider->executeQuery(
+            'update ext_data.unknown set amount=:amount,
+                month=:month,
+                year=:year,
+                budget=:budget,
+                budget_item=:budget_item,
+                tp=:tp,
+                dt=to_date(:dt, :format)
+              where id=:id',
+            $params
+        );
+    }
 }

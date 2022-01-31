@@ -90,7 +90,10 @@ class Budgets extends Component {
                     fixed: 'right',
                     width: 100
                 }                
-            ].filter(col => col != undefined ? (col.key == 'actions' ? window.mfwApp.user.security.routes['budget.edit'].access : true) : true)
+            ].filter(col => col != undefined ? 
+               (col.key == 'actions' ? window.mfwApp.user.security.routes['budget.edit'].access
+                  : (col.dataIndex == 'spent' ? window.mfwApp.user.security.routes['budget.spending'].access : true) )
+               : true)
         };
         this.showBudget = this.showBudget.bind(this);
         this.deleteItem = this.deleteItem.bind(this);
