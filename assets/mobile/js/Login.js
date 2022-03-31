@@ -12,13 +12,14 @@ class Login extends Component {
     constructor(props){
         super(props);
         this.state = {};
+        this.login = this.login.bind(this);
     }
 
     errorsToast(errors) {
         return  <React.Fragment>{errors.map(error => {return <div key={error}>{error}</div>})}</React.Fragment>
     }
     
-    login = (values) => {
+    login(values) {
         var params = new URLSearchParams();
         Object.keys(values).map(key => {
             params.append(key, values[key]);        
@@ -53,6 +54,7 @@ class Login extends Component {
                  <Form
                   name="basic"
                   onFinish={this.login}
+                  form={this.props.form}
                   footer={
                      <Button block type='submit' color='primary'>{this.props.t('modal.enter')}</Button>
                   }>

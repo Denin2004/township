@@ -65,8 +65,8 @@ class BudgetWidget extends Component {
         return [opt];
     }
 
-    render() {
-        return <Card title={this.props.t('budget._')}>
+    renderOld() {
+        return <Card title={this.props.t('budget.current')}>
             {this.state.loading ? (
                 <Space className="mfw-d-flex" justify="center">
                     <Loading/>
@@ -102,6 +102,30 @@ class BudgetWidget extends Component {
                           extra={<MfwNumber value={this.state.info[this.state.budgetIndex].spent}/>}>{this.props.t('budget.spent')}</List.Item>
                     </List>
                </React.Fragment>
+            )}
+        </Card>
+    }
+    
+    render() {
+        return <Card title={this.props.t('budget.current')}>
+            {this.state.loading ? (
+                <Space className="mfw-d-flex" justify="center">
+                    <Loading/>
+                </Space>
+            ) : (
+                <List>
+                    {this.state.info.map(budget => {
+                        return <List.Item 
+                          key={budget.id}>
+                            <Link to={generatePath(
+                              window.mfwApp.urls.budget.page+'/:id',
+                              { 
+                                id: budget.id
+                              }
+                            )}>{budget.name}</Link>
+                        </List.Item>
+                    })}
+                </List>
             )}
         </Card>
     }

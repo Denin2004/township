@@ -7,16 +7,18 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 use App\Entity\User as UserDB;
+use App\Entity\Charges as ChargesDB;
 use App\Form\User\MoneyMove;
 use App\Services\SiteConfig\SiteConfig;
 
 class User extends AbstractController
 {
-    public function debt(UserDB $userDB)
+    public function debt(UserDB $userDB, ChargesDB $chargesDB)
     {
         return new JsonResponse([
             'success' => true,
-            'debt' => $userDB->debt()
+            'debt' => $userDB->debt(),
+            'charges' => $chargesDB->list()
         ]);
     }
 
@@ -76,5 +78,17 @@ class User extends AbstractController
             'success' => true,
             'moneyMove' => $userDB->moneyMove($form->getData())
         ]);
+    }
+
+    public function chargesByType($type_id, $year, UserDB $userDB)
+    {
+        return new JsonResponse([
+            'success' => true,
+            'charges' => $userDB->chargesByType([
+                'type_id' => $type_id,
+                'year' => $year == -1 ? date('Y') : $year
+            ])
+        ]);
+
     }
 }

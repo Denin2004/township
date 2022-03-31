@@ -50,4 +50,13 @@ class Charges extends Entity
             $params
         );
     }
+
+    public function list()
+    {
+        return $this->provider->fetchAll(
+            'select c.id, c.name
+                from charges.types c
+                order by c.name'
+        );
+    }
 }

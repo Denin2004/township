@@ -25,8 +25,8 @@ class User extends Entity
         $params['user_id'] = $this->provider->user()->getId();
         return $this->provider->fetchAll(
             'select inv.id,
-                case when inv.charge_type_id = 1 then c_t.name||\' \'||to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMONTH YYYY\')
-                     when inv.charge_type_id = 2 then b_b.comment||\' \'||to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMONTH YYYY\')
+                case when inv.charge_type_id = 1 then ll.num||\' \'||to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMON YY\')
+                     when inv.charge_type_id = 2 then b_b.comment||\' \'||to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMON YY\')
                 else \'\'
                 end
                 as invoice_num,
@@ -36,8 +36,9 @@ class User extends Entity
                          ((inv.amount-inv.payed) > 0)and(inv.charge_type_id=:type_id)
                     left join charges.electricity el on (el.invoice_id=inv.id)
                     left join budget.budgets b_b on (b_b.id=inv.budget_id)
-                    left join charges.types c_t on (c_t.id=inv.charge_type_id)
-                 where land.user_id = :user_id',
+                    left join lands.lands ll on (ll.id=land.land_id)
+                 where land.user_id = :user_id
+                 order by inv.year desc, inv.month desc',
             $params
         );
     }
@@ -50,6 +51,43 @@ class User extends Entity
         $params['date_to'] = $params['date_range'][1];
         return $this->provider->fetchAll(
             'select to_char(mm.dt, :format) as dt1, mm.* from balances.money_move(:user_id, to_date(:date_from, :format), to_date(:date_to, :format)) mm',
+            $params
+        );
+    }
+
+    public function lands()
+    {
+        return $this->provider->fetchAll(
+            'select ll.num
+                from lands.user_lands ul
+                   left join lands.lands ll on (ll.id=ul.land_id)
+                   where (ul.user_id=:user_id)',
+            [
+                'user_id' => $this->provider->user()->getId()
+            ]
+        );
+    }
+
+    public function chargesByType($params)
+    {
+        $params['user_id'] = $this->provider->user()->getId();
+        return $this->provider->fetchAll(
+            'select inv.id,
+                case when inv.charge_type_id = 1 then ll.num||\' \'||to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMON YY\')
+                     when inv.charge_type_id = 2 then b_b.comment||\' \'||to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMON YY\')
+                else \'\'
+                end
+                as invoice_num,
+                inv.amount
+                from lands.user_lands land
+                    inner join balances.invoices inv on (inv.land_id=land.land_id)and
+                         ((inv.amount-inv.payed) > 0)and(inv.charge_type_id=:type_id)
+                    left join charges.electricity el on (el.invoice_id=inv.id)
+                    left join budget.budgets b_b on (b_b.id=inv.budget_id)
+                    left join lands.lands ll on (ll.id=land.land_id)
+                 where (land.user_id = :user_id)and
+                 (inv.year=:year)
+                 order by inv.year desc, inv.month desc',
             $params
         );
     }

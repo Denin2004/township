@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Mobile_Detect;
 
 use App\Services\SiteConfig\SiteConfig;
+use App\Entity\User;
 
 class Application extends AbstractController
 {
@@ -27,7 +28,7 @@ class Application extends AbstractController
         );
     }
 
-    public function config()
+    public function config(User $userDB)
     {
         $res = [
             'success' => true,
@@ -37,9 +38,16 @@ class Application extends AbstractController
                 'id' => $this->getUser()->getId(),
                 'line_manager' => $this->getUser()->get('line'),
                 'widgets' => $this->getUser()->get('widgets'),
-                'security' => $this->getUser()->get('security')
+                'security' => $this->getUser()->get('security'),
+                'lands' => $userDB->lands()
             ]
         ];
+        if ($res['user']['line_manager'] == null) {
+            $lineWidget = array_search('line._', $res['user']['widgets']);
+            if ($lineWidget !== false) {
+                array_splice($res['user']['widgets'], $lineWidget, 1);
+            }
+        }
         return new JsonResponse($res);
     }
 }

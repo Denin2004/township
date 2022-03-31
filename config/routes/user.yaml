@@ -26,3 +26,14 @@ userMoneyMoveData:
     path: /moneymove/data
     controller: App\Controller\Township\User::moneyMoveData
     methods: [POST]
+
+userChargesType:
+    path: /charges/{type_id}/{year}
+    controller: App\Controller\Township\User::chargesByType
+    methods: [GET]
+    requirements:
+        type_id: \d+
+        year: \d+
+    defaults: 
+        type_id: -1
+        year: -1
