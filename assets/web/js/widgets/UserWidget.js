@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
 import { Link, generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import { Card, Spin, Table, message, Typography, Modal, Descriptions } from 'antd';
+import { Card, Spin, Table, message, Typography, Modal, Descriptions, List } from 'antd';
 
 import axios from 'axios';
 
 import MfwNumber from '@app/mfw/MfwNumber';
 import Invoice from '@app/web/js/user/Invoice';
+import ChargesByType from '@app/web/js/user/ChargesByType';
 
 class UserWidget extends Component {
     constructor(props){
@@ -45,7 +46,9 @@ class UserWidget extends Component {
                         return <a onClick={()=> this.setState({invoiceID: record.id})}><MfwNumber value={record.debt}/></a>
                     }
                 }
-            ]
+            ],
+            charges: [],
+            viewCharge: null
         };
         this.debtSummary = this.debtSummary.bind(this);
         this.debtType = this.debtType.bind(this);
@@ -64,7 +67,8 @@ class UserWidget extends Component {
             if (res.data.success) {
                 this.setState({
                     loading: false,
-                    debt: res.data.debt
+                    debt: res.data.debt,
+                    charges: res.data.charges
                 });
             } else {
                 message.error(this.props.t(res.data.error));
@@ -150,25 +154,34 @@ class UserWidget extends Component {
     }
 
     render() {
-        return <Card title={this.props.t('user.debt')}>
+        return <Card title={this.props.t('user.status')}>
             {this.state.loading ? (
                 <div className="d-flex justify-content-center align-items-center">
                     <Spin/>
                 </div>
             ) : (
-                <Table
-                  rowKey="id"
-                  columns={this.state.columns}
-                  dataSource={this.state.debt}
-                  pagination={false}
-                  summary={this.debtSummary}
-                  scroll={{ x: true }}
-                  expandable={{
-                      expandedRowRender: this.debtType,
-                      onExpand: this.debtTypeData
-                  }}/>
+                <React.Fragment>
+                    <Table
+                      rowKey="id"
+                      columns={this.state.columns}
+                      dataSource={this.state.debt}
+                      pagination={false}
+                      summary={this.debtSummary}
+                      scroll={{ x: true }}
+                      title={() => <Typography.Text strong>{this.props.t('user.debt')}</Typography.Text>}
+                      expandable={{
+                          expandedRowRender: this.debtType,
+                          onExpand: this.debtTypeData
+                      }}/>
+                    <List header={<Typography.Text strong>{this.props.t('finance.charges')}</Typography.Text>}>
+                        {this.state.charges.map(charge => {
+                            return <List.Item key={charge.id}><a onClick={() => this.setState({viewCharge: charge.id})}>{charge.name}</a></List.Item>
+                        })}
+                    </List>
+                </React.Fragment>  
             )}
             {this.state.invoiceID != null ? <Invoice id={this.state.invoiceID} close={() => {this.setState({invoiceID: null})}}/> : null}
+            {this.state.viewCharge != null ? <ChargesByType typeID={this.state.viewCharge} close={() => {this.setState({viewCharge: null})}}/> : null}
         </Card>;
     }
 }
