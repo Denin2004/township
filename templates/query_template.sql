@@ -1,3 +1,103 @@
+CREATE OR REPLACE FUNCTION ext_data.add_new(
+    p_unknown_id integer,
+    p_date date,
+    p_amount numeric,
+    p_month integer,
+    p_year integer,
+    p_land character varying,
+    p_charge_code character varying,
+    p_budget character varying,
+    p_budget_item character varying)
+  RETURNS void AS
+$BODY$
+declare err_text character varying;
+declare p_land_id integer;
+declare p_charge_type_id integer;
+declare p_invoice_id integer;
+declare p_budget_id integer;
+declare p_budget_item_id integer;
+begin
+  err_text = '';
+  if (p_unknown_id != -1) then
+    select dt, amount, month, year, land, charge_code, budget, budget_item from ext_data.unknown where id=p_unknown_id
+      into p_date, p_amount, p_month, p_year, p_land, p_charge_code, p_budget, p_budget_item;
+  end if;
+  if (p_land is not null) then
+     select id from lands.lands where num=p_land into p_land_id;
+     if p_land_id is not null then
+        select id from charges.types where code=p_charge_code into p_charge_type_id;
+        if (p_charge_type_id is not null) then
+          if (p_month is not null)and(p_year is not null) then
+             select b_i.id from balances.invoices b_i
+                where (b_i.land_id=p_land_id)and
+                  (b_i.charge_type_id=p_charge_type_id)and
+                  (b_i.month=p_month)and
+                  (b_i.year=p_year)
+                into p_invoice_id;
+             if (p_invoice_id is not null) then
+               insert into balances.pays (land_id, amount, dt, charge_type_id, start_invoice_id)
+                 values (p_land_id, p_amount, p_date, p_charge_type_id, p_invoice_id);
+             else
+                err_text='extData.errors.invoice_not_found';
+             end if;
+          else
+            insert into balances.pays (land_id, amount, dt, charge_type_id)
+              values (p_land_id, p_amount, p_date, p_charge_type_id);
+          end if;
+        else
+           err_text='extData.errors.charge_type_not_found';
+        end if;
+     else
+        err_text='extData.errors.land_not_found';
+     end if;
+  end if;
+  if (p_budget is not null) then
+     if ((p_month is not null)and(p_year is not null)) then
+       select b_b.id from budget.budgets b_b
+         where (b_b.comment=p_budget)and
+           (to_date(p_month||'.'||p_year, 'MM.YYYY') between b_b.dt_from and b_b.dt_to)
+         into p_budget_id;
+       if (p_budget_id is not null) then
+          select b_i.id
+            from budget.budgets b_b
+              inner join budget.items b_i on (b_i.budget_id=b_b.id)
+              inner join budget.item_names b_in on (b_in.id=b_i.item_name_id)and(b_in.name=p_budget_item)
+          where (b_b.id=p_budget_id)
+            into p_budget_item_id;
+          if (p_budget_item_id is not null) then
+            insert into budget.spendings(dt, item_id, amount)values(p_date, p_budget_item_id, p_amount);
+          else
+             err_text='extData.errors.budget_item_not_found';
+          end if;
+       else
+         err_text='extData.errors.budget_not_found';
+       end if;
+     else
+       err_text='extData.errors.budget_month_year';
+     end if; 
+  end if;
+  if (err_text != '') then
+    if (p_unknown_id != -1) then
+      update ext_data.unknown set error=err_text where id=p_unknown_id;
+    else 
+      insert into ext_data.unknown (dt, amount, month, year, land, charge_code, budget, budget_item, error)
+        values(p_date, p_amount, p_month, p_year, p_land, p_charge_code, p_budget, p_budget_item, err_text);
+    end if;
+  end if;
+  if (p_unknown_id != -1)and(err_text = '') then
+    delete from ext_data.unknown where id=p_unknown_id;
+  end if;
+end;$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION ext_data.add(integer, date, numeric, integer, integer, character varying, character varying, character varying, character varying)
+  OWNER TO postgres;
+
+
+
+
+
+
 select charges.charge_electricity (
                 22,
                 8,

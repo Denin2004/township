@@ -26,7 +26,7 @@ class User extends Entity
         return $this->provider->fetchAll(
             'select inv.id,
                 case when inv.charge_type_id = 1 then ll.num||\' \'||to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMON YY\')
-                     when inv.charge_type_id = 2 then b_b.comment||\' \'||to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMON YY\')
+                     when inv.budget_id is not null then to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMON YY\')
                 else \'\'
                 end
                 as invoice_num,
@@ -74,7 +74,7 @@ class User extends Entity
         return $this->provider->fetchAll(
             'select inv.id,
                 case when inv.charge_type_id = 1 then ll.num||\' \'||to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMON YY\')
-                     when inv.charge_type_id = 2 then b_b.comment||\' \'||to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMON YY\')
+                     when inv.budget_id is not null then to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMON YY\')
                 else \'\'
                 end
                 as invoice_num,

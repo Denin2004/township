@@ -16,7 +16,7 @@ class ExtData extends Entity
                 :month,
                 :year,
                 :land,
-                :type,
+                :charge_code,
                 :budget,
                 :budget_item)',
             $data
@@ -38,7 +38,7 @@ class ExtData extends Entity
                 month,
                 year,
                 land,
-                tp,
+                charge_code,
                 budget,
                 budget_item,
                 error
@@ -60,7 +60,7 @@ class ExtData extends Entity
                 month,
                 year,
                 land,
-                tp,
+                charge_code,
                 budget,
                 budget_item
              from ext_data.unknown where id=:id',
@@ -109,10 +109,10 @@ class ExtData extends Entity
 
     public function typeChoices()
     {
-        $res = $this->provider->fetchAll('select name from charges.types');
+        $res = $this->provider->fetchAll('select code, name from charges.types');
         $options = [];
         foreach ($res as $row) {
-            $options[$row['name']] = $row['name'];
+            $options[$row['name']] = $row['code'];
         }
         return $options;
     }
@@ -126,7 +126,7 @@ class ExtData extends Entity
                 year=:year,
                 budget=:budget,
                 budget_item=:budget_item,
-                tp=:tp,
+                charge_code=:charge_code,
                 dt=to_date(:dt, :format)
               where id=:id',
             $params

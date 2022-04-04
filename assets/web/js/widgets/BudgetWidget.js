@@ -96,6 +96,7 @@ class BudgetWidget extends Component {
             {this.state.addSpending ? <SpendingCreate cancel={() => this.setState({addSpending: false})} success={this.getInfo}/>: null}
         </Card>
     }
+    
 }
 
 export default withTranslation()(BudgetWidget);

@@ -40,9 +40,9 @@ class Upload extends AbstractController
         }
         $formData = $form->getData();
         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($formData['file']->getRealPath());
-        $rowIndex = 2;
+        $rowIndex = 7;
         $this->sheet = $spreadsheet->getActiveSheet();
-        $date = $this->sheet->getCell('A'.$rowIndex)->getValue();
+        $date = $this->sheet->getCell('B'.$rowIndex)->getValue();
         $errors = [];
         while ($date != null) {
             $dt = \DateTime::createFromFormat($siteConfig->get('php_date_format'), $date);
@@ -53,7 +53,7 @@ class Upload extends AbstractController
                     'error' => 'extData.errors.wrong_date'
                 ];
             }
-            if (!$this->getFloat('B'.$rowIndex)) {
+            if (!$this->getFloat('M'.$rowIndex)) {
                 $errors[] = [
                     'id' => count($errors),
                     'line' => $rowIndex,
@@ -61,7 +61,7 @@ class Upload extends AbstractController
                 ];
             }
             $rowIndex++;
-            $date = $this->sheet->getCell('A'.$rowIndex)->getValue();
+            $date = $this->sheet->getCell('B'.$rowIndex)->getValue();
         }
         if (count($errors) != 0) {
             return new JsonResponse([
@@ -73,41 +73,55 @@ class Upload extends AbstractController
                 ]
             ]);
         }
-        $rowIndex = 2;
-        $date = $this->sheet->getCell('A'.$rowIndex)->getValue();
+        $rowIndex = 7;
+        $date = $this->sheet->getCell('B'.$rowIndex)->getValue();
         $unknownsOld = $extDataDB->unknownsCount();
-        while ($date != null) {
-            $extDataDB->add([
-                'unknown_id' => -1,
-                'dt' => $this->sheet->getCell('A'.$rowIndex)->getValue(),
-                'amount' => $this->sheet->getCell('B'.$rowIndex)->getValue(),
-                'month' => $this->sheet->getCell('C'.$rowIndex)->getValue(),
-                'year' => $this->sheet->getCell('D'.$rowIndex)->getValue(),
-                'land' => $this->sheet->getCell('E'.$rowIndex)->getValue(),
-                'type' => $this->sheet->getCell('F'.$rowIndex)->getValue(),
-                'budget' => $this->sheet->getCell('G'.$rowIndex)->getValue(),
-                'budget_item' => $this->sheet->getCell('H'.$rowIndex)->getValue()
-            ]);
-            if ($extDataDB->isError()) {
-                $errors[] = [
-                    'id' => count($errors),
-                    'line' => $rowIndex,
-                    'error' => $extDataDB->getError(),
-                    'data' => [
-                        'unknown_id' => -1,
-                        'dt' => $this->sheet->getCell('A'.$rowIndex)->getValue(),
-                        'amount' => $this->sheet->getCell('B'.$rowIndex)->getValue(),
-                        'month' => $this->sheet->getCell('C'.$rowIndex)->getValue(),
-                        'year' => $this->sheet->getCell('D'.$rowIndex)->getValue(),
-                        'land' => $this->sheet->getCell('E'.$rowIndex)->getValue(),
-                        'type' => $this->sheet->getCell('F'.$rowIndex)->getValue(),
-                        'budget' => $this->sheet->getCell('G'.$rowIndex)->getValue(),
-                        'budget_item' => $this->sheet->getCell('H'.$rowIndex)->getValue()
-                    ]
-                ];
+        $dt = \DateTime::createFromFormat($siteConfig->get('php_date_format'), $date);
+        while ($dt != null) {
+            $metaData = explode(' ', $this->sheet->getCell('R'.$rowIndex)->getValue());
+            if (strtolower($metaData[0]) != 'р') {
+                $period = explode('-', $metaData[2]);
+                if (count($period) != 1) {
+                    $dtMonth = explode('.', $period[0]);
+                    $dtYear = count($dtMonth) != 1 ? $dtMonth : explode('.', $period[1]);
+                } else {
+                    $dtMonth = explode('.', $period[0]);
+                    $dtYear = $dtMonth;
+                }
+                $startMonth = $dtMonth[0];
+                $startYear = $dtYear[1];
+                $extDataDB->add([
+                    'unknown_id' => -1,
+                    'dt' => $date,
+                    'amount' => $this->sheet->getCell('M'.$rowIndex)->getValue(),
+                    'month' => $dtMonth[0],
+                    'year' => $dtYear[1],
+                    'land' => $metaData[0],
+                    'charge_code' => $metaData[1],
+                    'budget' => null,
+                    'budget_item' => null
+                ]);
+                if ($extDataDB->isError()) {
+                    $errors[] = [
+                        'id' => count($errors),
+                        'line' => $rowIndex,
+                        'error' => $extDataDB->getError(),
+                        'data' => [
+                            'dt' => $date,
+                            'amount' => $this->sheet->getCell('M'.$rowIndex)->getValue(),
+                            'month' => $dtMonth[0],
+                            'year' => $dtYear[1],
+                            'land' => $metaData[0],
+                            'charge_code' => $metaData[1],
+                            'budget' => null,
+                            'budget_item' => null
+                        ]
+                    ];
+                }
             }
             $rowIndex++;
-            $date = $this->sheet->getCell('A'.$rowIndex)->getValue();
+            $date = $this->sheet->getCell('B'.$rowIndex)->getValue();
+            $dt = \DateTime::createFromFormat($siteConfig->get('php_date_format'), $date);
         }
         $unknownsNew = $extDataDB->unknownsCount();
         return new JsonResponse([

@@ -26,7 +26,7 @@ class Edit extends ReactForm
     {
         if ($options['request'] == true) {
             $builder->add('land', TextType::class)
-                ->add('tp', TextType::class)
+                ->add('charge_code', TextType::class)
                 ->add('budget', TextType::class)
                 ->add('budget_item', TextType::class)
                 ->add('month', IntegerType::class);
@@ -73,7 +73,7 @@ class Edit extends ReactForm
                     ]
                 ]
             )->add(
-                'tp',
+                'charge_code',
                 ReactChoiceType::class,
                 [
                     'choices' => $this->extDataDB->typeChoices()

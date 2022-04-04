@@ -140,12 +140,12 @@ class EditExtData extends Component {
                        allowClear={true}
                        options={this.state.form.budget_item.choices}/>
                 </Form.Item>
-                <Form.Item name="tp"
+                <Form.Item name="charge_code"
                    label={this.props.t('land.charge')}
-                   initialValue={this.state.form.tp.value}>
+                   initialValue={this.state.form.charge_code.value}>
                     <Select
                        allowClear={true}
-                       options={this.state.form.tp.choices}/>
+                       options={this.state.form.charge_code.choices}/>
                 </Form.Item>
                 <Form.Item name="land"
                    label={this.props.t('land._')}
