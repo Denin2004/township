@@ -15,4 +15,55 @@ financeInvoicePage:
         id: \d+
     defaults: 
         id: -1
+
+financeMoneyMovePage:
+    path: /moneymove/page
+    controller: App\Controller\Application::index
+    methods: [GET]
+
+financeMoneyMoveData:
+    path: /moneymove/data
+    controller: App\Controller\Finance\MoneyMove::data
+    methods: [POST]
     
+financeMoneyMoveFilterForm:
+    path: /moneymove/filterform
+    controller: App\Controller\Finance\MoneyMove::filterForm
+    methods: [GET]
+    requirements:
+        id: \d+
+    defaults: 
+        id: -1    
+    
+financeMoneyMoveEditForm:
+    path: /moneymove/editform/{id}
+    controller: App\Controller\Finance\MoneyMove::editForm
+    methods: [GET]
+    requirements:
+        id: \d+
+    defaults: 
+        id: -1
+
+financeMoneyMoveCreateForm:
+    path: /moneymove/createform
+    controller: App\Controller\Finance\MoneyMove::createForm
+    methods: [GET]
+    
+financeMoneyMoveCreate:
+    path: /moneymove/create
+    controller: App\Controller\Finance\MoneyMove::create
+    methods: [POST]
+    
+financeMoneyMovePost:
+    path: /moneymove/post
+    controller: App\Controller\Finance\MoneyMove::post
+    methods: [POST]
+    
+financeMoneyMoveDelete:
+    path: /moneymove/delete/{id}
+    controller: App\Controller\Finance\MoneyMove::delete
+    methods: [GET]
+    requirements:
+        id: \d+
+    defaults: 
+        id: -1    

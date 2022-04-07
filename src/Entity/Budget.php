@@ -27,13 +27,15 @@ class Budget extends Entity
             'default' => 0
         ];
         $budgets = $this->provider->fetchAll(
-            'select bd.id, bd.comment||\' \'||to_char(bd.dt_from, :format)||\' - \'||to_char(bd.dt_to, :format) as name,
+            'select b_b.id, c_t.name||\' \'||to_char(b_b.dt_from, :format)||\' - \'||to_char(b_b.dt_to, :format) as name,
                 case
-                   when now()::date between bd.dt_from and bd.dt_to
+                   when now()::date between b_b.dt_from and b_b.dt_to
                    then 1
                     else 0
                 end as current
-                from budget.budgets bd order by id desc',
+                from budget.budgets b_b
+                   left join charges.types c_t on (c_t.id=b_b.charge_type_id)
+                order by id desc',
             [
                 'format' => $this->provider->dateFormat()
             ]

@@ -19,28 +19,25 @@ extDataData:
     methods: [GET]
     
 extDataPost:
-    path: /page/post
-    controller: App\Controller\ExtData\Page::post
+    path: /item/post
+    controller: App\Controller\ExtData\Item::post
     methods: [POST]
 
 extDataEditForm:
-    path: /page/editform/{id}
-    controller: App\Controller\ExtData\Page::form
+    path: /item/editform/{id}
+    controller: App\Controller\ExtData\Item::form
     methods: [GET]
     requirements:
         id: \d+
     defaults: 
         id: -1    
 
-extDataBudgetItems:
-    path: /budget/items/{month}/{year}/{name}
-    controller: App\Controller\ExtData\Page::budgetItemOptions
+extDataBudgetItemChoices:
+    path: /item/budgetitem/choices/{budget_id}
+    controller: App\Controller\ExtData\Item::budgetItemChoices
     methods: [GET]
     requirements:
-        month: \d+
-        year: \d+
+        id: \d+|-1
     defaults: 
-        month: -1    
-        year: -1
-        name: ''
+        id: -1
     

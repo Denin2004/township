@@ -12,9 +12,11 @@ class EditExtData extends Component {
         super(props);
         this.state = {
             form: null,
-            loading: true
+            loading: true,
+            landExData: false
         };
         this.itemPost = this.itemPost.bind(this);
+        this.getBudgetItems = this.getBudgetItems.bind(this);
     }
 
     componentDidMount() {
@@ -30,9 +32,13 @@ class EditExtData extends Component {
                 res.data.form.month.choices.map(choice => {
                     choice.label = this.props.t('calendar.months.'+choice.value);
                 });
+                res.data.form.charge_code.choices.map(choice => {
+                    choice.label = this.props.t(choice.label);
+                });
                 this.setState({
                     loading: false,
-                    form: res.data.form
+                    form: res.data.form,
+                    landExData: res.data.form.charge_code.value != 'р'
                 });
             } else {
                 message.error(this.props.t(res.data.error));
@@ -70,6 +76,27 @@ class EditExtData extends Component {
                 });
             });
     }
+    
+    getBudgetItems(budget_id) {
+        axios({
+            method: 'get',
+            url: window.mfwApp.urls.budget.item.choices+'/'+budget_id,
+            headers: {'Content-Type': 'application/json','X-Requested-With': 'XMLHttpRequest'}
+        }).then(res => {
+            if (res.data.success) {
+                this.setState(state => {
+                    state.form.budget_item_id.choices = res.data.choices;
+                    return state; 
+                });
+                
+            } else {
+                message.error(this.props.t(res.data.error));
+            }
+        }).catch(error => {
+            message.error(error.toString());
+        });
+    }
+    
     render() {
         return  this.state.loading ? null : <Modal
           title={this.props.t('budget.item.edit')}
@@ -83,6 +110,14 @@ class EditExtData extends Component {
                name="item"
                labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}>
+                <Form.Item name="charge_code"
+                   label={this.props.t('land.charge')}
+                   initialValue={this.state.form.charge_code.value}>
+                    <Select
+                       allowClear={true}
+                       onSelect={(tp) => this.setState({landExData: tp != 'р'})}
+                       options={this.state.form.charge_code.choices}/>
+                </Form.Item>
                 <Form.Item name="dt"
                     label={this.props.t('calendar.date')}
                     initialValue={moment(this.state.form.dt.value, window.mfwApp.formats.date)}
@@ -93,28 +128,6 @@ class EditExtData extends Component {
                       }
                     ]}>
                     <DatePicker allowClear={false} format={window.mfwApp.formats.date}/>
-                </Form.Item>
-                <Form.Item name="year"
-                  label={this.props.t('calendar.year')}
-                  initialValue={this.state.form.year.value}
-                  rules={[
-                    {
-                      required: true,
-                      message: this.props.t('calendar.errors.year')
-                    }
-                  ]}>
-                    <InputNumber/>
-                </Form.Item>
-                <Form.Item name="month"
-                  label={this.props.t('calendar.month')}
-                  initialValue={this.state.form.month.value*1}
-                  rules={[
-                    {
-                      required: true,
-                      message: this.props.t('calendar.errors.month_blank')
-                    }
-                  ]}>
-                    <Select options={this.state.form.month.choices}/>
                 </Form.Item>
                 <Form.Item name="amount"
                   label={this.props.t('finance.sum')}
@@ -127,33 +140,41 @@ class EditExtData extends Component {
                   ]}>
                     <InputNumber precision="2"/>
                 </Form.Item>
-                <Form.Item name="budget"
+                <Form.Item name="budget_id"
                    label={this.props.t('budget._')}
-                   initialValue={this.state.form.budget.value}>
-                    <Select allowClear={true} options={this.state.form.budget.choices}/>
+                   className={this.state.landExData ? 'd-none' : ''}
+                   initialValue={this.state.form.budget_id.value}>
+                    <Select allowClear={true} options={this.state.form.budget_id.choices} onSelect={this.getBudgetItems}/>
                 </Form.Item>
-                <Form.Item name="budget_item"
+                <Form.Item name="budget_item_id"
                    label={this.props.t('budget.item._')}
-                   initialValue={this.state.form.budget_item.value}>
+                   className={this.state.landExData ? 'd-none' : ''}
+                   initialValue={this.state.form.budget_item_id.value}>
                     <Select
                        showSearch
                        allowClear={true}
-                       options={this.state.form.budget_item.choices}/>
-                </Form.Item>
-                <Form.Item name="charge_code"
-                   label={this.props.t('land.charge')}
-                   initialValue={this.state.form.charge_code.value}>
-                    <Select
-                       allowClear={true}
-                       options={this.state.form.charge_code.choices}/>
+                       options={this.state.form.budget_item_id.choices}/>
                 </Form.Item>
                 <Form.Item name="land"
                    label={this.props.t('land._')}
+                   className={this.state.landExData ? '' : 'd-none'}
                    initialValue={this.state.form.land.value}>
                     <Select
                        showSearch
                        allowClear={true}
                        options={this.state.form.land.choices}/>
+                </Form.Item>
+                <Form.Item name="year"
+                  label={this.props.t('calendar.year')}
+                  initialValue={this.state.form.year.value}
+                  className={this.state.landExData ? '' : 'd-none'}>
+                    <InputNumber/>
+                </Form.Item>
+                <Form.Item name="month"
+                  label={this.props.t('calendar.month')}
+                  initialValue={this.state.form.month.value*1}
+                  className={this.state.landExData ? '' : 'd-none'}>
+                    <Select options={this.state.form.month.choices}/>
                 </Form.Item>
                 <Form.Item name="id"
                   hidden={true} 

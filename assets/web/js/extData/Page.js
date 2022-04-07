@@ -48,12 +48,8 @@ class ExtDataPage extends Component {
                     dataIndex: 'charge_code'
                 },
                 {
-                    title: this.props.t('budget._'),
-                    dataIndex: 'budget'
-                },
-                {
                     title: this.props.t('budget.item._'),
-                    dataIndex: 'budget_item'
+                    dataIndex: 'budget_item_name'
                 },
                 {
                     title: this.props.t('errors.error'),

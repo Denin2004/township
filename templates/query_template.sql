@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION ext_data.add_new(
+CREATE OR REPLACE FUNCTION ext_data.add(
     p_unknown_id integer,
     p_date date,
     p_amount numeric,
@@ -6,21 +6,18 @@ CREATE OR REPLACE FUNCTION ext_data.add_new(
     p_year integer,
     p_land character varying,
     p_charge_code character varying,
-    p_budget character varying,
-    p_budget_item character varying)
+    p_budget_item_id integer)
   RETURNS void AS
 $BODY$
 declare err_text character varying;
 declare p_land_id integer;
 declare p_charge_type_id integer;
 declare p_invoice_id integer;
-declare p_budget_id integer;
-declare p_budget_item_id integer;
 begin
   err_text = '';
   if (p_unknown_id != -1) then
-    select dt, amount, month, year, land, charge_code, budget, budget_item from ext_data.unknown where id=p_unknown_id
-      into p_date, p_amount, p_month, p_year, p_land, p_charge_code, p_budget, p_budget_item;
+    select dt, amount, month, year, land, charge_code, budget_item_id from ext_data.unknown where id=p_unknown_id
+      into p_date, p_amount, p_month, p_year, p_land, p_charge_code, p_budget_item_id;
   end if;
   if (p_land is not null) then
      select id from lands.lands where num=p_land into p_land_id;
@@ -51,30 +48,8 @@ begin
         err_text='extData.errors.land_not_found';
      end if;
   end if;
-  if (p_budget is not null) then
-     if ((p_month is not null)and(p_year is not null)) then
-       select b_b.id from budget.budgets b_b
-         where (b_b.comment=p_budget)and
-           (to_date(p_month||'.'||p_year, 'MM.YYYY') between b_b.dt_from and b_b.dt_to)
-         into p_budget_id;
-       if (p_budget_id is not null) then
-          select b_i.id
-            from budget.budgets b_b
-              inner join budget.items b_i on (b_i.budget_id=b_b.id)
-              inner join budget.item_names b_in on (b_in.id=b_i.item_name_id)and(b_in.name=p_budget_item)
-          where (b_b.id=p_budget_id)
-            into p_budget_item_id;
-          if (p_budget_item_id is not null) then
-            insert into budget.spendings(dt, item_id, amount)values(p_date, p_budget_item_id, p_amount);
-          else
-             err_text='extData.errors.budget_item_not_found';
-          end if;
-       else
-         err_text='extData.errors.budget_not_found';
-       end if;
-     else
-       err_text='extData.errors.budget_month_year';
-     end if; 
+  if (p_budget_item_id is not null) then
+    insert into budget.spendings(dt, item_id, amount)values(p_date, p_budget_item_id, p_amount);
   end if;
   if (err_text != '') then
     if (p_unknown_id != -1) then

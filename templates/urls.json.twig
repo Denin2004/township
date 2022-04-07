@@ -56,6 +56,16 @@
         "invoice": {
             "data": "{{ path('financeInvoice') }}",
             "page": "{{ path('financeInvoicePage') }}"
+        },
+        "moneyMove": {
+            "page": "{{ path('financeMoneyMovePage') }}",
+            "data": "{{ path('financeMoneyMoveData') }}",
+            "filterForm": "{{ path('financeMoneyMoveFilterForm') }}",
+            "editForm": "{{ path('financeMoneyMoveEditForm') }}",
+            "createForm": "{{ path('financeMoneyMoveCreateForm') }}",
+            "create": "{{ path('financeMoneyMoveCreate') }}",
+            "post": "{{ path('financeMoneyMovePost') }}",
+            "delete": "{{ path('financeMoneyMoveDelete') }}"
         }
     },
     "budget": {
@@ -70,7 +80,8 @@
             "delete": "{{ path('budgetItemDelete') }}",
             "nameAdd": "{{ path('budgetItemNameAdd') }}",
             "create": "{{ path('budgetItemCreate') }}",
-            "spending": "{{ path('budgetItemSpending') }}"
+            "spending": "{{ path('budgetItemSpending') }}",
+            "choices": "{{ path('budgetItemChoices') }}"
         },
         "discount": {
             "page": "{{ path('budgetDiscountsPage') }}",

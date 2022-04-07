@@ -27,25 +27,24 @@ class Edit extends ReactForm
         if ($options['request'] == true) {
             $builder->add('land', TextType::class)
                 ->add('charge_code', TextType::class)
-                ->add('budget', TextType::class)
-                ->add('budget_item', TextType::class)
+                ->add('budget_id', TextType::class)
+                ->add('budget_item_id', TextType::class)
                 ->add('month', IntegerType::class);
         } else {
+            $chargeChoices = $this->extDataDB->typeChoices();
+            $chargeChoices['budget.spendings._'] = 'р';
             $builder->add(
-                'budget',
+                'budget_id',
                 ReactChoiceType::class,
                 [
                     'choices' => $this->extDataDB->budgetChoices()
                 ]
             )->add(
-                'budget_item',
+                'budget_item_id',
                 ReactChoiceType::class,
                 [
-                    'choices' => $options['data']['budget'] != '' ? $this->extDataDB->budgetItemChoices([
-                        'budget' => $options['data']['budget'],
-                        'month' => $options['data']['month'],
-                        'year' => $options['data']['year']
-                    ]) : []
+                    'choices' => $options['data']['budget_item_id'] != '' ?
+                       $this->extDataDB->budgetItemChoices($options['data']['budget_id']) : []
                 ]
             )->add(
                 'land',
@@ -76,7 +75,7 @@ class Edit extends ReactForm
                 'charge_code',
                 ReactChoiceType::class,
                 [
-                    'choices' => $this->extDataDB->typeChoices()
+                    'choices' => $chargeChoices
                 ]
             );
         }
