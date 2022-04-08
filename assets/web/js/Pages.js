@@ -17,7 +17,7 @@ import Owners from '@app/web/js/land/Owners';
 import Discounts from '@app/web/js/budget/Discounts';
 import ExtDataPage from '@app/web/js/extData/Page';
 import Error403 from '@app/web/js/Error403';
-import FianceMoneyMove from '@app/web/js/finance/MoneyMove';
+import FianceMoneyMove from '@app/web/js/finance/moneyMove/Main';
 
 class Pages extends Component {
     constructor(props){

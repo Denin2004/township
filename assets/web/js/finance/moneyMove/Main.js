@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { withTranslation } from 'react-i18next';
-import {message, Table, Typography, DatePicker, Form, Button, Input} from 'antd';
+import {message, Table, Typography, DatePicker, Form, Button, Input, Space} from 'antd';
 import { SearchOutlined, CloseCircleOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
@@ -9,6 +9,8 @@ import moment from 'moment-timezone';
 import useWithForm from '@app/hooks/useWithForm';
 import useWithParams from '@app/hooks/useWithParams';
 import MfwNumber from '@app/mfw/MfwNumber';
+import Edit from'@app/web/js/finance/moneyMove/Edit';
+import ItemCreate from'@app/web/js/budget/ItemCreate';
 
 class FinanceMoneyMove extends Component {
     constructor(props){
@@ -17,6 +19,7 @@ class FinanceMoneyMove extends Component {
             data: [],
             loading: false,
             form: false,
+            editRecord: null,
             columns: [
                 {
                     title: this.props.t('calendar.date'),
@@ -68,6 +71,16 @@ class FinanceMoneyMove extends Component {
                     align: 'right',
                     render: (text, record) => {
                         return record.amount_out == 0 ? null : <MfwNumber value={record.amount_out}/>
+                    }
+                },
+                {
+                    title: this.props.t('action.s'),
+                    key: 'actions',
+                    render: (text, record) => {
+                        return <Space>
+                            <a onClick={() => this.setState({editRecord: record})} >{this.props.t('action.edit')}</a>
+                            <a onClick={() => this.setState({editId: record.id})} >{this.props.t('action.delete')}</a>
+                        </Space>
                     }
                 }
             ]
@@ -169,6 +182,16 @@ class FinanceMoneyMove extends Component {
               columns={this.state.columns}
               dataSource={this.state.data}
               pagination={false}/>
+            {this.state.editRecord != null ? <Edit
+                    id={this.state.editRecord.id}
+                    table={this.state.editRecord.table}
+                    cancel={() => this.setState({editRecord: null})}
+                    success={() => {this.setState({editRecord: null});this.props.form.submit();}}/> : null}
+            {this.state.createItem != null ? <ItemCreate
+                    budgetID={this.state.budgetID} 
+                    parentID={this.state.createItem}
+                    cancel={() => this.setState({createItem: null})}
+                    success={() => {this.setState({createItem: null});this.props.form.submit();}}/> : null}              
         </React.Fragment> : null
     }
 }

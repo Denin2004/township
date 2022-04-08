@@ -36,13 +36,14 @@ financeMoneyMoveFilterForm:
         id: -1    
     
 financeMoneyMoveEditForm:
-    path: /moneymove/editform/{id}
+    path: /moneymove/editform/{table}/{id}
     controller: App\Controller\Finance\MoneyMove::editForm
     methods: [GET]
     requirements:
         id: \d+
     defaults: 
         id: -1
+        table: ""
 
 financeMoneyMoveCreateForm:
     path: /moneymove/createform
