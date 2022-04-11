@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { withTranslation } from 'react-i18next';
-import {message, Table, Typography, DatePicker, Form, Button, Input, Space} from 'antd';
+import { Link, generatePath } from 'react-router-dom';
+import {message, Table, Typography, DatePicker, Form, Button, Input, Space, Popconfirm} from 'antd';
 import { SearchOutlined, CloseCircleOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
@@ -10,7 +11,7 @@ import useWithForm from '@app/hooks/useWithForm';
 import useWithParams from '@app/hooks/useWithParams';
 import MfwNumber from '@app/mfw/MfwNumber';
 import Edit from'@app/web/js/finance/moneyMove/Edit';
-import ItemCreate from'@app/web/js/budget/ItemCreate';
+import Create from'@app/web/js/finance/moneyMove/Create';
 
 class FinanceMoneyMove extends Component {
     constructor(props){
@@ -79,13 +80,20 @@ class FinanceMoneyMove extends Component {
                     render: (text, record) => {
                         return <Space>
                             <a onClick={() => this.setState({editRecord: record})} >{this.props.t('action.edit')}</a>
-                            <a onClick={() => this.setState({editId: record.id})} >{this.props.t('action.delete')}</a>
+                            <Popconfirm
+                              title={this.props.t('common.confirm_delete')}
+                              onConfirm={() => {this.deleteRecord(record)}}
+                              okText={this.props.t('modal.yes')}
+                              cancelText={this.props.t('modal.cancel')}>
+                                <a>{this.props.t('action.delete')}</a>
+                            </Popconfirm>
                         </Space>
                     }
                 }
             ]
         };
         this.showData = this.showData.bind(this);
+        this.deleteRecord = this.deleteRecord.bind(this);
     }
 
     componentDidMount() {
@@ -153,6 +161,32 @@ class FinanceMoneyMove extends Component {
     searchConfirm(selectedKeys, confirm) {
         confirm();
     }
+    
+    deleteRecord(record) {
+        axios({
+            method: 'get',
+            url: generatePath(
+                    window.mfwApp.urls.finance.moneyMove.delete+'/:table/:id', 
+                    { table: record.table, id: record.id}
+                ),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+        }).then(res => {
+            if (res.data.success) {
+                this.props.form.submit();
+            } else {
+                message.error(this.props.t(res.data.error));
+            }
+        }).catch(error => {
+            if (error.response && error.response.data) {
+                message.error(this.props.t(error.response.data.error));
+            } else {
+                message.error(error.toString());
+            }
+        });
+        
+    }
 
     render() {
         return this.state.form != false ? <React.Fragment>
@@ -178,6 +212,7 @@ class FinanceMoneyMove extends Component {
             </Form>
             <Table
               rowKey="id"
+              title={() => <Button onClick={() => this.setState({createItem: true})}>ddd</Button>}
               loading={this.state.loading}
               columns={this.state.columns}
               dataSource={this.state.data}
@@ -187,9 +222,7 @@ class FinanceMoneyMove extends Component {
                     table={this.state.editRecord.table}
                     cancel={() => this.setState({editRecord: null})}
                     success={() => {this.setState({editRecord: null});this.props.form.submit();}}/> : null}
-            {this.state.createItem != null ? <ItemCreate
-                    budgetID={this.state.budgetID} 
-                    parentID={this.state.createItem}
+            {this.state.createItem != null ? <Create
                     cancel={() => this.setState({createItem: null})}
                     success={() => {this.setState({createItem: null});this.props.form.submit();}}/> : null}              
         </React.Fragment> : null

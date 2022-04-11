@@ -7,7 +7,6 @@ import axios from 'axios';
 import moment from 'moment-timezone';
 
 import useWithForm from '@app/hooks/useWithForm';
-import SelectItemName from '@app/web/js/budget/SelectItemName';
 
 class Edit extends Component {
     constructor(props){

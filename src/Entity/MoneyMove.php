@@ -67,7 +67,6 @@ class MoneyMove extends Entity
     public function post($params)
     {
         $params['format'] = $this->provider->dateFormat();
-        dump($params);
         switch ($params['table']) {
             case 'pays':
                 $this->provider->executeQuery(
@@ -86,6 +85,23 @@ class MoneyMove extends Entity
                 );
                 break;
         }
-        dump($this);
+    }
+
+    public function delete($params)
+    {
+        switch ($params['table']) {
+            case 'pays':
+                $this->provider->executeQuery(
+                    'delete from balances.pays where id=:id',
+                    $params
+                );
+                break;
+            case 'spendings':
+                $this->provider->executeQuery(
+                    'delete from budget.spendings where id=:id',
+                    $params
+                );
+                break;
+        }
     }
 }

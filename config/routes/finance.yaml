@@ -47,7 +47,7 @@ financeMoneyMoveEditForm:
 
 financeMoneyMoveCreateForm:
     path: /moneymove/createform
-    controller: App\Controller\Finance\MoneyMove::createForm
+    controller: App\Controller\Finance\MoneyMove::createRecordForm
     methods: [GET]
     
 financeMoneyMoveCreate:
@@ -61,10 +61,11 @@ financeMoneyMovePost:
     methods: [POST]
     
 financeMoneyMoveDelete:
-    path: /moneymove/delete/{id}
+    path: /moneymove/delete/{table}/{id}
     controller: App\Controller\Finance\MoneyMove::delete
     methods: [GET]
     requirements:
         id: \d+
     defaults: 
         id: -1    
+        table: ""

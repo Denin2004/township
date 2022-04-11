@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Entity\MoneyMove as MoneyMoveDB;
 use App\Form\MoneyMove\Filter;
 use App\Form\MoneyMove\Edit as EditForm;
+use App\Form\MoneyMove\Create as CreateForm;
 use App\Services\SiteConfig\SiteConfig;
 
 class MoneyMove extends AbstractController
@@ -103,12 +104,11 @@ class MoneyMove extends AbstractController
                 'error' => $errors
             ]);
         }
-        $formData = $form->getData();
         $moneyMoveDB->post($form->getData());
         if ($moneyMoveDB->isError()) {
             return new JsonResponse([
                 'success' => false,
-                'error' => $extDataDB->getError()
+                'error' => $moneyMoveDB->getError()
             ]);
         }
         return new JsonResponse([
@@ -116,4 +116,30 @@ class MoneyMove extends AbstractController
         ]);
     }
 
+    public function delete($table, $id, MoneyMoveDB $moneyMoveDB)
+    {
+        $moneyMoveDB->delete([
+            'table' => $table,
+            'id' => $id
+        ]);
+        if ($moneyMoveDB->isError()) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => $moneyMoveDB->getError()
+            ]);
+        }
+        return new JsonResponse([
+            'success' => true
+        ]);
+    }
+
+    public function createRecordForm()
+    {
+        $form = $this->createForm(CreateForm::class);
+        $view = $form->createView();
+        return new JsonResponse([
+            'success' => true,
+            'form' => $view->vars['react']
+        ]);
+    }
 }

@@ -8,17 +8,8 @@ use App\Form\React\ReactTextType;
 use App\Form\React\ReactHiddenType;
 use App\Form\React\ReactDateType;
 
-use App\Entity\ExtData;
-
 class Edit extends ReactForm
 {
-    protected $extDataDB;
-
-    public function __construct(ExtData $extDataDB)
-    {
-        $this->extDataDB = $extDataDB;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('id', ReactHiddenType::class)
