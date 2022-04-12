@@ -59,4 +59,14 @@ class Charges extends Entity
                 order by c.name'
         );
     }
+
+    public function typeChoices()
+    {
+        $res = $this->provider->fetchAll('select id, name from charges.types');
+        $options = [];
+        foreach ($res as $row) {
+            $options[$row['name']] = $row['id'];
+        }
+        return $options;
+    }
 }

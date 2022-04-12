@@ -52,3 +52,15 @@ landOwnerDelete:
         id: \d+
     defaults: 
         id: -1
+
+landDebtInvoiceChoices:
+    path: /debt/invoice/choices/{land_id}/{charge_type_id}
+    controller: App\Controller\Land\Main::debtInvoiceChoices
+    methods: [GET]
+    requirements:
+        land_id: \d+
+        charge_type_id: \d+
+    defaults: 
+        land_id: -1
+        charge_type_id: -1
+    

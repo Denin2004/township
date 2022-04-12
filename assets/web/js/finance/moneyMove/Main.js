@@ -24,7 +24,7 @@ class FinanceMoneyMove extends Component {
             columns: [
                 {
                     title: this.props.t('calendar.date'),
-                    dataIndex: 'dt'
+                    dataIndex: 'dt_frmt'
                 },
                 {
                     title: this.props.t('common.type'),
@@ -39,7 +39,7 @@ class FinanceMoneyMove extends Component {
                     title: this.props.t('land._'),
                     dataIndex: 'num',
                     filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-                    onFilter: (value, record) => record.num.toString().toLowerCase() == value.toLowerCase(),
+                    onFilter: (value, record) => record.num != null ? record.num.toString().toLowerCase() == value.toLowerCase() : false,
                     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
                         <div>
                         <Input.Group compact style={{ padding: 8 }}>
@@ -137,13 +137,16 @@ class FinanceMoneyMove extends Component {
             data: values
         }).then(res => {
             if (res.data.success) {
-                this.state.data.filter((v,i,a)=>a.findIndex(t=>(t.type_name===v.type_name))===i).map(rec => {return {text:rec.type_name, value: rec.type_name}});
                 this.setState((state) => {
                     state.loading = false;
+                    res.data.moneyMove.map((record) => {
+                        record.type_name = record.num == null ? 
+                          this.props.t(record.type_name) : record.type_name;
+                    });
                     state.data = res.data.moneyMove;
                     state.columns[1].filters = res.data.moneyMove
                             .filter((v, i, a)=> a.findIndex(t=> (t.type_name===v.type_name))===i)
-                            .map(rec => {return {text:rec.type_name, value: rec.type_name}});
+                            .map(rec => {return {text: rec.type_name, value: rec.type_name}});
                     return state;
                 });
             } else {
@@ -212,7 +215,7 @@ class FinanceMoneyMove extends Component {
             </Form>
             <Table
               rowKey="id"
-              title={() => <Button onClick={() => this.setState({createItem: true})}>ddd</Button>}
+              title={() => <Button onClick={() => this.setState({createItem: true})}>{this.props.t('common.add_record')}</Button>}
               loading={this.state.loading}
               columns={this.state.columns}
               dataSource={this.state.data}

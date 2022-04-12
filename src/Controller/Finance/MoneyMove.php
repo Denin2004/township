@@ -142,4 +142,37 @@ class MoneyMove extends AbstractController
             'form' => $view->vars['react']
         ]);
     }
+
+    public function create(Request $request, MoneyMoveDB $moneyMoveDB)
+    {
+        $formRequest = json_decode($request->getContent(), true);
+        if ($formRequest == null) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'form.errors.noData'
+            ]);
+        }
+        $form = $this->createForm(CreateForm::class, [], ['request' => true]);
+        $form->submit($formRequest);
+        if (!$form->isValid()) {
+            $errors = '';
+            foreach ($form->getErrors(true) as $error) {
+                $errors.= $error->getMessage().' ';
+            }
+            return new JsonResponse([
+                'success' => false,
+                'error' => $errors
+            ]);
+        }
+        $moneyMoveDB->create($form->getData());
+        if ($moneyMoveDB->isError()) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => $moneyMoveDB->getError()
+            ]);
+        }
+        return new JsonResponse([
+            'success' => true
+        ]);
+    }
 }

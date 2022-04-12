@@ -27,4 +27,15 @@ class Main extends AbstractController
             'debt' => $debt
         ]);
     }
+
+    public function debtInvoiceChoices(LandDB $landDB, $land_id, $charge_type_id)
+    {
+        return new JsonResponse([
+            'success' => true,
+            'choices' => $landDB->debtInvoiceChoices([
+                'land_id' => $land_id,
+                'charge_type_id' => $charge_type_id
+            ])
+        ]);
+    }
 }

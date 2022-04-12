@@ -8,31 +8,37 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use App\Form\React\ReactForm;
 use App\Form\React\ReactTextType;
 use App\Form\React\ReactChoiceType;
-use App\Form\React\ReactHiddenType;
 use App\Form\React\ReactDateType;
 
 use App\Entity\ExtData;
+use App\Entity\Charges;
+use App\Entity\Land;
 
 class Create extends ReactForm
 {
     protected $extDataDB;
+    protected $charegsDB;
+    protected $landDB;
 
-    public function __construct(ExtData $extDataDB)
+    public function __construct(ExtData $extDataDB, Charges $chargesDB, Land $landDB)
     {
         $this->extDataDB = $extDataDB;
+        $this->charegsDB = $chargesDB;
+        $this->landDB = $landDB;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($options['request'] == true) {
-            $builder->add('land', TextType::class)
-                ->add('charge_code', TextType::class)
+            $builder->add('land_id', TextType::class)
+                ->add('charge_type_id', TextType::class)
                 ->add('budget_id', TextType::class)
                 ->add('budget_item_id', TextType::class)
+                ->add('start_invoice_id', TextType::class)
                 ->add('month', IntegerType::class);
         } else {
-            $chargeChoices = $this->extDataDB->typeChoices();
-            $chargeChoices['budget.spendings._'] = 'р';
+            $chargeChoices = $this->charegsDB->typeChoices();
+            $chargeChoices['budget.spendings._'] = -1;
             $builder->add(
                 'budget_id',
                 ReactChoiceType::class,
@@ -46,32 +52,19 @@ class Create extends ReactForm
                     'choices' => []
                 ]
             )->add(
-                'land',
+                'land_id',
                 ReactChoiceType::class,
                 [
-                    'choices' => $this->extDataDB->landChoices()
+                    'choices' => $this->landDB->listChoices()
                 ]
             )->add(
-                'month',
+                'start_invoice_id',
                 ReactChoiceType::class,
                 [
-                    'choices' => [
-                        'calendar.months.1' => 1,
-                        'calendar.months.2' => 2,
-                        'calendar.months.3' => 3,
-                        'calendar.months.4' => 4,
-                        'calendar.months.5' => 5,
-                        'calendar.months.6' => 6,
-                        'calendar.months.7' => 7,
-                        'calendar.months.8' => 8,
-                        'calendar.months.9' => 9,
-                        'calendar.months.10' => 10,
-                        'calendar.months.11' => 11,
-                        'calendar.months.12' => 12
-                    ]
+                    'choices' => []
                 ]
             )->add(
-                'charge_code',
+                'charge_type_id',
                 ReactChoiceType::class,
                 [
                     'choices' => $chargeChoices
@@ -79,7 +72,6 @@ class Create extends ReactForm
             );
         }
         $builder->add('dt', ReactDateType::class)
-            ->add('year', ReactTextType::class)
             ->add('amount', ReactTextType::class);
     }
 }

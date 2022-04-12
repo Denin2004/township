@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
 import { withTranslation } from 'react-i18next';
-import { message, Form, Input, Modal, Select, InputNumber, DatePicker } from 'antd';
+import { generatePath } from 'react-router-dom';
+import { message, Form, Input, Modal, Select, InputNumber, DatePicker, Typography } from 'antd';
 
 import axios from 'axios';
 import moment from 'moment-timezone';
 
 import useWithForm from '@app/hooks/useWithForm';
+import MfwNumber from '@app/mfw/MfwNumber';
 
 class Create extends Component {
     constructor(props){
@@ -17,6 +19,7 @@ class Create extends Component {
         };
         this.itemPost = this.itemPost.bind(this);
         this.getBudgetItems = this.getBudgetItems.bind(this);
+        this.getDebtLand = this.getDebtLand.bind(this);
     }
 
     componentDidMount() {
@@ -29,18 +32,15 @@ class Create extends Component {
             }
         ).then(res => {
             if (res.data.success) {
-                res.data.form.month.choices.map(choice => {
-                    choice.label = this.props.t('calendar.months.'+choice.value);
-                });
-                res.data.form.charge_code.choices.map(choice => {
+                res.data.form.charge_type_id.choices.map(choice => {
                     choice.label = this.props.t(choice.label);
                 });
-                res.data.form.charge_code.value = res.data.form.charge_code.choices.length != 0 ? 
-                   res.data.form.charge_code.choices[0].value : null;
+                res.data.form.charge_type_id.value = res.data.form.charge_type_id.choices.length != 0 ? 
+                   res.data.form.charge_type_id.choices[0].value : null;
                 this.setState({
                     loading: false,
                     form: res.data.form,
-                    landExData: res.data.form.charge_code.value != 'р'
+                    landExData: res.data.form.charge_type_id.value != -1
                 });
             } else {
                 message.error(this.props.t(res.data.error));
@@ -82,7 +82,7 @@ class Create extends Component {
     getBudgetItems(budget_id) {
         axios({
             method: 'get',
-            url: window.mfwApp.urls.budget.item.choices+'/'+budget_id,
+            url: generatePath(window.mfwApp.urls.budget.item.choices+'/:budget_id', {budget_id: budget_id}),
             headers: {'Content-Type': 'application/json','X-Requested-With': 'XMLHttpRequest'}
         }).then(res => {
             if (res.data.success) {
@@ -90,13 +90,59 @@ class Create extends Component {
                     state.form.budget_item_id.choices = res.data.choices;
                     return state; 
                 });
-                
             } else {
                 message.error(this.props.t(res.data.error));
             }
         }).catch(error => {
             message.error(error.toString());
         });
+    }
+    
+    debtLabel(choice) {
+        return choice.debt == choice.amount ? <React.Fragment>
+            <small>
+                <Typography.Text type="secondary">{choice.label}</Typography.Text>
+            </small>
+            <Typography.Text strong> <MfwNumber value={choice.debt}/></Typography.Text> 
+            </React.Fragment> : <React.Fragment> 
+                <small>
+                    <Typography.Text type="secondary">{choice.label}</Typography.Text>
+                </small>
+                <Typography.Text strong> <MfwNumber value={choice.debt}/></Typography.Text> (<MfwNumber value={choice.amount}/>)
+        </React.Fragment>;
+    }
+    
+    getDebtLand(charge_type_id, land_id) {
+        if (charge_type_id != -1) {
+            this.setState({landExData: true});
+            if (land_id != undefined) {
+                axios({
+                    method: 'get',
+                    url: generatePath(
+                        window.mfwApp.urls.township.land.debtInvoiceChoices+'/:land_id/:charge_type_id',
+                        {land_id: land_id, charge_type_id: charge_type_id}
+                    ),
+                    headers: {'Content-Type': 'application/json','X-Requested-With': 'XMLHttpRequest'}
+                    }).then(res => {
+                    if (res.data.success) {
+                        res.data.choices.map( choice => {
+                            choice.label = this.debtLabel(choice)
+                        });
+                        this.setState(state => {
+                            state.form.start_invoice_id.choices = res.data.choices;
+                            return state; 
+                        });
+                        
+                    } else {
+                        message.error(this.props.t(res.data.error));
+                    }
+                }).catch(error => {
+                    message.error(error.toString());
+                });
+            }
+        } else {
+            this.setState({landExData: false});
+        }
     }
     
     render() {
@@ -111,13 +157,13 @@ class Create extends Component {
                name="item"
                labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}>
-                <Form.Item name="charge_code"
+                <Form.Item name="charge_type_id"
                    label={this.props.t('land.charge')}
-                   initialValue={this.state.form.charge_code.value}>
+                   initialValue={this.state.form.charge_type_id.value}>
                     <Select
                        allowClear={true}
-                       onSelect={(tp) => this.setState({landExData: tp != 'р'})}
-                       options={this.state.form.charge_code.choices}/>
+                       onSelect={(tp) => this.getDebtLand(tp, this.props.form.getFieldValue('land'))}
+                       options={this.state.form.charge_type_id.choices}/>
                 </Form.Item>
                 <Form.Item name="dt"
                     label={this.props.t('calendar.date')}
@@ -140,6 +186,21 @@ class Create extends Component {
                   ]}>
                     <InputNumber precision="2"/>
                 </Form.Item>
+                <Form.Item name="land_id"
+                   label={this.props.t('land._')}
+                   className={this.state.landExData ? '' : 'd-none'}>
+                    <Select
+                       showSearch
+                       allowClear={true}
+                       options={this.state.form.land_id.choices}
+                       onSelect={(land_id) => this.getDebtLand(this.props.form.getFieldValue('charge_type_id'), land_id)}/>
+                </Form.Item>
+                <Form.Item name="start_invoice_id"
+                   label={this.props.t('finance.invoice.num')}
+                   className={this.state.landExData ? '' : 'd-none'}>
+                    <Select allowClear={true} 
+                      options={this.state.form.start_invoice_id.choices}/>
+                </Form.Item>                
                 <Form.Item name="budget_id"
                    label={this.props.t('budget._')}
                    className={this.state.landExData ? 'd-none' : ''}>
@@ -152,26 +213,6 @@ class Create extends Component {
                        showSearch
                        allowClear={true}
                        options={this.state.form.budget_item_id.choices}/>
-                </Form.Item>
-                <Form.Item name="land"
-                   label={this.props.t('land._')}
-                   className={this.state.landExData ? '' : 'd-none'}>
-                    <Select
-                       showSearch
-                       allowClear={true}
-                       options={this.state.form.land.choices}/>
-                </Form.Item>
-                <Form.Item name="year"
-                  label={this.props.t('calendar.year')}
-                  className={this.state.landExData ? '' : 'd-none'}
-                  initialValue={moment().format('Y')}>
-                    <InputNumber/>
-                </Form.Item>
-                <Form.Item name="month"
-                  label={this.props.t('calendar.month')}
-                  className={this.state.landExData ? '' : 'd-none'}
-                  initialValue={moment().format('M')*1}>
-                    <Select options={this.state.form.month.choices}/>
                 </Form.Item>
                 <Form.Item name="_token"
                   hidden={true} 

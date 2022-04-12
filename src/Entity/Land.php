@@ -12,7 +12,7 @@ class Land extends Entity
         }
         return $this->provider->fetchAll(
             'select inv.id,
-                case when inv.charge_type_id = 1 then ct.name||\' \'||to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMONTH YYYY\')
+                case when inv.charge_type_id = 1 then to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMONTH YYYY\')
                      when inv.budget_id is not tull then to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMONTH YYYY\')
                 else \'\'
                 end
@@ -96,5 +96,27 @@ class Land extends Entity
                 'land_id' => $land_id
             ]
         )[0]['p_access'];
+    }
+
+    public function debtInvoiceChoices($params)
+    {
+        $data = $this->provider->fetchAll(
+            'select b_i.id, to_char(to_date(b_i.month||\'.\'||b_i.year, \'MM.YYYY\'), \'TMMON YYYY\') as name,
+                b_i.amount-b_i.payed debt, b_i.amount
+                from balances.invoices b_i
+                inner join charges.types c_t on (c_t.id=b_i.charge_type_id)and(c_t.id=:charge_type_id)
+                where (b_i.land_id=:land_id)and(b_i.amount-b_i.payed>0)',
+            $params
+        );
+        $res = [];
+        foreach ($data as $row) {
+            $res[] = [
+                'label' => $row['name'],
+                'value' => $row['id'],
+                'debt' => $row['debt'],
+                'amount' => $row['amount']
+            ];
+        }
+        return $res;
     }
 }
