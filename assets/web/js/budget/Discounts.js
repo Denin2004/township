@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-//import { useMatch } from 'react-router-dom';
+import { generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import {message, Table, Button, Modal, Space} from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
@@ -84,7 +84,10 @@ class Discounts extends Component {
             onOk: () => {
                 axios({
                     method: 'get',
-                    url: window.mfwApp.urls.budget.discount.delete+'/'+land_id+'/'+item_name_id,
+                    url: generatePath(
+                        window.mfwApp.urls.budget.discount.delete+'/:land_id/:item_name_id',
+                        {land_id: land_id, item_name_id: item_name_id}
+                    ),
                     headers: {
                             'X-Requested-With': 'XMLHttpRequest'
                     }

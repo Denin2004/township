@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { withTranslation } from 'react-i18next';
-import { Link, generatePath } from 'react-router-dom';
+import { generatePath } from 'react-router-dom';
 import {message, Table, Typography, DatePicker, Form, Button, Input, Space, Popconfirm} from 'antd';
 import { SearchOutlined, CloseCircleOutlined } from '@ant-design/icons';
 

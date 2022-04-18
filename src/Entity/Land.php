@@ -119,4 +119,19 @@ class Land extends Entity
         }
         return $res;
     }
+
+    public function lands()
+    {
+        return $this->provider->fetchAll(
+            'select id, num, square from lands.lands order by num'
+        );
+    }
+
+    public function post($params)
+    {
+        $this->provider->executeQuery(
+            'update lands.lands set num=:num, square=:square where id=:id',
+            $params
+        );
+    }
 }

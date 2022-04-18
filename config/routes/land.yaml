@@ -1,3 +1,18 @@
+landPage:
+    path: /page
+    controller: App\Controller\Application::index
+    methods: [GET]
+    
+landPageData:
+    path: /page/data
+    controller: App\Controller\Land\Main::pageData
+    methods: [GET]
+    
+landPost:
+    path: /post
+    controller: App\Controller\Land\Main::post
+    methods: [POST]
+
 landDebtType:
     path: /debtbtype/{land_id}/{type_id}
     controller: App\Controller\Application::index

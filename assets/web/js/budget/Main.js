@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-//import { useMatch } from 'react-router-dom';
+import { generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import {message, Table, Select, Space, Button, Modal, Menu, Dropdown} from 'antd';
 import { ExclamationCircleOutlined, DownOutlined } from '@ant-design/icons';
@@ -163,7 +163,7 @@ class Budgets extends Component {
         });
         axios({
             method: 'get',
-            url: window.mfwApp.urls.budget.data+'/'+budgetID,
+            url: generatePath(window.mfwApp.urls.budget.data+'/:budgetID', {budgetID: budgetID}),
             headers: {
                     'X-Requested-With': 'XMLHttpRequest'
             }
@@ -195,7 +195,7 @@ class Budgets extends Component {
             onOk: () => {
                 axios({
                     method: 'get',
-                    url: window.mfwApp.urls.budget.item.delete+'/'+id,
+                    url: generatePath(window.mfwApp.urls.budget.item.delete+'/:id', {id: id}),
                     headers: {
                             'X-Requested-With': 'XMLHttpRequest'
                     }

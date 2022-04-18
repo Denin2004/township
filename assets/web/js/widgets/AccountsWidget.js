@@ -62,6 +62,9 @@ class AccountsWidgets extends Component {
                     <List.Item>
                         <Link to={window.mfwApp.urls.budget.discount.page}>{this.props.t('budget.discount.s')}</Link>
                     </List.Item>
+                    <List.Item>
+                        <Link to={window.mfwApp.urls.township.land.page}>{this.props.t('land.s')}</Link>
+                    </List.Item>
                 </List>
             </React.Fragment>)}
         </Card>

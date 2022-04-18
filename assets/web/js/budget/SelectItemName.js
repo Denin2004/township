@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { withTranslation } from 'react-i18next';
+import { generatePath } from 'react-router-dom';
 import {message, Select, Button, Divider, Input} from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -21,7 +22,7 @@ class SelectItemName extends Component {
     addItemName() {
         axios({
             method: 'get',
-            url: window.mfwApp.urls.budget.item.nameAdd+'/'+this.state.name,
+            url: generatePath(window.mfwApp.urls.budget.item.nameAdd+'/:name', {name: this.state.name}),
             headers: {'Content-Type': 'application/json','X-Requested-With': 'XMLHttpRequest'}
         }).then(res => {
             if (res.data.success) {

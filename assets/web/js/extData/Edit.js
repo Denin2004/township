@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { withTranslation } from 'react-i18next';
+import { generatePath } from 'react-router-dom';
 import { message, Form, Input, Modal, Select, InputNumber, DatePicker } from 'antd';
 
 import axios from 'axios';
@@ -21,7 +22,7 @@ class EditExtData extends Component {
 
     componentDidMount() {
         axios.get(
-            window.mfwApp.urls.extData.page.form+'/'+this.props.id,
+            generatePath(window.mfwApp.urls.extData.page.form+'/:id', {id: this.props.id}),
             {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'

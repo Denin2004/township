@@ -18,6 +18,7 @@ import Discounts from '@app/web/js/budget/Discounts';
 import ExtDataPage from '@app/web/js/extData/Page';
 import Error403 from '@app/web/js/Error403';
 import FianceMoneyMove from '@app/web/js/finance/moneyMove/Main';
+import Lands from '@app/web/js/land/Main';
 
 class Pages extends Component {
     constructor(props){
@@ -149,6 +150,7 @@ class Pages extends Component {
                             <Route path={window.mfwApp.urls.budget.discount.page} element={<Discounts/>}/>
                             <Route path={window.mfwApp.urls.extData.page._} element={<ExtDataPage/>}/>
                             <Route path={window.mfwApp.urls.finance.moneyMove.page} element={<FianceMoneyMove/>}/>
+                            <Route path={window.mfwApp.urls.township.land.page} element={<Lands/>}/>
                             <Route path="/error/403" element={<Error403/>}/>
                         </Routes>
                     </Layout.Content>

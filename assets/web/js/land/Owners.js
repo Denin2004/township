@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-//import { useMatch } from 'react-router-dom';
+import { generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import {message, Table, Button, Modal, Space} from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
@@ -45,7 +45,7 @@ class Owners extends Component {
     }
     
     ownersData() {
-        this.setState({ownerID: null, loadin: true});
+        this.setState({ownerID: null, loading: true});
         axios.get(
             window.mfwApp.urls.township.land.owner.data,
             {
@@ -80,7 +80,7 @@ class Owners extends Component {
             onOk: () => {
                 axios({
                     method: 'get',
-                    url: window.mfwApp.urls.township.land.owner.delete+'/'+id,
+                    url: generatePath(window.mfwApp.urls.township.land.owner.delete+'/:id', {id: id}),
                     headers: {
                             'X-Requested-With': 'XMLHttpRequest'
                     }

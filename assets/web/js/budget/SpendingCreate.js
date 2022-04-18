@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { withTranslation } from 'react-i18next';
+import { generatePath } from 'react-router-dom';
 import {message, Form, Input, InputNumber, Modal, Checkbox, Select, DatePicker} from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -72,7 +73,7 @@ class SpendingCreate extends Component {
     getItems(value) {
         axios({
             method: 'get',
-            url: window.mfwApp.urls.budget.spending.getItems+'/'+value,
+            url: generatePath(window.mfwApp.urls.budget.spending.getItems+'/:value', {value: value}),
             headers: {'Content-Type': 'application/json','X-Requested-With': 'XMLHttpRequest'}
         }).then(res => {
             if (res.data.success) {
