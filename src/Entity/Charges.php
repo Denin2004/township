@@ -45,7 +45,7 @@ class Charges extends Entity
                     from balances.invoices b_i
                        left join charges.electricity c_e on(b_i.id=c_e.invoice_id)
                        left join lands.lands land on(land.id=b_i.land_id)
-                where (b_i.month=:month)and(b_i.year=:year)and(b_i.charge_type=1)
+                where (b_i.month=:month)and(b_i.year=:year)and(b_i.charge_type_id=1)
                 order by land.num',
             $params
         );

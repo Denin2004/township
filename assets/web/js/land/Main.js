@@ -60,12 +60,12 @@ class Lands extends Component {
                     onCell: (record) => ({
                         editing: false
                     }),
-                    render: (text, record, index) => {
+                    render: (text, record) => {
                         return this.state.editID == null ? <Space>
                             <Typography.Link onClick={() => this.edit(record)} >{this.props.t('action.edit')}</Typography.Link>
                         </Space> : <React.Fragment>
                         {this.state.editID == record.id ? <Space>
-                            <Typography.Link onClick={() => this.post(index, record.id)}>{this.props.t('modal.save')}</Typography.Link>
+                            <Typography.Link onClick={() => this.post(record.id)}>{this.props.t('modal.save')}</Typography.Link>
                             <Typography.Link onClick={() => this.setState({editID: null})}>{this.props.t('modal.cancel')}</Typography.Link>
                         </Space> : <Typography.Link disabled={true}>{this.props.t('action.edit')}</Typography.Link>}
                         </React.Fragment>
@@ -111,7 +111,7 @@ class Lands extends Component {
         this.setState({editID: record.id});
     }
     
-    post(index, id) {
+    post(id) {
         this.props.form
             .validateFields()
             .then(values => {
@@ -125,6 +125,7 @@ class Lands extends Component {
                     if (res.data.success) {
                         message.success(this.props.t('modal.saved'));
                         this.setState(state => {
+                            const index = state.lands.findIndex(land => land.id === id);
                             state.editID = null;
                             state.lands[index].num = values.num;
                             state.lands[index].square = values.square;
@@ -168,6 +169,7 @@ class Lands extends Component {
     }
     
     render() {
+        console.log(this.state);
         return  <React.Fragment>
             <Button onClick={() => this.setState({editID: -1})}>{this.props.t('land.add')}</Button>
             <Form form={this.props.form} 

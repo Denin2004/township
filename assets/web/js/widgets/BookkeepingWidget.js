@@ -122,7 +122,7 @@ class BookkeepingWidgets extends Component {
                         <a onClick={() => this.setState({charge: true})}>{this.props.t('budget.charge')}</a>
                     </List.Item>
                     <List.Item>
-                        <a onClick={() => this.setState({extDataUpload: true})}>{this.props.t('extData.upload')}</a>
+                        <a onClick={() => this.setState({extDataUpload: true})}>{this.props.t('finance.bank_upload')}</a>
                     </List.Item>
                     <List.Item>
                         <a target="_blank" href={window.mfwApp.urls.extData.page._}>{this.props.t('extData._')}</a>

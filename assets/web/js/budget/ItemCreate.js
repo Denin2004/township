@@ -88,13 +88,7 @@ class ItemCreate extends Component {
                       onAdd={(value) => this.props.form.setFieldsValue({item_name_id: value})}/>
                 </Form.Item>
                 <Form.Item name="tax"
-                  label={this.props.t('budget.tax')}
-                  rules={[
-                    {
-                      required: true,
-                      message: this.props.t('budget.errors.tax_blank')
-                    }
-                  ]}>
+                  label={this.props.t('budget.tax')}>
                     <InputNumber precision="2"/>
                 </Form.Item>
                 <Form.Item name="amount"

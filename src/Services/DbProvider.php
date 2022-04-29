@@ -49,16 +49,18 @@ class DbProvider
         return $this->timeFormat;
     }
 
-    public function executeQuery($sql, $params = [])
+    public function executeQuery($sql, $params = [], $types = [])
     {
         $this->error = '';
+        $res = null;
         try {
-            $this->db->executeQuery($sql, $params);
+            $res = $this->db->executeQuery($sql, $params, $types);
         } catch (\Doctrine\DBAL\DBALException $ex) {
             $err = explode('ERROR:', $ex->getPrevious()->getMessage());
             //$this->error = str_replace(' ', '', explode("\n", $err[count($err)-1])[0]);
             $this->error = trim(explode("\n", $err[count($err)-1])[0]);
         }
+        return $res;
     }
 
     public function fetchAll($sql, $params = [])

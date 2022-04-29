@@ -21,10 +21,7 @@ class Discount extends AbstractController
 
     public function form($land_id, $item_name_id, BudgetDB $budgetDB)
     {
-        $data = [
-            'land_id' => $land_id,
-            'item_name_id' => $item_name_id
-        ];
+        $data = [];
         if ($land_id != -1) {
             $data = $budgetDB->discount($data);
             if (!$data) {

@@ -31,7 +31,7 @@ class DiscountModal extends Component {
                 this.setState({
                     form: res.data.form,
                     loading: false
-                })
+                });
             } else {
                 message.error(this.props.t(res.data.error));
             }
@@ -84,23 +84,31 @@ class DiscountModal extends Component {
                     wrapperCol={{ span: 16 }}>
                     <Form.Item name="land_id"
                        label={this.props.t('land._')}
-                       initialValue={this.state.form.land_id.value*1}>
+                       initialValue={this.state.form.land_id.value == '' ? null : this.state.form.land_id.value*1}>
                         <Select
+                          showSearch={true}
                           options={this.state.form.land_id.choices}/>
                     </Form.Item>
                     <Form.Item name="item_name_id"
                        label={this.props.t('budget.item._')}
-                       initialValue={this.state.form.item_name_id.value*1}>
+                       initialValue={this.state.form.item_name_id.value == '' ? null : this.state.form.item_name_id.value*1}>
                         <Select
+                          showSearch={true}
+                          filterOption={(input, option) =>
+                            option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                          }
+                          filterSort={(optionA, optionB) =>
+                             optionA.label.toLowerCase().localeCompare(optionB.label.toLowerCase())
+                          }                        
                           options={this.state.form.item_name_id.choices}/>
                     </Form.Item>
                     <Form.Item name="discount"
-                       label={this.props.t('finance.discount')}
+                       label={this.props.t('finance.sum')}
                        initialValue={this.state.form.discount.value}
                        rules={[
                           {
                               required: true,
-                              message: this.props.t('budget.errors.discount_blank')
+                              message: this.props.t('finance.errors.corection_blank')
                           }
                        ]}>
                         <Input/>

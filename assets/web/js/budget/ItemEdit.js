@@ -62,6 +62,7 @@ class ItemEdit extends Component {
                     if (res.data.success) {
                         this.props.success();
                         message.success(this.props.t('modal.saved'));
+                        this.props.cancel();
                     } else {
                         message.error(this.props.t(res.data.error));
                     }
@@ -70,11 +71,12 @@ class ItemEdit extends Component {
                 });
             });
     }
+    
     render() {
         return  this.state.loading ? null : <Modal
           title={this.props.t('budget.item.edit')}
           visible={true}
-          closable={false}
+          closable={true}
           okText={this.props.t('modal.save')}
           cancelText={this.props.t('modal.cancel')}
           onCancel={this.props.cancel}

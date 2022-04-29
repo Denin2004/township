@@ -36,11 +36,11 @@ class Invoice extends Component {
                     }
                 },
                 {
-                    title: this.props.t('finance.discount'),
+                    title: this.props.t('finance.correction._'),
                     dataIndex: 'discount',
                     align: 'right',
                     render: (text, record) => { 
-                        return record.discount*1 == 1 ? null :  <MfwNumber value={record.square*record.tax*record.discount}/>
+                        return record.discount*1 == 0 ? null :  <MfwNumber value={record.discount}/>
                     }
                 }
             ]
@@ -98,7 +98,7 @@ class Invoice extends Component {
                     <Descriptions.Item label={this.props.t('calendar.night')}><MfwNumber value={this.state.invoice.night}/></Descriptions.Item>
                 </Descriptions>
                : null}
-               {this.state.invoice.chargeType == 2 ?
+               {this.state.invoice.chargeType == 2 || this.state.invoice.chargeType == 3 ?
                <React.Fragment>
                     <Descriptions>
                         <Descriptions.Item label={this.props.t('finance.sum')}><MfwNumber value={this.state.invoice.amount}/></Descriptions.Item>

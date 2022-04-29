@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Link, generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import { Modal, Spin, message, Descriptions, Table, Form, Select, Input } from 'antd';
+import { Modal, Spin, message, Descriptions, Table, Form, Select, Input, Checkbox } from 'antd';
 
 import axios from 'axios';
 
@@ -82,12 +82,6 @@ class OwnerModal extends Component {
                    name="owner"
                    labelCol={{ span: 8 }}
                     wrapperCol={{ span: 16 }}>
-                    <Form.Item name="land_id"
-                       label={this.props.t('land._')}
-                       initialValue={this.state.form.land_id.value*1}>
-                        <Select
-                          options={this.state.form.land_id.choices}/>
-                    </Form.Item>
                     <Form.Item name="name"
                        label={this.props.t('land.owner._')}
                        initialValue={this.state.form.name.value}
@@ -98,6 +92,28 @@ class OwnerModal extends Component {
                           }
                        ]}>
                         <Input/>
+                    </Form.Item>
+                    <Form.Item name="phone"
+                       label={this.props.t('person.phone')}
+                       initialValue={this.state.form.phone.value}>
+                        <Input/>
+                    </Form.Item>
+                    <Form.Item name="email"
+                       label={this.props.t('person.email')}
+                       initialValue={this.state.form.email.value}>
+                        <Input/>
+                    </Form.Item>             
+                    <Form.Item name="township_member"
+                       label={this.props.t('township.member')}
+                       valuePropName="checked"
+                       initialValue={this.state.form.township_member.value}>
+                        <Checkbox/>
+                    </Form.Item>
+                    <Form.Item name="land_ids"
+                       label={this.props.t('land._')}
+                       initialValue={this.state.form.land_ids.value}>
+                        <Select mode="multiple"
+                          options={this.state.form.land_ids.choices}/>
                     </Form.Item>
                     <Form.Item name="id"
                       hidden={true} 

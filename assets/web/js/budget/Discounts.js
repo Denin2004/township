@@ -25,8 +25,9 @@ class Discounts extends Component {
                     dataIndex: 'name'
                 },
                 {
-                    title: this.props.t('finance.discount'),
-                    dataIndex: 'discount'
+                    title: this.props.t('finance.sum'),
+                    dataIndex: 'discount',
+                    align: 'right'
                 },
                 {
                     title: this.props.t('action.s'),
@@ -49,7 +50,7 @@ class Discounts extends Component {
     }
     
     discountsData() {
-        this.setState({discountID: null, loading: true});
+        this.setState({/*discountID: null,*/ loading: true});
         axios.get(
             window.mfwApp.urls.budget.discount.data,
             {
@@ -77,7 +78,7 @@ class Discounts extends Component {
     
     deleteDiscount(land_id, item_name_id) {
         Modal.confirm({
-            content: this.props.t('budget.discount.confirm'),
+            content: this.props.t('finance.correction.confirm'),
             okText: this.props.t('modal.yes'),
             cancelText: this.props.t('modal.cancel'),
             icon: <ExclamationCircleOutlined />,
@@ -110,7 +111,7 @@ class Discounts extends Component {
     
     render() {
         return  <React.Fragment>
-            <Button onClick={() => this.setState({discountID: {land_id: -1, item_name_id: -1}})}>{this.props.t('budget.discount.add')}</Button>
+            <Button onClick={() => this.setState({discountID: {land_id: -1, item_name_id: -1}})}>{this.props.t('finance.correction.add')}</Button>
             <Table 
               rowKey="id" 
               loading={this.state.loading}

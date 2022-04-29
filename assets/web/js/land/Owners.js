@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import { generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import {message, Table, Button, Modal, Space} from 'antd';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import {message, Table, Button, Modal, Space, Tag, Input} from 'antd';
+import { ExclamationCircleOutlined, CheckOutlined, CloseCircleOutlined, SearchOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
 
@@ -17,13 +17,71 @@ class Owners extends Component {
             ownerID: null,
             columns: [
                 {
-                    title: this.props.t('land._'),
-                    dataIndex: 'num'
+                    title: this.props.t('land.owner._'),
+                    dataIndex: 'name',
+                    onFilter: (value, record) => record.name.toLowerCase().includes(value.toLowerCase()),
+                    filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+                    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+                        <div>
+                        <Input.Group compact style={{ padding: 8 }}>
+                            <Input
+                              value={selectedKeys[0]}
+                              onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                              onPressEnter={() => {this.searchConfirm(selectedKeys, confirm)}}
+                              style={{ width: 'calc(100% - 40px)' }}
+                            />
+                            <Button icon={<CloseCircleOutlined />} onClick={() => {setSelectedKeys([]);this.searchConfirm([], confirm);}} />
+                        </Input.Group>
+                        </div>
+                    )
                 },
                 {
-                    title: this.props.t('land.owner._'),
-                    dataIndex: 'name'
+                    title: this.props.t('land.s'),
+                    dataIndex: 'lands',
+                    filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+                    onFilter: (value, record) => record.lands != null ? record.lands.split(',').includes(value.toString()) : false,
+                    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+                        <div>
+                        <Input.Group compact style={{ padding: 8 }}>
+                            <Input
+                              value={selectedKeys[0]}
+                              onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                              onPressEnter={() => {this.searchConfirm(selectedKeys, confirm)}}
+                              style={{ width: 'calc(100% - 40px)' }}
+                            />
+                            <Button icon={<CloseCircleOutlined />} onClick={() => {setSelectedKeys([]);this.searchConfirm([], confirm);}} />
+                        </Input.Group>
+                        </div>
+                    ),                    
+                    render: (lands) => {
+                        if (lands == null) {
+                            return null;
+                        }
+                        const l = lands.split(',');
+                        return <React.Fragment>
+                            {l.map(land => {
+                                  return (
+                                   <Tag key={land}>{land}</Tag>
+                                );
+                            })}
+                        </React.Fragment>;
+                    }
                 },
+                {
+                    title: this.props.t('person.phone'),
+                    dataIndex: 'phone'
+                },
+                {
+                    title: this.props.t('person.email'),
+                    dataIndex: 'email'
+                },
+                {
+                    title: this.props.t('township.member'),
+                    dataIndex: 'township_member',
+                    render: (value) => {
+                        return value ? <CheckOutlined /> : null;
+                    }
+                },                
                 {
                     title: this.props.t('action.s'),
                     key: 'actions',
@@ -99,6 +157,10 @@ class Owners extends Component {
                 });
             }
         });
+    }
+    
+    searchConfirm(selectedKeys, confirm) {
+        confirm();
     }
     
     render() {

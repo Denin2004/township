@@ -60,7 +60,7 @@ class AccountsWidgets extends Component {
                         <Link to={window.mfwApp.urls.township.land.owner.page}>{this.props.t('land.owner.s')}</Link>
                     </List.Item>
                     <List.Item>
-                        <Link to={window.mfwApp.urls.budget.discount.page}>{this.props.t('budget.discount.s')}</Link>
+                        <Link to={window.mfwApp.urls.budget.discount.page}>{this.props.t('finance.correction.s')}</Link>
                     </List.Item>
                     <List.Item>
                         <Link to={window.mfwApp.urls.township.land.page}>{this.props.t('land.s')}</Link>

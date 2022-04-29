@@ -16,12 +16,12 @@ class Invoice extends Entity
             return false;
         }
         $res = json_decode($data[0]['invoice'], true);
-        switch ($res['chargeType']) {
-            case 2:
-                $res['specs'] = [];
-                foreach ($data as $row) {
-                    $res['specs'][] = json_decode($row['invoice'], true);
-                }
+        if (isset($res['budgetName'])) {
+            $res['specs'] = [];
+            foreach ($data as $row) {
+                $res['specs'][] = json_decode($row['invoice'], true);
+            }
+
         }
         return $res;
     }

@@ -13,7 +13,7 @@ class Land extends Entity
         return $this->provider->fetchAll(
             'select inv.id,
                 case when inv.charge_type_id = 1 then to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMONTH YYYY\')
-                     when inv.budget_id is not tull then to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMONTH YYYY\')
+                     when inv.budget_id is not null then to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMONTH YYYY\')
                 else \'\'
                 end
                 as invoice_num, inv.amount, inv.payed,
@@ -43,18 +43,26 @@ class Land extends Entity
     public function owners()
     {
         return $this->provider->fetchAll(
-            'select lo.id, lo.land_id, lo.name, l.num
-               from lands.owners lo
-                 left join lands.lands l on(l.id=lo.land_id)'
+            'select l_o.id, l_o.name, l_o.phone, l_o.email,
+                l_o.township_member,
+                (select string_agg(l_l.num, \',\')
+                  from lands.owner_lands l_ol
+                    left join lands.lands l_l on (l_l.id=l_ol.land_id)
+                 where l_ol.owner_id=l_o.id) as lands
+               from lands.owners l_o order by l_o.name'
         );
     }
 
     public function owner($id)
     {
         $res = $this->provider->fetchAll(
-            'select lo.id, lo.land_id, lo.name
-               from lands.owners lo
-               where lo.id=:id',
+            'select l_o.id, l_o.name, l_o.phone, l_o.email,
+                l_o.township_member,
+                (select string_agg(l_ol.land_id::text, \',\')
+                  from lands.owner_lands l_ol
+                 where l_ol.owner_id=l_o.id) as lands
+               from lands.owners l_o
+               where l_o.id=:id',
             [
                 'id' => $id
             ]
@@ -64,17 +72,32 @@ class Land extends Entity
 
     public function ownerPost($params)
     {
-        if ($params['id'] == -1) {
-            $this->provider->executeQuery(
-                'insert into lands.owners (land_id, name) values(:land_id, :name)',
-                $params
-            );
-        } else {
-            $this->provider->executeQuery(
-                'update lands.owners set land_id=:land_id, name=:name where id=:id',
-                $params
-            );
-        }
+        $stmt = $this->provider->executeQuery(
+            'select lands.owner_post(
+                ?::integer,
+                ?::character varying,
+                ?::character varying,
+                ?::character varying,
+                ?::boolean,
+                array[?]::integer[])',
+            [
+                $params['id'],
+                $params['name'],
+                $params['phone'],
+                $params['email'],
+                $params['township_member'],
+                $params['land_ids']
+            ],
+            [
+                \Doctrine\DBAL\ParameterType::INTEGER,
+                \Doctrine\DBAL\ParameterType::STRING,
+                \Doctrine\DBAL\ParameterType::STRING,
+                \Doctrine\DBAL\ParameterType::STRING,
+                \Doctrine\DBAL\ParameterType::BOOLEAN,
+                \Doctrine\DBAL\Connection::PARAM_INT_ARRAY
+            ]
+        );
+        return $stmt->fetchAll();
     }
 
     public function ownerDelete($id)

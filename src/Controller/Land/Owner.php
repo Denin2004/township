@@ -22,7 +22,8 @@ class Owner extends AbstractController
     public function form($id, LandDB $landDB)
     {
         $data = [
-            'id' => $id
+            'id' => $id,
+            'land_id' => []
         ];
         if ($id != -1) {
             $data = $landDB->owner($id);
@@ -33,6 +34,7 @@ class Owner extends AbstractController
                 ]);
 
             }
+            $data['land_ids'] = explode(',', $data['lands']);
         }
         $form = $this->createForm(
             OwnerForm::class,

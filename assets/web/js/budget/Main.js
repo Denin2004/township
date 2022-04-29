@@ -101,7 +101,7 @@ class Budgets extends Component {
     }
 
     actions(record) {
-        
+        console.log(record);
         return (record.tax != null ? <Dropdown overlay={
                 <Menu>
                     <Menu.Item key={1}>

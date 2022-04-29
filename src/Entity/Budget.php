@@ -266,7 +266,7 @@ class Budget extends Entity
     public function childItemChoices($budgetID)
     {
         $res = $this->provider->fetchAll(
-            'select bi.id, bin.name, count(bi_c.id)
+            'select bi.id,\'(\'||bi.id||\') \'||bin.name as name, count(bi_c.id)
                 from budget.items bi
                    left join budget.items bi_c on (bi_c.parent_id=bi.id)
                    left join budget.item_names bin on (bin.id=bi.item_name_id)

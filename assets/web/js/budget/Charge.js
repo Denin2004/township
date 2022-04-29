@@ -53,7 +53,7 @@ class Charge extends Component {
         this.props.form
             .validateFields()
             .then(values => {
-                this.setState({loading: false});
+                this.setState({loading:  true});
                 axios({
                     method: 'post',
                     url: window.mfwApp.urls.budget.charge._,
@@ -61,6 +61,7 @@ class Charge extends Component {
                     headers: {'Content-Type': 'application/json','X-Requested-With': 'XMLHttpRequest'}
                 }).then(res => {
                     if (res.data.success) {
+                        this.setState({loading: false});
                         this.props.success();
                     } else {
                         message.error(this.props.t(res.data.error));

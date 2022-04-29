@@ -117,7 +117,7 @@ class SpendingCreate extends Component {
                    initialValue={this.state.form.item_id.value*1}>
                     <Select 
                        showSearch
-                       filterOption={(input, option) =>  option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                       filterOption={(input, option) => option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                        options={this.state.form.item_id.choices}/>
                 </Form.Item>
                 <Form.Item name="date"
