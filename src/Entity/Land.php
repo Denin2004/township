@@ -23,7 +23,8 @@ class Land extends Entity
                     left join charges.electricity el on (el.invoice_id=inv.id)
                     left join charges.types ct on(ct.id=inv.charge_type_id)
                     left join budget.budgets b_b on (b_b.id=inv.budget_id)
-                where((inv.amount-inv.payed) > 0)and(inv.charge_type_id=:type_id)and(inv.land_id=:land_id)',
+                where((inv.amount-inv.payed) > 0)and(inv.charge_type_id=:type_id)and(inv.land_id=:land_id)
+                order by inv.year desc, inv.month desc',
             $params
         );
     }

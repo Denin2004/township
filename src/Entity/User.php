@@ -81,7 +81,7 @@ class User extends Entity
                 inv.amount
                 from lands.user_lands land
                     inner join balances.invoices inv on (inv.land_id=land.land_id)and
-                         ((inv.amount-inv.payed) > 0)and(inv.charge_type_id=:type_id)
+                    (inv.charge_type_id=:type_id)
                     left join charges.electricity el on (el.invoice_id=inv.id)
                     left join budget.budgets b_b on (b_b.id=inv.budget_id)
                     left join lands.lands ll on (ll.id=land.land_id)
