@@ -16,7 +16,6 @@ class MainPage extends AbstractController
      */
     public function index(SiteConfig $config)
     {
-        dump($this->getUser());
         $detect = new Mobile_Detect;
         $mode = $detect->isMobile() ? 'mobile' : 'web';
         return $this->render(

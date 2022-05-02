@@ -105,7 +105,10 @@ class Pages extends Component {
         }).then(res => {
             if (res.data.success) {
                 this.setState({passwordForm: false});
-                Toast.success(this.props.t('account.password.changed'));
+                Toast.show({
+                    icon: 'success',
+                    content: this.props.t('account.password.changed')
+                });
             } else {
                 Toast.show({
                     icon: 'fail',
