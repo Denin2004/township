@@ -169,7 +169,6 @@ class Lands extends Component {
     }
     
     render() {
-        console.log(this.state);
         return  <React.Fragment>
             <Button onClick={() => this.setState({editID: -1})}>{this.props.t('land.add')}</Button>
             <Form form={this.props.form} 
