@@ -161,18 +161,19 @@ class UserWidget extends Component {
                 </div>
             ) : (
                 <React.Fragment>
-                    <Table
-                      rowKey="id"
-                      columns={this.state.columns}
-                      dataSource={this.state.debt}
-                      pagination={false}
-                      summary={this.debtSummary}
-                      scroll={{ x: true }}
-                      title={() => <Typography.Text strong>{this.props.t('user.debt')}</Typography.Text>}
-                      expandable={{
-                          expandedRowRender: this.debtType,
-                          onExpand: this.debtTypeData
-                      }}/>
+                    {this.state.debt.length != 0 ?
+                        <Table
+                          rowKey="id"
+                          columns={this.state.columns}
+                          dataSource={this.state.debt}
+                          pagination={false}
+                          summary={this.debtSummary}
+                          scroll={{ x: true }}
+                          title={() => <Typography.Text strong>{this.props.t('user.debt')}</Typography.Text>}
+                          expandable={{
+                              expandedRowRender: this.debtType,
+                              onExpand: this.debtTypeData
+                          }}/> : <Typography.Title strong type="success" level={3}>{this.props.t('finance.debt_none')}</Typography.Title>}
                     <List header={<Typography.Text strong>{this.props.t('finance.charges')}</Typography.Text>}>
                         {this.state.charges.map(charge => {
                             return <List.Item key={charge.id}><a onClick={() => this.setState({viewCharge: charge.id})}>{charge.name}</a></List.Item>
