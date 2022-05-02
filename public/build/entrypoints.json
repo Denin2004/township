@@ -1,0 +1,26 @@
+{
+  "entrypoints": {
+    "webApp": {
+      "js": [
+        "/build/runtime.226f6bb9.js",
+        "/build/103.7e2c0b6e.js",
+        "/build/257.ef5425b1.js",
+        "/build/webApp.8d8188b0.js"
+      ],
+      "css": [
+        "/build/webApp.445014ab.css"
+      ]
+    },
+    "mobileApp": {
+      "js": [
+        "/build/runtime.226f6bb9.js",
+        "/build/103.7e2c0b6e.js",
+        "/build/48.e28b89d9.js",
+        "/build/mobileApp.756bd84f.js"
+      ],
+      "css": [
+        "/build/mobileApp.e84ba30e.css"
+      ]
+    }
+  }
+}
