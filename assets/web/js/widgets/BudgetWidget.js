@@ -62,7 +62,7 @@ class BudgetWidget extends Component {
     }
 
     render() {
-        return <Card title={this.props.t('budget._')} className="mfw-budget-widget">
+        return <Card title={this.props.t('budget.for_year')} className="mfw-budget-widget">
             {this.state.loading ? (
                 <div className="d-flex justify-content-center align-items-center">
                     <Spin/>

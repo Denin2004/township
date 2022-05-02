@@ -7,15 +7,21 @@ class Budget extends Entity
 {
     public function widget($phpDateFormat)
     {
-        $dt = new \DateTime();
+        $dtStart = new \DateTime();
+        $dtStart->setDate($dtStart->format('Y'), 1, 1);
+        $dtEnd = new \DateTime();
+        $dtEnd->setDate($dtEnd->format('Y'), 12, 31);
+
         return $this->provider->fetchAll(
             'select bd.id, bd.amount, bd.accrued, bd.collected, bd.spent,
                 bd.comment||\' \'||to_char(bd.dt_from, :format)||\' - \'||to_char(bd.dt_to, :format) as name
                 from budget.budgets bd
-                  where (to_date(:dt, :format) between bd.dt_from and bd.dt_to)',
+                  where (bd.dt_from between to_date(:dtStart, :format) and (to_date(:dtEnd, :format))) or
+                      (bd.dt_to between to_date(:dtStart, :format) and (to_date(:dtEnd, :format)))',
             [
                 'format' => $this->provider->dateFormat(),
-                'dt' => $dt->format($phpDateFormat)
+                'dtStart' => $dtStart->format($phpDateFormat),
+                'dtEnd' => $dtEnd->format($phpDateFormat)
             ]
         );
     }

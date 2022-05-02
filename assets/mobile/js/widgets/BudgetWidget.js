@@ -66,7 +66,7 @@ class BudgetWidget extends Component {
     }
 
     renderOld() {
-        return <Card title={this.props.t('budget.current')}>
+        return <Card title={this.props.t('budget.for_year')}>
             {this.state.loading ? (
                 <Space className="mfw-d-flex" justify="center">
                     <Loading/>
