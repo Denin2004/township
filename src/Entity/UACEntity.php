@@ -12,7 +12,7 @@ class UACEntity extends Entity
                 role.name role_name, role.security
                 from uac.users users
                 left join uac.roles role on (role.id=users.role_id)
-                where users.login=:login',
+                where lower(users.login)=lower(:login)',
             ['login' => $login]
         );
         return count($user) == 0 ? false : $user[0];
