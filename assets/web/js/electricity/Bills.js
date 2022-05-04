@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { withTranslation } from 'react-i18next';
-import {message, Table, Form, InputNumber, Input, Select, Button, Typography} from 'antd';
+import {message, Table, Form, InputNumber, Input, Select, Button, Typography, Space, Divider} from 'antd';
 import { SearchOutlined, CloseCircleOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
@@ -9,6 +9,7 @@ import moment from 'moment-timezone';
 import useWithForm from '@app/hooks/useWithForm';
 import useWithParams from '@app/hooks/useWithParams';
 import MfwNumber from '@app/mfw/MfwNumber';
+import ElectricityAddBill from '@app/web/js/electricity/Add';
 
 class ElectricityBills extends Component {
     constructor(props){
@@ -20,6 +21,7 @@ class ElectricityBills extends Component {
             to: '',
             searchNum: '',
             loading: false,
+            add: false,
             columns: [
                 {
                     title: this.props.t('land._'),
@@ -146,6 +148,7 @@ class ElectricityBills extends Component {
         this.showBills = this.showBills.bind(this);
         this.searchNum = this.searchNum.bind(this);
         this.billsSummary = this.billsSummary.bind(this);
+        this.refresh = this.refresh.bind(this);
     }
 
     componentDidMount() {
@@ -253,39 +256,46 @@ class ElectricityBills extends Component {
             </Table.Summary.Row>
         </Table.Summary>
     }
+    
+    refresh() {
+        this.showBills(this.props.form.getFieldsValue(true));
+    }
 
     render() {
         return this.state.form != false ?
             <React.Fragment>
-                <Form form={this.props.form}
-                  className="mfw-mb-1 mfw-mt-1"
-                  onFinish={this.showBills}
-                  layout="inline">
-                    <Form.Item name="year"
-                      label={this.props.t('calendar.year')}
-                      initialValue={this.state.form.year.value}
-                      rules={[
-                           {
-                               required: true,
-                               message: this.props.t('calendar.errors.year_blank')
-                           }
-                        ]}>
-                        <InputNumber/>
-                    </Form.Item>
-                    <Form.Item name="month"
-                      label={this.props.t('calendar.month')}
-                      initialValue={this.state.form.month.value*1}>
-                        <Select options={this.state.form.month.choices}/>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit">{this.props.t('modal.show')}</Button>
-                    </Form.Item>
-                    <Form.Item name="_token"
-                      hidden={true}
-                      initialValue={this.state.form._token.value}>
-                        <Input/>
-                    </Form.Item>
-                </Form>
+                <Space plit={<Divider type="vertical" />}> 
+                    <Form form={this.props.form}
+                      className="mfw-mb-1 mfw-mt-1"
+                      onFinish={this.showBills}
+                      layout="inline">
+                        <Form.Item name="year"
+                          label={this.props.t('calendar.year')}
+                          initialValue={this.state.form.year.value}
+                          rules={[
+                               {
+                                   required: true,
+                                   message: this.props.t('calendar.errors.year_blank')
+                               }
+                            ]}>
+                            <InputNumber/>
+                        </Form.Item>
+                        <Form.Item name="month"
+                          label={this.props.t('calendar.month')}
+                          initialValue={this.state.form.month.value*1}>
+                            <Select options={this.state.form.month.choices}/>
+                        </Form.Item>
+                        <Form.Item>
+                            <Button type="primary" htmlType="submit">{this.props.t('modal.show')}</Button>
+                        </Form.Item>
+                        <Form.Item name="_token"
+                          hidden={true}
+                          initialValue={this.state.form._token.value}>
+                            <Input/>
+                        </Form.Item>
+                    </Form>
+                    <Button onClick={() => this.setState({add: true})}>{this.props.t('electricity.add')}</Button>
+                </Space>
                 <Table 
                   rowKey="id" 
                   loading={this.state.loading}
@@ -294,6 +304,7 @@ class ElectricityBills extends Component {
                   scroll={{ x: 'max-content', y: 600 }}
                   pagination={false}
                   summary={this.billsSummary}/>
+                {this.state.add ? <ElectricityAddBill success={this.refresh} close={() => this.setState({add: false})}/> : null}
             </React.Fragment>
         : null;
     }

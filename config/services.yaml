@@ -116,3 +116,9 @@ services:
         class: App\Form\ExtData\Edit
         arguments: ['@App\Entity\ExtData']
         tags: [form.type]        
+        
+    App\Form\Electricity\AddBill:
+        class: App\Form\Electricity\AddBill
+        arguments: ['@App\Entity\Land']
+        tags: [form.type]
+        

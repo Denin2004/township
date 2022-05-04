@@ -5,6 +5,7 @@ import { Card, message, Modal, Form, Input, Select, Upload, Button, Spin, Descri
 import { UploadOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
+import moment from 'moment-timezone';
 
 import useWithForm from '@app/hooks/useWithForm';
 import MfwNumber from '@app/mfw/MfwNumber';
@@ -117,6 +118,17 @@ class BookkeepingWidgets extends Component {
                 <List>
                     <List.Item>
                         <a onClick={() => this.electricityForm()}>{this.props.t('electricity.load_bills')}</a>
+                    </List.Item>
+                    <List.Item>
+                        <a 
+                          target="_blank" 
+                             href={generatePath(
+                                window.mfwApp.urls.electricity.bills+'/:year/:month', 
+                                { 
+                                   year: moment().year(),
+                                    month: moment().month()+1
+                                }
+                        )}>{this.props.t('electricity.show')}</a>
                     </List.Item>
                     <List.Item>
                         <a onClick={() => this.setState({charge: true})}>{this.props.t('budget.charge')}</a>

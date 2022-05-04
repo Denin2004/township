@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { withTranslation } from 'react-i18next';
 import {Spin, message, Table, Form, Input, Modal, Select, Tag, Button} from 'antd';
+import { CloseCircleOutlined, SearchOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
 
@@ -33,7 +34,23 @@ class AccountManager extends Component {
                                 );
                             })}
                         </React.Fragment>;
-                    }
+                    },
+                    filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+                    onFilter: (value, record) => record.lands != null ? record.lands.includes(value.toString()) : false,
+                    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+                        <div>
+                        <Input.Group compact style={{ padding: 8 }}>
+                            <Input
+                              value={selectedKeys[0]}
+                              onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                              onPressEnter={() => {this.searchConfirm(selectedKeys, confirm)}}
+                              style={{ width: 'calc(100% - 40px)' }}
+                            />
+                            <Button icon={<CloseCircleOutlined />} onClick={() => {setSelectedKeys([]);this.searchConfirm([], confirm);}} />
+                        </Input.Group>
+                        </div>
+                    )
+
                 },
                 {
                     title: this.props.t('account.role'),
@@ -116,6 +133,10 @@ class AccountManager extends Component {
                     message.error(error.toString());
                 });
             });
+    }
+    
+    searchConfirm(selectedKeys, confirm) {
+        confirm();
     }
     
     passwordForm(id)

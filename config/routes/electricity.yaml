@@ -34,3 +34,13 @@ electricityBillsData:
     path: /bills/data
     controller: App\Controller\Electricity\Bills::data
     methods: [POST]
+
+electricityBillAddForm:
+    path: /bills/add/form
+    controller: App\Controller\Electricity\Bills::addForm
+    methods: [GET]
+
+electricityBillAdd:
+    path: /bills/add
+    controller: App\Controller\Electricity\Bills::add
+    methods: [POST]

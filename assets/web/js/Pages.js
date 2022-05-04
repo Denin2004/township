@@ -8,7 +8,7 @@ import axios from 'axios';
 import useWithForm from '@app/hooks/useWithForm';
 import Dashboard from '@app/web/js/Dashboard';
 import AccountManager from '@app/web/js/AccountManager';
-import ElectricityBills from '@app/web/js/ElectricityBills';
+import ElectricityBills from '@app/web/js/electricity/Bills';
 import LineByType from '@app/web/js/line/ByType';
 import LandByType from '@app/web/js/land/ByType';
 import UserMoneyMove from '@app/web/js/user/MoneyMove';
