@@ -92,7 +92,7 @@ class ElectricityAddBill extends Component {
                          key="more"
                          type="primary"
                          className="mfw-mt-1"
-                         onClick={() => this.setState({loading: false, result: null})}>{this.props.t('electricity.add_mmore')}</Button>]}/>
+                         onClick={() => this.setState({loading: false, result: null})}>{this.props.t('electricity.add_more')}</Button>]}/>
                   ) : (
                 <Form form={this.props.form}
                    name="bill"
