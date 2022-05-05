@@ -36,7 +36,7 @@ class ElectricityAddBill extends Component {
                 this.setState({
                     form: res.data.form,
                     loading: false
-                })
+                });
             } else {
                 message.error(this.props.t(res.data.error));
             }
@@ -77,6 +77,7 @@ class ElectricityAddBill extends Component {
             visible={true}
             closable={true}
             cancelButtonProps={{className: 'd-none'}}
+            okButtonProps={{className: this.state.loading ? 'd-none' : null}}
             onCancel={this.props.close}
             okText={this.props.t('modal.save')}
             onOk={this.post}>

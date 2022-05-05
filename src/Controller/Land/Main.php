@@ -7,7 +7,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 use App\Entity\Land as LandDB;
+use App\Entity\Charges as ChargesDB;
 use App\Form\Land\Edit;
+use App\Form\Land\Debt;
 
 class Main extends AbstractController
 {
@@ -83,6 +85,62 @@ class Main extends AbstractController
         }
         return new JsonResponse([
             'success' => true
+        ]);
+    }
+
+    public function debtForm()
+    {
+        $form = $this->createForm(Debt::class);
+        $view = $form->createView();
+        return new JsonResponse([
+            'success' => true,
+            'form' => $view->vars['react']
+        ]);
+    }
+
+    public function debt(Request $request, LandDB $landDB, ChargesDB $chargesDB)
+    {
+        $formRequest = json_decode($request->getContent(), true);
+        if ($formRequest == null) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'form.errors.noData'
+            ]);
+        }
+        $form = $this->createForm(Debt::class, [], ['request' => true]);
+        $form->submit($formRequest);
+        if (!$form->isValid()) {
+            $errors = '';
+            foreach ($form->getErrors(true) as $error) {
+                $errors.= $error->getMessage().' ';
+            }
+            return new JsonResponse([
+                'success' => false,
+                'error' => $errors
+            ]);
+        }
+        return new JsonResponse([
+            'success' => true,
+            'debt' => $landDB->debt($form->getData()),
+            'charges' => $chargesDB->list()
+        ]);
+    }
+
+    public function chargesByType($land_id, $type_id, $year, LandDB $landDB)
+    {
+        $www = $landDB->chargesByType([
+                'land_id' => $land_id,
+                'type_id' => $type_id,
+                'year' => $year == -1 ? date('Y') : $year
+            ]);
+        dump($www, $landDB);
+        return new JsonResponse([
+            'success' => true,
+            'charges' => $landDB->chargesByType([
+                'land_id' => $land_id,
+                'type_id' => $type_id,
+                'year' => $year == -1 ? date('Y') : $year
+            ])
         ]);
     }
 }

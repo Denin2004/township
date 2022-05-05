@@ -4,6 +4,7 @@ import TownshipWidget from '@app/web/js/widgets/TownshipWidget';
 import LineWidget from '@app/web/js/widgets/LineWidget';
 import UserWidget from '@app/web/js/widgets/UserWidget';
 import BudgetWidget from '@app/web/js/widgets/BudgetWidget';
+import LandWidget from '@app/web/js/widgets/LandWidget';
 
 var widgets = {
     "account.s": {
@@ -29,6 +30,10 @@ var widgets = {
     "budget._": {
         node: BudgetWidget,
         width: 7
-    }    
+    },
+    "land._": {
+        node: LandWidget,
+        width: 9
+    }
 };
 export default widgets;

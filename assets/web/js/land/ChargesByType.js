@@ -63,10 +63,11 @@ class ChargesByType extends Component {
     getCharges(year) {
         axios.get(
             generatePath(
-                window.mfwApp.urls.township.user.chargesByType+'/:type_id/:year',
+                window.mfwApp.urls.township.land.chargesByType+'/:land_id/:type_id/:year',
                 {
-                    type_id: this.props.typeID,
-                    year: year
+                    type_id: this.props.charge.typeID,
+                    year: year,
+                    land_id: this.props.charge.land_id
                 }
             ),
             {

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import { Link } from 'react-router-dom';
+import { Link, generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import { Card, Spin, Descriptions, message, Space, Select } from 'antd';
+import { Card, Spin, message, Table } from 'antd';
 
 import axios from 'axios';
 
@@ -15,7 +15,23 @@ class BudgetWidget extends Component {
             loading: true,
             addSpending: false,
             budgetIndex: null,
-            info: null
+            info: null,
+            columns: [
+                {
+                    title: this.props.t('budget._'),
+                    dataIndex: 'name'
+                },
+                {
+                    title: this.props.t('finance.sum'),
+                    dataIndex: 'amount',
+                    align: 'right',
+                    render: (text, record) => {
+                        return <Link to={generatePath(window.mfwApp.urls.budget.page+'/:id', {id: this.state.info[this.state.budgetIndex].id})} target="_blank">
+                               <MfwNumber value={record.amount}/>
+                            </Link>
+                    }
+                }
+            ]
         }
         this.budgetOptions = this.budgetOptions.bind(this);
         this.getInfo = this.getInfo.bind(this);
@@ -70,25 +86,10 @@ class BudgetWidget extends Component {
             ) : (
                 this.state.info.length == 0 ? <span>{this.props.t('budget.no_current')}</span>  : 
                     <React.Fragment>
-                        <Select options={this.budgetOptions()}
-                          onSelect={(value) => this.setState({budgetIndex: value})}
-                          value={this.state.budgetIndex} />
-                        <Descriptions layout="horizontal" column={1}>
-                            <Descriptions.Item label={this.props.t('finance.sum')} contentStyle={{justifyContent: 'end'}}>
-                                <Link to={window.mfwApp.urls.budget.page+'/'+this.state.info[this.state.budgetIndex].id}>
-                                    <MfwNumber value={this.state.info[this.state.budgetIndex].amount}/>
-                                </Link>
-                            </Descriptions.Item>
-                            <Descriptions.Item label={this.props.t('budget.accrued')} contentStyle={{justifyContent: 'end'}}>
-                                <MfwNumber value={this.state.info[this.state.budgetIndex].accrued}/>
-                            </Descriptions.Item>
-                            <Descriptions.Item label={this.props.t('budget.collected')} contentStyle={{justifyContent: 'end'}}>
-                                <MfwNumber value={this.state.info[this.state.budgetIndex].collected}/>
-                            </Descriptions.Item>
-                            <Descriptions.Item label={this.props.t('budget.spent')} contentStyle={{justifyContent: 'end'}}>
-                                <MfwNumber value={this.state.info[this.state.budgetIndex].spent}/>
-                            </Descriptions.Item>
-                        </Descriptions>
+                        <Table rowKey="id" 
+                           pagination={false}
+                           columns={this.state.columns} 
+                           dataSource={this.state.info}/>
                         { window.mfwApp.user.security.routes['budget.spending'].access ?
                             <a onClick={() => this.setState({addSpending: true})}>{this.props.t('budget.spendings.add')}</a> : null }
                     </React.Fragment>

@@ -158,4 +158,38 @@ class Land extends Entity
             $params
         );
     }
+
+    public function debt($params)
+    {
+        return $this->provider->fetchAll(
+            'select ch_t.id, ch_t.name, sum(bl_lands.amount) debt, bl_lands.land_id
+                from  balances.lands bl_lands
+                   left join charges.types ch_t on(ch_t.id=bl_lands.charge_type_id)
+                where (bl_lands.land_id = :land_id)and(bl_lands.amount > 0)
+                group by ch_t.id, ch_t.name, bl_lands.land_id',
+            $params
+        );
+    }
+
+    public function chargesByType($params)
+    {
+        return $this->provider->fetchAll(
+            'select inv.id,
+                case when inv.charge_type_id = 1 then ll.num||\' \'||to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMON YY\')
+                     when inv.budget_id is not null then to_char(to_date(inv.month||\'.\'||inv.year, \'MM.YYYY\'), \'TMMON YY\')
+                else \'\'
+                end
+                as invoice_num,
+                inv.amount
+                from balances.invoices inv
+                    left join charges.electricity el on (el.invoice_id=inv.id)
+                    left join budget.budgets b_b on (b_b.id=inv.budget_id)
+                    left join lands.lands ll on (ll.id=inv.land_id)
+                 where (inv.land_id = :land_id)and
+                 (inv.charge_type_id=:type_id)and
+                 (inv.year=:year)
+                 order by inv.year desc, inv.month desc',
+            $params
+        );
+    }
 }

@@ -121,4 +121,9 @@ services:
         class: App\Form\Electricity\AddBill
         arguments: ['@App\Entity\Land']
         tags: [form.type]
+
+    App\Form\Land\Debt:
+        class: App\Form\Land\Debt
+        arguments: ['@App\Entity\Land']
+        tags: [form.type]
         
