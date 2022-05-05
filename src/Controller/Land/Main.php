@@ -133,7 +133,6 @@ class Main extends AbstractController
                 'type_id' => $type_id,
                 'year' => $year == -1 ? date('Y') : $year
             ]);
-        dump($www, $landDB);
         return new JsonResponse([
             'success' => true,
             'charges' => $landDB->chargesByType([
