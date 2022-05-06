@@ -17,6 +17,7 @@ import ItemSpending from'@app/web/js/budget/ItemSpending';
 class Budgets extends Component {
     constructor(props){
         super(props);
+        const bookkeeping = window.mfwApp.user.widgets.includes('bookkeeping._');
         this.state = {
             list: false,
             loading: false,
@@ -30,7 +31,10 @@ class Budgets extends Component {
                     title: this.props.t('budget.item._'),
                     dataIndex: 'name',
                     width: '30%',
-                    ellipsis: true
+                    ellipsis: true,
+                    render: (text, record) => {
+                        return bookkeeping ? '('+record.id+')  '+text: text;
+                    }
                 },
                 {
                     title: this.props.t('budget.planned_expense'),

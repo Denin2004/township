@@ -17,7 +17,6 @@ class ExtData extends Entity
                 :year,
                 :land,
                 :charge_code,
-                :budget,
                 :budget_item)',
             $data
         );
@@ -39,7 +38,6 @@ class ExtData extends Entity
                 ed_u.year,
                 ed_u.land,
                 ed_u.charge_code,
-                ed_u.budget_item_id,
                 b_in.name budget_item_name,
                 error
              from ext_data.unknown ed_u
@@ -64,8 +62,7 @@ class ExtData extends Entity
                 ed_u.year,
                 ed_u.land,
                 ed_u.charge_code,
-                ed_u.budget_item_id,
-                b_i.budget_id
+                ed_u.budget_item_id
              from ext_data.unknown ed_u
                  left join budget.items b_i on (b_i.id=ed_u.budget_item_id)
              where ed_u.id=:id',
