@@ -10,6 +10,8 @@ use App\Entity\Land as LandDB;
 use App\Entity\Charges as ChargesDB;
 use App\Form\Land\Edit;
 use App\Form\Land\Debt;
+use App\Form\Land\MoneyMove;
+use App\Services\SiteConfig\SiteConfig;
 
 class Main extends AbstractController
 {
@@ -122,7 +124,8 @@ class Main extends AbstractController
         return new JsonResponse([
             'success' => true,
             'debt' => $landDB->debt($form->getData()),
-            'charges' => $chargesDB->list()
+            'charges' => $chargesDB->list(),
+            'prePays' => $landDB->prePays($form->getData())
         ]);
     }
 
@@ -140,6 +143,77 @@ class Main extends AbstractController
                 'type_id' => $type_id,
                 'year' => $year == -1 ? date('Y') : $year
             ])
+        ]);
+    }
+    
+    public function prePayType(LandDB $landDB, $land_id, $type_id)
+    {
+        $prePays = $landDB->prePayByType([
+            'land_id' => $land_id,
+            'type_id' => $type_id
+        ]);
+        if (!$prePays) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'security.error.403'
+            ]);
+        }
+
+        return new JsonResponse([
+            'success' => true,
+            'prePays' => $prePays
+        ]);
+    }
+    
+    public function moneyMoveForm(SiteConfig $config, $land_id)
+    {
+        $dtFrom = new \DateTime();
+        $dtFrom->setDate($dtFrom->format('Y'), 1, 1);
+        $dtTo = new \DateTime();
+        dump($land_id);
+        $form = $this->createForm(
+            MoneyMove::class,
+            [
+                'date_range' => [
+                    $dtFrom->format($config->get('php_date_format')),
+                    $dtTo->format($config->get('php_date_format'))
+                ],
+                'land_id' => $land_id
+            ]
+        );
+        $view = $form->createView();
+        return new JsonResponse([
+            'success' => true,
+            'form' => $view->vars['react']
+        ]);
+    }
+
+    public function moneyMoveData(Request $request, LandDB $landDB)
+    {
+        $formRequest = json_decode($request->getContent(), true);
+        if ($formRequest == null) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'form.errors.noData'
+            ]);
+        }
+        $form = $this->createForm(MoneyMove::class, [], ['request' => true]);
+        $form->submit($formRequest);
+        if (!$form->isValid()) {
+            $errors = '';
+            foreach ($form->getErrors(true) as $error) {
+                $errors.= $error->getMessage().' ';
+            }
+            return new JsonResponse([
+                'success' => false,
+                'error' => $errors
+            ]);
+        }
+        $rr = $landDB->moneyMove($form->getData());
+        dump($landDB, $formRequest);
+        return new JsonResponse([
+            'success' => true,
+            'moneyMove' => $landDB->moneyMove($form->getData())
         ]);
     }
 }

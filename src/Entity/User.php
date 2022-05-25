@@ -91,4 +91,19 @@ class User extends Entity
             $params
         );
     }
+    
+    public function prePay()
+    {
+        return $this->provider->fetchAll(
+            'select ch_t.id, ch_t.name, sum(0-bl_lands.amount) debt
+                from lands.user_lands land
+                   inner join balances.lands bl_lands on(bl_lands.land_id=land.land_id)and(bl_lands.amount < 0)
+                   left join charges.types ch_t on(ch_t.id=bl_lands.charge_type_id)
+                where land.user_id = :user_id
+                group by ch_t.id, ch_t.name',
+            [
+                'user_id' => $this->provider->user()->getId()
+            ]
+        );
+    }
 }

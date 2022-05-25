@@ -17,8 +17,9 @@ import Owners from '@app/web/js/land/Owners';
 import Discounts from '@app/web/js/budget/Discounts';
 import ExtDataPage from '@app/web/js/extData/Page';
 import Error403 from '@app/web/js/Error403';
-import FianceMoneyMove from '@app/web/js/finance/moneyMove/Main';
+import FinanceMoneyMove from '@app/web/js/finance/moneyMove/Main';
 import Lands from '@app/web/js/land/Main';
+import LandMoneyMove from '@app/web/js/land/MoneyMove';
 
 class Pages extends Component {
     constructor(props){
@@ -143,13 +144,14 @@ class Pages extends Component {
                             <Route path={window.mfwApp.urls.electricity.bills} element={<ElectricityBills/>}/>
                             <Route path={window.mfwApp.urls.township.line.debtByType+'/:line/:type_id'} element={<LineByType/>}/>
                             <Route path={window.mfwApp.urls.township.land.debtType+'/:land_id/:type_id'} element={<LandByType/>}/>
+                            <Route path={window.mfwApp.urls.township.land.moneyMove+'/:land_id'} element={<LandMoneyMove/>}/>
                             <Route path={window.mfwApp.urls.township.user.moneyMove} element={<UserMoneyMove/>}/>
                             <Route path={window.mfwApp.urls.budget.page} element={<Budgets/>}/>
                             <Route path={window.mfwApp.urls.budget.page+'/:id'} element={<Budgets/>}/>
                             <Route path={window.mfwApp.urls.township.land.owner.page} element={<Owners/>}/>
                             <Route path={window.mfwApp.urls.budget.discount.page} element={<Discounts/>}/>
                             <Route path={window.mfwApp.urls.extData.page._} element={<ExtDataPage/>}/>
-                            <Route path={window.mfwApp.urls.finance.moneyMove.page} element={<FianceMoneyMove/>}/>
+                            <Route path={window.mfwApp.urls.finance.moneyMove.page} element={<FinanceMoneyMove/>}/>
                             <Route path={window.mfwApp.urls.township.land.page} element={<Lands/>}/>
                             <Route path="/error/403" element={<Error403/>}/>
                         </Routes>

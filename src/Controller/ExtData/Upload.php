@@ -81,42 +81,33 @@ class Upload extends AbstractController
         while ($dt != null) {
             $metaData = explode(' ', $this->sheet->getCell('R'.$rowIndex)->getValue());
             if (strtolower($metaData[0]) != 'р') {
-                $period = explode('-', $metaData[2]);
-                if (count($period) != 1) {
-                    $dtMonth = explode('.', $period[0]);
-                    $dtYear = count($dtMonth) != 1 ? $dtMonth : explode('.', $period[1]);
-                } else {
-                    $dtMonth = explode('.', $period[0]);
-                    $dtYear = $dtMonth;
-                }
-                $startMonth = $dtMonth[0];
-                $startYear = $dtYear[1];
-                $extDataDB->add([
-                    'unknown_id' => -1,
-                    'dt' => $date,
-                    'amount' => $this->sheet->getCell('M'.$rowIndex)->getValue(),
-                    'month' => $dtMonth[0],
-                    'year' => $dtYear[1]+2000,
-                    'land' => ltrim($metaData[0], '0'),
-                    'charge_code' => $metaData[1],
-                    'budget_item' => null
-                ]);
-                if ($extDataDB->isError()) {
+                if (!isset($metaData[2])) {
                     $errors[] = [
                         'id' => count($errors),
                         'line' => $rowIndex,
-                        'error' => $extDataDB->getError(),
+                        'error' => 'extData.errors._invalid_period',
                         'data' => [
                             'dt' => $date,
                             'amount' => $this->sheet->getCell('M'.$rowIndex)->getValue(),
-                            'month' => $dtMonth[0],
-                            'year' => $dtYear[1]+2000,
-                            'land' => ltrim($metaData[0], '0'),
-                            'charge_code' => $metaData[1],
-                            'budget_item' => null
+                            'month' => null,
+                            'year' => null,
+                            'land' => null,
+                            'charge_code' => $metaData[0],
+                            'budget_item' => isset($metaData[1]) ? $metaData[1] : -1
                         ]
                     ];
-                    dump($extDataDB, [
+                } else {
+                    $period = explode('-', $metaData[2]);
+                    if (count($period) != 1) {
+                        $dtMonth = explode('.', $period[0]);
+                        $dtYear = count($dtMonth) != 1 ? $dtMonth : explode('.', $period[1]);
+                    } else {
+                        $dtMonth = explode('.', $period[0]);
+                        $dtYear = $dtMonth;
+                    }
+                    $startMonth = $dtMonth[0];
+                    $startYear = $dtYear[1];
+                    $extDataDB->add([
                         'unknown_id' => -1,
                         'dt' => $date,
                         'amount' => $this->sheet->getCell('M'.$rowIndex)->getValue(),
@@ -126,6 +117,22 @@ class Upload extends AbstractController
                         'charge_code' => $metaData[1],
                         'budget_item' => null
                     ]);
+                    if ($extDataDB->isError()) {
+                        $errors[] = [
+                            'id' => count($errors),
+                            'line' => $rowIndex,
+                            'error' => $extDataDB->getError(),
+                            'data' => [
+                                'dt' => $date,
+                                'amount' => $this->sheet->getCell('M'.$rowIndex)->getValue(),
+                                'month' => $dtMonth[0],
+                                'year' => $dtYear[1]+2000,
+                                'land' => ltrim($metaData[0], '0'),
+                                'charge_code' => $metaData[1],
+                                'budget_item' => null
+                            ]
+                        ];
+                    }
                 }
             } else {
                 $extDataDB->add([
@@ -153,16 +160,6 @@ class Upload extends AbstractController
                             'budget_item' => isset($metaData[1]) ? $metaData[1] : -1
                         ]
                     ];
-                    dump($extDataDB, [
-                        'unknown_id' => -1,
-                        'dt' => $date,
-                        'amount' => $this->sheet->getCell('M'.$rowIndex)->getValue(),
-                        'month' => null,
-                        'year' => null,
-                        'land' => null,
-                        'charge_code' => $metaData[0],
-                        'budget_item' => isset($metaData[1]) ? $metaData[1] : null
-                    ]);
                 }
             }
             $rowIndex++;

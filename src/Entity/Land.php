@@ -170,6 +170,18 @@ class Land extends Entity
             $params
         );
     }
+    
+    public function prePays($params)
+    {
+        return $this->provider->fetchAll(
+            'select ch_t.id, ch_t.name, sum(0-bl_lands.amount) debt, bl_lands.land_id
+                from  balances.lands bl_lands
+                   left join charges.types ch_t on(ch_t.id=bl_lands.charge_type_id)
+                where (bl_lands.land_id = :land_id)and(bl_lands.amount < 0)
+                group by ch_t.id, ch_t.name, bl_lands.land_id',
+            $params
+        );
+    }
 
     public function chargesByType($params)
     {
@@ -189,6 +201,32 @@ class Land extends Entity
                  (inv.charge_type_id=:type_id)and
                  (inv.year=:year)
                  order by inv.year desc, inv.month desc',
+            $params
+        );
+    }
+    
+    public function prePayByType($params)
+    {
+        if (!$this->access($params['land_id'])) {
+            return false;
+        }
+        $params['format'] = $this->provider->dateFormat();
+        return $this->provider->fetchAll(
+            'select pays.id, to_char(pays.dt, :format) as dt, pays.amount, pays.distributed
+                from balances.pays pays
+                where((pays.amount-pays.distributed) > 0)and(pays.charge_type_id=:type_id)and(pays.land_id=:land_id)
+                order by pays.dt',
+            $params
+        );
+    }
+    
+    public function moneyMove($params)
+    {
+        $params['format'] = $this->provider->dateFormat();
+        $params['date_from'] = $params['date_range'][0];
+        $params['date_to'] = $params['date_range'][1];
+        return $this->provider->fetchAll(
+            'select to_char(mm.dt, :format) as dt1, mm.* from lands.money_move(:land_id, to_date(:date_from, :format), to_date(:date_to, :format)) mm',
             $params
         );
     }

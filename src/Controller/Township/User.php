@@ -89,6 +89,5 @@ class User extends AbstractController
                 'year' => $year == -1 ? date('Y') : $year
             ])
         ]);
-
     }
 }

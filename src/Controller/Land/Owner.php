@@ -32,7 +32,6 @@ class Owner extends AbstractController
                     'success' => false,
                     'error' => 'land.errors.owner_not_found'
                 ]);
-
             }
             $data['land_ids'] = explode(',', $data['lands']);
         }

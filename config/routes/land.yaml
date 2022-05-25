@@ -101,3 +101,38 @@ landChargesType:
         type_id: -1
         year: -1
         land_id: -1
+        
+landPrePayTypeData:
+    path: /prepaytype/data/{land_id}/{type_id}
+    controller: App\Controller\Land\Main::prePayType
+    methods: [GET]
+    requirements:
+        type_id: \d+
+        land_id: \d+
+    defaults:
+        type_id: -1
+        land_id: -1    
+        
+landMoneyMove:
+    path: /moneymove/{land_id}
+    controller: App\Controller\Application::index
+    methods: [GET]
+    requirements:
+        land_id: \d+
+    defaults:
+        land_id: -1    
+
+landMoneyMoveForm:
+    path: /moneymove/form/{land_id}
+    controller: App\Controller\Land\Main::moneyMoveForm
+    methods: [GET]
+    requirements:
+        land_id: \d+
+    defaults:
+        land_id: -1    
+
+landMoneyMoveData:
+    path: /moneymove/data
+    controller: App\Controller\Land\Main::moneyMoveData
+    methods: [POST]
+        
