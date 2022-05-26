@@ -170,7 +170,6 @@ class Main extends AbstractController
         $dtFrom = new \DateTime();
         $dtFrom->setDate($dtFrom->format('Y'), 1, 1);
         $dtTo = new \DateTime();
-        dump($land_id);
         $form = $this->createForm(
             MoneyMove::class,
             [
@@ -209,8 +208,6 @@ class Main extends AbstractController
                 'error' => $errors
             ]);
         }
-        $rr = $landDB->moneyMove($form->getData());
-        dump($landDB, $formRequest);
         return new JsonResponse([
             'success' => true,
             'moneyMove' => $landDB->moneyMove($form->getData())

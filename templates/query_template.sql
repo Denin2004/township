@@ -1,3 +1,8 @@
+[
+{"id":0,"line":189,"error":"extData.errors._invalid_period","data":{"dt":"18.05.2022","amount":5370,"month":null,"year":null,"land":null,"charge_code":"192","budget_item":"ц"}},
+{"id":1,"line":212,"error":"extData.errors._invalid_period","data":{"dt":"20.05.2022","amount":3580,"month":null,"year":null,"land":null,"charge_code":"022","budget_item":"ц"}}
+]
+
 select b_i.land_id, b_i.amount, b_i.month, b_i.year, l_l.square
   from balances.invoices b_i
   inner join lands.lands l_l on (l_l.id=b_i.land_id)
