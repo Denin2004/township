@@ -230,4 +230,44 @@ class Land extends Entity
             $params
         );
     }
+    
+    public function payDistributed($params)
+    {
+        $info = $this->provider->fetchAll(
+            'select b_p.amount-b_p.distributed distributed
+                from balances.pays b_p
+                where b_p.id=:pay_id',
+            $params
+        );
+        
+        return [
+            'data' => $this->provider->fetchAll(
+                'select b_i.id,
+                    to_char(to_date(b_i.month||\'.\'||b_i.year, \'MM.YYYY\'), \'TMMON YY\') period,
+                    b_i.amount,
+                    c_t.name charge_name,
+                    b_ip.amount distributed,
+                    b_i.amount-b_i.payed debt,
+                    1 checked
+                    from balances.invoice_pay b_ip
+                      left join balances.invoices b_i on(b_i.id=b_ip.invoice_id)
+                      left join charges.types c_t on(c_t.id=b_i.charge_type_id)
+                    where b_ip.pay_id=:pay_id
+                union
+                  select b_i.id,
+                    to_char(to_date(b_i.month||\'.\'||b_i.year, \'MM.YYYY\'), \'TMMON YY\') period,
+                    b_i.amount,
+                    c_t.name charge_name,
+                    0.0 distributed,
+                    b_i.amount-b_i.payed debt,
+                    0 checked
+                    from balances.pays b_p
+                       left join charges.types c_t on(c_t.id=b_p.charge_type_id)
+                       left join balances.invoices b_i on(b_i.charge_type_id=c_t.id)and(b_i.land_id=b_p.land_id)
+                    where (b_p.id=:pay_id)and(b_i.amount<>b_i.payed)',
+                $params
+            ),
+            'info' => isset($info[0]) ? $info[0] : null
+        ];
+    }
 }

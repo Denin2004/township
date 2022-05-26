@@ -136,3 +136,32 @@ landMoneyMoveData:
     controller: App\Controller\Land\Main::moneyMoveData
     methods: [POST]
         
+landPayDistributed:
+    path: /pay/distributed/{pay_id}
+    controller: App\Controller\Land\Pays::distributed
+    methods: [GET]
+    requirements:
+        pay_id: \d+
+    defaults:
+        pay_id: -1    
+    
+landPayDistribute:
+    path: /pay/distribute/{pay_id}/{invoice_id}
+    controller: App\Controller\Land\Pays::distribute
+    methods: [GET]
+    requirements:
+        pay_id: \d+
+        invoice_id: \d+
+    defaults:
+        pay_id: -1    
+        invoice_id: -1
+    
+landPayDelete:
+    path: /pay/delete/{pay_id}
+    controller: App\Controller\Land\Pays::delete
+    methods: [GET]
+    requirements:
+        pay_id: \d+
+    defaults:
+        pay_id: -1    
+        

@@ -9,6 +9,7 @@ import MfwNumber from '@app/mfw/MfwNumber';
 import Invoice from '@app/web/js/user/Invoice';
 import ChargesByType from '@app/web/js/land/ChargesByType';
 import useWithForm from '@app/hooks/useWithForm';
+import PayDistributed from '@app/web/js/land/PayDistributed';
 
 class LandWidget extends Component {
     constructor(props){
@@ -89,7 +90,7 @@ class LandWidget extends Component {
                         dataIndex: 'distributed',
                         align: 'right',
                         render: (text, record) => {
-                            return <MfwNumber value={record.distributed}/>
+                            return <a onClick={()=> this.setState({payID: record.id})}><MfwNumber value={record.distributed}/></a>
                         }
                     }
                 ]
@@ -97,7 +98,8 @@ class LandWidget extends Component {
             invoiceID: null,
             form: null,
             charges: [],
-            viewCharge: null
+            viewCharge: null,
+            payID: null
         };
         this.debtSummary = this.debtSummary.bind(this);
         this.prePaySummary = this.prePaySummary.bind(this);
@@ -388,6 +390,7 @@ class LandWidget extends Component {
             )}
             {this.state.invoiceID !== null ? <Invoice id={this.state.invoiceID} close ={() => {this.setState({invoiceID: null});}}/> : null}
             {this.state.viewCharge !== null ? <ChargesByType charge={this.state.viewCharge} close={() => {this.setState({viewCharge: null});}}/> : null}
+            {this.state.payID !== null ? <PayDistributed payID={this.state.payID} close={() => {this.setState({payID: null});}}/> : null}
         </Card>;
     }
 }

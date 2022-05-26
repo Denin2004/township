@@ -171,7 +171,8 @@
             "confirm": "Удалить коррекцию?"
         },
         "prePays": "Предоплаты",
-        "distributed": "Распределено"
+        "distributed": "Распределено",
+        "not_distributed": "Не распределено"
     },
     "township": {
         "_": "Поселок",
