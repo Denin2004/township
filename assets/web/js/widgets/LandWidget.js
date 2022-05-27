@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { Link, generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import { Card, Spin, Table, message, Typography, Modal, Descriptions, List, Form, Input, Select } from 'antd';
+import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
 
@@ -75,7 +76,10 @@ class LandWidget extends Component {
                 paysColumns: [
                     {
                         title: this.props.t('calendar.date'),
-                        dataIndex: 'dt'
+                        dataIndex: 'dt',
+                        render: (text, record) => {
+                            return <React.Fragment>{text} <a onClick={() => this.prePayDelete(record.id)}><DeleteOutlined /></a></React.Fragment>;
+                        }
                     },
                     {
                         title: this.props.t('finance.sum'),
@@ -108,6 +112,7 @@ class LandWidget extends Component {
         this.prePayType = this.prePayType.bind(this);
         this.prePayTypeData = this.prePayTypeData.bind(this);        
         this.debt = this.debt.bind(this);
+        this.prePayDelete = this.prePayDelete.bind(this);
     }
 
     componentDidMount() {
@@ -324,9 +329,58 @@ class LandWidget extends Component {
         });
     }
     
+    prePayDelete(pay_id) {
+        var $this = this,
+            del = function() {
+            $this.setState((state) => {
+                state.prePays.loading = true;
+                return state;
+            });
+            axios.get(
+                generatePath(
+                    window.mfwApp.urls.township.land.pays.delete+'/:pay_id',
+                    {
+                        pay_id: pay_id
+                    }
+                ),
+                {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                }
+            ).then(res => {
+                if (res.data.success) {
+                    $this.setState((state) => {
+                        state.prePays.loading = false;
+                        state.prePays.dropDown[res.data.charge_type_id] = res.data.prePays;
+                        return state;
+                    });            
+                } else {
+                    message.error(this.props.t(res.data.error));
+                    $this.setState((state) => {
+                        state.prePays.loading = false;
+                        return state;
+                    });
+                }
+            }).catch(error => {
+                if (error.response && error.response.data) {
+                    message.error($this.props.t(error.response.data.error));
+                } else {
+                    message.error(error.toString());
+                }
+            });
+        };
+    
+        Modal.confirm({
+            title: this.props.t('finance.pay_delete_confirm'),
+            icon: <ExclamationCircleOutlined />,
+            okText: this.props.t('modal.yes'),
+            cancelText: this.props.t('modal.cancel'),
+            onOk: () => {del();}
+        });    
+    }
+    
     render() {
-        
-        console.log(this.state);
         return <Card title={this.props.t('land.status')}>
             {this.state.loading ? (
                 <div className="d-flex justify-content-center align-items-center">

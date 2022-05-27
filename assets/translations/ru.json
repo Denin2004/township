@@ -172,7 +172,8 @@
         },
         "prePays": "Предоплаты",
         "distributed": "Распределено",
-        "not_distributed": "Не распределено"
+        "not_distributed": "Не распределено",
+        "pay_delete_confirm": "Вы действительно хотите удалить платеж?"
     },
     "township": {
         "_": "Поселок",

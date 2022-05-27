@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Link, generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import { Modal, Spin, message, Table } from 'antd';
+import { Modal, Spin, message, Table, Checkbox } from 'antd';
 
 import axios from 'axios';
 
@@ -17,9 +17,15 @@ class PayDistributed extends Component {
                 info: [],
                 columns: [
                     {
+                        title: this.props.t(''),
+                        dataIndex: 'checked',
+                        render: (text, record) => {
+                            return <Checkbox checked={record.checked === 1} onChange={(e) => this.distribute(e, record.id)}/>
+                        }
+                    },
+                    {
                         title: this.props.t('common.name'),
-                        dataIndex: 'period',
-                        ellipsis: true
+                        dataIndex: 'period'
                     },
                     {
                         title: this.props.t('finance.sum'),
@@ -48,6 +54,7 @@ class PayDistributed extends Component {
                 ]
             }
         };
+        this.distribute = this.distribute.bind(this);
     }
     
     componentDidMount() {
@@ -86,10 +93,41 @@ class PayDistributed extends Component {
             }            
         });
     }
-
-    viewCharges(values) {
-        this.setState({year: values.year});  
-        this.getCharges(values.year);
+   
+    distribute(e, invoiceID) {
+        this.setState({loading: true});
+        axios.get(
+            generatePath(
+                window.mfwApp.urls.township.land.pays.distribute+'/:pay_id/:invoice_id/:distribute',
+                {
+                    pay_id: this.props.payID,
+                    invoice_id: invoiceID,
+                    distribute: e.target.checked ? 1 : 0
+                }
+            ),
+            {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }
+        ).then(res => {
+            if (res.data.success) {
+                this.setState((state) => {
+                    state.loading = false;
+                    state.distributed.data = res.data.distributed.data;
+                    state.distributed.info = res.data.distributed.info;
+                    return state;
+                });            
+            } else {
+                message.error(this.props.t(res.data.error));
+            }
+        }).catch(error => {
+            if (error.response && error.response.data) {
+                message.error(this.props.t(error.response.data.error));
+            } else {
+                message.error(error.toString());
+            }            
+        });
     }
     
     render() {

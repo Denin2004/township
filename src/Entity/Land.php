@@ -212,7 +212,7 @@ class Land extends Entity
         }
         $params['format'] = $this->provider->dateFormat();
         return $this->provider->fetchAll(
-            'select pays.id, to_char(pays.dt, :format) as dt, pays.amount, pays.distributed
+            'select pays.id, to_char(pays.dt, :format) as dt, pays.amount, pays.distributed, pays.charge_type_id
                 from balances.pays pays
                 where((pays.amount-pays.distributed) > 0)and(pays.charge_type_id=:type_id)and(pays.land_id=:land_id)
                 order by pays.dt',
@@ -269,5 +269,31 @@ class Land extends Entity
             ),
             'info' => isset($info[0]) ? $info[0] : null
         ];
+    }
+    
+    public function payDistribute($params)
+    {
+        $this->provider->fetchAll(
+            'select lands.pay_distribute(:pay_id, :invoice_id, :distribute)',
+            $params
+        );
+    }
+    
+    public function payDelete($params)
+    {
+        $info = $this->provider->fetchAll(
+            'select b_p.charge_type_id as type_id, b_p.land_id
+                from balances.pays b_p
+                where b_p.id=:pay_id',
+            $params
+        );
+        if (!isset($info[0])) {
+            return false;
+        }
+        $this->provider->executeQuery(
+            'delete from balances.pays where id=:pay_id',
+            $params
+        );
+        return $info[0];
     }
 }
