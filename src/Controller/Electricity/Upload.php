@@ -106,14 +106,15 @@ class Upload extends AbstractController
                     $queryData['month'] = intval($dt->format('m'));
                     $queryData['year'] = intval($dt->format('Y'))   ;
                     $words = explode('.', $this->sheet->getCell('A'.(self::BLANK_START+3+self::BLANK_HEIGHT*$billIndex))->getValue());
-                    if (!isset($words[2])or(intval($words[2]) == 0)) {
+                    $land = isset($words[2]) ? $words[2] : (!isset($words[1]) ? null : $words[1]);
+                    if (($land == null)or(intval($land) == 0)) {
                         return new JsonResponse([
                             'success' => false,
                             'error' => 'electricity.errors.land',
                             'errorData' => 'A'.(self::BLANK_START+3+self::BLANK_HEIGHT*$billIndex).' '.$billNum
                         ]);
                     }
-                    $queryData['land_id'] = intval($words[2]);
+                    $queryData['land_id'] = intval($land);
                     $queryData['dayStart'] = $this->getFloat([
                         'cell' => 'C'.(self::BLANK_START+7+self::BLANK_HEIGHT*$billIndex),
                         'allowNull' => true
