@@ -21,8 +21,17 @@ class Invoice extends Entity
             foreach ($data as $row) {
                 $res['specs'][] = json_decode($row['invoice'], true);
             }
-
         }
         return $res;
+    }
+    
+    public function info($invoice_id)
+    {
+        return $this->provider->fetchAll(
+            'select amount-payed debt from balances.invoices where id=:id',
+            [
+                'id' => $invoice_id
+            ]
+        );
     }
 }

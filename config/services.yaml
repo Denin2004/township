@@ -127,3 +127,7 @@ services:
         arguments: ['@App\Entity\Land']
         tags: [form.type]
         
+    App\Form\User\Payment:
+        class: App\Form\User\Payment
+        arguments: ['@App\Entity\User', '@App\Entity\Invoice']
+        tags: [form.type]     

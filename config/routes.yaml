@@ -65,3 +65,8 @@ error403:
 error500:
     path: /error/500
     controller: App\Controller\MainPage::index
+
+sberTest:
+    path: /sbertest
+    controller: App\Controller\MainPage::sberTest
+    methods: [GET]

@@ -1,13 +1,14 @@
 import React, {Component} from 'react';
 import { Link, generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import { Card, Toast, Loading, Space, List, Collapse, Result } from 'antd-mobile';
+import { Card, Toast, Loading, Space, List, Collapse, Result, Tag } from 'antd-mobile';
 
 import axios from 'axios';
 
 import MfwNumber from '@app/mfw/MfwNumber';
 import UserByType from '@app/mobile/js/user/ByType';
 import UserChargesByType from '@app/mobile/js/user/ChargersByType';
+import Payment from '@app/mobile/js/user/Payment';
 
 class UserWidget extends Component {
     
@@ -16,7 +17,8 @@ class UserWidget extends Component {
         this.state = window.mfwApp.userWidgetState ? {...window.mfwApp.userWidgetState} : {
             loading: true,
             debt: [],
-            charges: []
+            charges: [],
+            payment: null
         };
     }
 
@@ -76,7 +78,12 @@ class UserWidget extends Component {
                         {this.state.debt.map(record => {
                             return <Collapse.Panel
                                key={record.id}
-                               title={<List.Item key={record.id} extra={<MfwNumber value={record.debt}/>}>{record.name}</List.Item>}
+                               title={<List.Item 
+                                  key={record.id} 
+                                  extra={<MfwNumber value={record.debt}/>}
+                                  description={<Tag color='primary' fill='outline' onClick={(e) => {
+                                    this.setState({payment: record});
+                                    e.stopPropagation();}}>{this.props.t('finance.pay_all')}</Tag>}>{record.name}</List.Item>}
                                className="mfw-widget-record">
                                 <UserByType typeID={record.id} />
                             </Collapse.Panel>
@@ -90,53 +97,19 @@ class UserWidget extends Component {
                             return <Collapse.Panel
                                key={record.id}
                                className="mfw-widget-record"
-                               title={<List.Item key={record.id}>{record.name}</List.Item>}>
+                               title={<List.Item 
+                                  key={record.id}>{record.name}</List.Item>}>
                                 <UserChargesByType typeID={record.id} />
                             </Collapse.Panel>
                         })}
                 </Collapse>
             </Card>
+            {this.state.payment !== null ? <Payment 
+                chargeTypeID={this.state.payment.id} 
+                invoiceID="-1" 
+                caption={this.state.payment.name} 
+                close={() => this.setState({payment: null})}/> : null}
         </React.Fragment> )
-    }
-
-
-    renderOld() {
-        return <React.Fragment>
-            <Card title={this.props.t('user.debt')}>
-                {this.state.loading ? (
-                    <Space className="mfw-d-flex" justify="center">
-                        <Loading/>
-                    </Space>
-                ) : ( this.state.debt.length != 0 ?
-                <Collapse>
-                    {this.state.debt.map(record => {
-                        return <Collapse.Panel
-                           key={record.id}
-                           title={<List.Item key={record.id} extra={<MfwNumber value={record.debt}/>}>{record.name}</List.Item>}
-                           className="mfw-widget-record">
-                            <UserByType typeID={record.id} />
-                        </Collapse.Panel>
-                    })}
-                    </Collapse> : <NoticeBar color="success" content={this.props.t('finance.debt_none')}/>)}
-            </Card>
-            <Card title={this.props.t('finance.charges')}>
-           {this.state.loading ? (
-                    <Space className="mfw-d-flex" justify="center">
-                        <Loading/>
-                    </Space>
-                ) : (
-                <Collapse>
-                    {this.state.charges.map(record => {
-                            return <Collapse.Panel
-                               key={record.id}
-                               className="mfw-widget-record"
-                               title={<List.Item key={record.id}>{record.name}</List.Item>}>
-                                <UserChargesByType typeID={record.id} />
-                            </Collapse.Panel>
-                        })}
-                </Collapse>)}
-            </Card>
-        </React.Fragment>
     }
 }
 

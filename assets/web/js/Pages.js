@@ -32,6 +32,7 @@ class Pages extends Component {
         }
         this.passwordChangeForm = this.passwordChangeForm.bind(this);
         this.passwordChange = this.passwordChange.bind(this);
+        this.sberTest = this.sberTest.bind(this);
     }
     
     componentDidMount() {
@@ -119,6 +120,26 @@ class Pages extends Component {
                 message.error(this.props.t('common.errors.validate'));
             });
     }
+    
+    sberTest()
+    {
+        axios.get(
+            '/sbertest',
+            {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }
+        ).then(res => {
+            console.log(res);
+        }).catch(error => {
+            if (error.response && error.response.data) {
+                message.error(this.props.t(error.response.data.error));
+            } else {
+                message.error(error.toString());
+            }
+        });
+    }    
 
     render() {
         return <Layout theme="light" className="min-height-100vh">
@@ -130,6 +151,7 @@ class Pages extends Component {
                 <React.Fragment>
                     <Layout.Header className="mfw-mainmenu"> 
                         <Menu theme="light" mode="horizontal" className="d-flex justify-content-end" selectedKeys={['userMenu']}>
+                            <Menu.Item key="sber" onClick={this.sberTest}>item 1</Menu.Item>
                             <Menu.SubMenu key="userMenu" title={this.state.userName}>
                                 <Menu.Item key="userChangePsw" onClick={this.passwordChangeForm}>{this.props.t('account.password.change')}</Menu.Item>
                                 <Menu.Item key="userLogout"><a href="/logout" target="_self">{this.props.t('account.logout')}</a></Menu.Item>

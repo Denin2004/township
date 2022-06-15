@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import axios from 'axios';
 import { withTranslation } from 'react-i18next';
 
-import { NavBar, Loading, Popup, List, Modal, Toast, Form, Input, Button, Space} from 'antd-mobile';
+import { NavBar, Loading, Popup, List, Toast, Form, Input, Button, Space} from 'antd-mobile';
 
 import Dashboard from '@app/mobile/js/Dashboard';
 import LineByType from '@app/mobile/js/line/ByType';

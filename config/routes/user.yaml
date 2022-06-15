@@ -37,3 +37,29 @@ userChargesType:
     defaults: 
         type_id: -1
         year: -1
+
+userPaymentForm:
+    path: /payment/form/{charge_type_id}/{invoice_id}
+    controller: App\Controller\Township\UserPayment::form
+    methods: [GET]
+    requirements:
+        charge_type_id: \d+|-1
+        invoice_id: \d+|-1
+    defaults: 
+        charge_type_id: -1
+        invoice_id: -1
+
+userPay:
+    path: /pay
+    controller: App\Controller\Township\UserPayment::pay
+    methods: [POST]
+    
+userPaymentSuccess:
+    path: /payment/success
+    controller: App\Controller\Township\UserPayment::success
+    methods: [GET]
+    
+userPaymentFail:
+    path: /payment/fail
+    controller: App\Controller\Township\UserPayment::fail
+    methods: [GET]    

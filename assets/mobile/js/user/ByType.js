@@ -1,18 +1,20 @@
 import React, {Component} from 'react';
 import { Link, generatePath } from 'react-router-dom';
-import { Toast, Loading, List } from 'antd-mobile';
+import { Toast, Loading, List, Tag } from 'antd-mobile';
 import axios from 'axios';
 
 import { withTranslation } from 'react-i18next';
 
 import MfwNumber from '@app/mfw/MfwNumber';
+import Payment from '@app/mobile/js/user/Payment';
 
 class UserByType extends Component {
     constructor(props){
         super(props);
         this.state = {
             debt: [],
-            loading: true
+            loading: true,
+            payment: null
         };
     }
 
@@ -53,7 +55,9 @@ class UserByType extends Component {
     }
 
     render() {
+        console.log(this.state);
         return this.state.loading ? <Loading/> :
+            <React.Fragment>
             <List>
                {this.state.debt.map(record => {
                     return <List.Item 
@@ -63,9 +67,16 @@ class UserByType extends Component {
                         { 
                             id: record.id
                         }
-                      )}><MfwNumber value={record.debt}/></Link>}>{record.invoice_num}</List.Item>
+                      )}><MfwNumber value={record.debt}/></Link>}
+                       description={<Tag color='primary' fill='outline' onClick={() => this.setState({payment: record})}>{this.props.t('finance.pay')}</Tag>}>{record.invoice_num}</List.Item>
                 })}
             </List>
+            {this.state.payment !== null ? <Payment 
+                chargeTypeID="-1" 
+                invoiceID={this.state.payment.id} 
+                caption={this.state.payment.invoice_num} 
+                close={() => this.setState({payment: null})}/> : null}
+            </React.Fragment>
     }
 }
 

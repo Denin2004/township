@@ -106,4 +106,20 @@ class User extends Entity
             ]
         );
     }
+    
+    public function chargeTypeDebt($charge_type_id)
+    {
+        return $this->provider->fetchAll(
+            'select l.id land_id, l.num, sum(b_l.amount) debt
+                from lands.user_lands u_l
+                   inner join balances.lands b_l on(b_l.land_id=u_l.land_id)and(b_l.amount > 0)and(b_l.charge_type_id=:charge_type_id)
+                   left join lands.lands l on(l.id=u_l.land_id)
+                where u_l.user_id = :user_id
+                group by l.id, l.num',
+            [
+                'user_id' => $this->provider->user()->getId(),
+                'charge_type_id' => $charge_type_id
+            ]
+        );
+    }
 }

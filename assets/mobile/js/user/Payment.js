@@ -1,0 +1,187 @@
+import React, {Component} from 'react';
+import { Link, generatePath } from 'react-router-dom';
+import { Toast, Loading, Form, Space, Popup, Button, Selector, Input } from 'antd-mobile';
+import axios from 'axios';
+
+import { withTranslation } from 'react-i18next';
+
+import MfwNumber from '@app/mfw/MfwNumber';
+import useWithForm from '@app/hooks/useWithFormMobile';
+
+class Payment extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            form: [],
+            loading: true,
+            landOptions: [],
+            amount: 0
+        };
+        this.pay = this.pay.bind(this);
+    }
+
+    componentDidMount() {
+        axios.get(
+            generatePath(
+                window.mfwApp.urls.township.user.payment.form+'/:charge_type_id/:invoice_id',
+                {
+                    charge_type_id: this.props.chargeTypeID, 
+                    invoice_id: this.props.invoiceID
+                }
+            ),
+            {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }
+        ).then(res => {
+            if (res.data.success) {
+                this.setState((state) => {
+                    state.loading = false;
+                    state.form = res.data.form;
+                    if (res.data.form.land_id.type !== 'mfw-hidden') {
+                        state.amount = 0;
+                    } else {
+                        state.amount = res.data.form.amount.value;
+                    }
+                    return state;
+                });            
+            } else {
+                Toast.show({
+                    icon: 'fail',
+                    content:this.props.t(res.data.error)
+                });
+            }
+        }).catch(error => {
+            if (error.response) {
+                Toast.show({
+                    icon: 'fail',
+                    content: error.response.status
+                });
+            } else {
+                Toast.show({
+                    icon: 'fail',
+                    content:this.props.t(error.toString())
+                });
+            }
+        });
+    }
+    
+    pay(values) {
+        axios({
+            method: 'post',
+            url: window.mfwApp.urls.township.user.payment.do,
+            data: values,
+            headers: {'Content-Type': 'application/json','X-Requested-With': 'XMLHttpRequest'}
+        }).then(res => {
+            if (res.data.success) {
+                this.props.close();
+                
+            } else {
+                Toast.show({
+                    icon: 'fail',
+                    content:this.props.t(res.data.error)
+                });
+            }
+        }).catch(error => {
+                Toast.show({
+                    icon: 'fail',
+                    content:this.props.t(error.toString())
+                });
+        });
+    }
+
+    render() {
+        console.log(this.state);
+        return (
+        <Popup title={this.props.t('account.password.change')}
+           visible={true}>
+            {this.state.loading ? <Loading/> : <Form 
+                form={this.props.form}
+                layout="horizontal"
+                onFinish={this.pay}
+                footer={<Space justify="between" className="mfw-d-flex">
+                        <Button color='primary' type="submit">{this.props.t('finance.pay')}</Button>
+                        <Button 
+                          color='primary'
+                          type="button"
+                          fill='outline'
+                          onClick={this.props.close}>{this.props.t('modal.cancel')}</Button>
+                    </Space>}>
+                <Form.Header>{this.props.caption}</Form.Header>
+                {this.state.form.land_id.type == 'mfw-hidden' ? <Form.Item name="land_id"
+                    hidden={true} 
+                    initialValue={this.state.form.land_id.value}>
+                      <Input/>
+                  </Form.Item> : <Selector options={this.state.landOptions} defaultValue={[this.state.form.land_id.value]}/>}
+                <Form.Item label={this.props.t('finance.sum')} 
+                   name="amount" 
+                   initialValue={this.state.amount} 
+                   rules={[{required: true, message: this.props.t('budget.errors.amount')}, {validator: this.isNumber, message: this.props.t('budget.errors.wrong_amount')}]}>
+                      <Input/>
+                </Form.Item>
+                <Form.Item name="charge_type_id"
+                  hidden={true} 
+                  initialValue={this.state.form.charge_type_id.value}>
+                    <Input/>
+                </Form.Item>
+                <Form.Item name="invoice_id"
+                  hidden={true} 
+                  initialValue={this.state.form.invoice_id.value}>
+                    <Input/>
+                </Form.Item>                
+                <Form.Item name="_token"
+                  hidden={true} 
+                  initialValue={this.state.form._token.value}>
+                    <Input/>
+                </Form.Item>
+            </Form>                    
+            }
+        </Popup>)
+    }
+    
+    isNumber(rule, value) {
+        return isNaN(value/1) ? Promise.reject(new Error(rule.message)) : (value*1 < 0 ? Promise.reject(new Error(rule.message)) : Promise.resolve());
+    }
+    
+    renderOld() {
+        console.log(this.state);
+        return (
+        <Popup title={this.props.t('account.password.change')}
+           visible={true}>
+            {this.state.loading ? <Loading/> : <Form 
+                form={this.props.form}
+                layout="horizontal"
+                onFinish={this.pay}
+                footer={<Space justify="between" className="mfw-d-flex">
+                        <Button color='primary' type="submit">{this.props.t('finance.pay')}</Button>
+                        <Button 
+                          color='primary'
+                          type="button"
+                          fill='outline'
+                          onClick={this.props.close}>{this.props.t('modal.cancel')}</Button>
+                    </Space>}>
+                <Form.Header>{this.props.caption}</Form.Header>
+                {this.state.form.land_id.type == 'mfw-hidden' ? <Form.Item name="land_id"
+                    hidden={true} 
+                    initialValue={this.state.form.land_id.value}>
+                      <Input/>
+                  </Form.Item> : <Selector options={this.state.landOptions} defaultValue={[this.state.form.land_id.value]}/>}
+                <Form.Item label={this.props.t('finance.sum')} 
+                   name="amount" 
+                   initialValue={this.state.amount} 
+                   rules={[{ required: true, message: this.props.t('budget.errors.amount')}, {type: 'number', min: 0, max: 10, message: this.props.t('budget.errors.wrong_amount')}]}>
+                      <Input/>
+                  </Form.Item>
+                <Form.Item name="_token"
+                  hidden={true} 
+                  initialValue={this.state.form._token.value}>
+                    <Input/>
+                </Form.Item>
+            </Form>                    
+            }
+        </Popup>)
+    }    
+}
+
+export default withTranslation()(useWithForm(Payment));

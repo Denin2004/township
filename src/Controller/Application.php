@@ -19,7 +19,8 @@ class Application extends AbstractController
     public function index(SiteConfig $config)
     {
         $detect = new Mobile_Detect;
-        $mode = $detect->isMobile() ? 'mobile' : 'web';
+        $mode = 'mobile';
+        //$mode = $detect->isMobile() ? 'mobile' : 'web';
         return $this->render(
             'base.'.$mode.'.html.twig',
             [

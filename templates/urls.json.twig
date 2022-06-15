@@ -64,7 +64,11 @@
             "moneyMove": "{{ path('userMoneyMove') }}",
             "moneyMoveData": "{{ path('userMoneyMoveData') }}",
             "moneyMoveForm": "{{ path('userMoneyMoveForm') }}",
-            "chargesByType": "{{ path('userChargesType') }}"
+            "chargesByType": "{{ path('userChargesType') }}",
+            "payment": {
+                "form": "{{ path('userPaymentForm') }}",
+                "do": "{{ path('userPay') }}"
+            }
         }
     },
     "lineManager": {

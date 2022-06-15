@@ -21,7 +21,6 @@ use App\Entity\Land;
 
 class Account extends ReactForm
 {
-
     protected $uacDB;
     protected $landDB;
     protected $user;
@@ -64,7 +63,6 @@ class Account extends ReactForm
                 );
                 $builder->get('password')->addModelTransformer($passwordTransformer);
             }
-
         }
         if ($options['request'] == true) {
             $builder->add(
