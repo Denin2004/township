@@ -49,7 +49,7 @@ class Login extends Component {
     };    
     
     render() {
-        return this.state.redirect ? <Navigate to={this.state.redirect}/> : 
+        return this.state.redirect ? <Navigate to={this.state.redirect} replace={true}/> : 
             <React.Fragment>
                  <Form
                   name="basic"

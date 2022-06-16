@@ -55,7 +55,7 @@ userPay:
     methods: [POST]
     
 userPaymentSuccess:
-    path: /payment/success
+    path: /payment/success/{order_id}
     controller: App\Controller\Township\UserPayment::success
     methods: [GET]
     

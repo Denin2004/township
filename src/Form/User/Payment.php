@@ -41,7 +41,7 @@ class Payment extends ReactForm
                 ReactTextType::class
             );
         } else {
-            if ($options['data']['charge_type_id'] != -1) {
+            if ($options['data']['charge_type_id'] != null) {
                 $debt = $this->userDB->chargeTypeDebt($options['data']['charge_type_id']);
                 if (count($debt) > 1) {
                     $landChoices = [];
@@ -83,7 +83,7 @@ class Payment extends ReactForm
                     );
                 }
             }
-            if ($options['data']['invoice_id'] != -1) {
+            if ($options['data']['invoice_id'] != null) {
                 $info = $this->invoiceDB->info($options['data']['invoice_id']);
                 $builder->add('land_id', ReactHiddenType::class)
                 ->add(

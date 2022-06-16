@@ -151,7 +151,6 @@ class Pages extends Component {
                 <React.Fragment>
                     <Layout.Header className="mfw-mainmenu"> 
                         <Menu theme="light" mode="horizontal" className="d-flex justify-content-end" selectedKeys={['userMenu']}>
-                            <Menu.Item key="sber" onClick={this.sberTest}>item 1</Menu.Item>
                             <Menu.SubMenu key="userMenu" title={this.state.userName}>
                                 <Menu.Item key="userChangePsw" onClick={this.passwordChangeForm}>{this.props.t('account.password.change')}</Menu.Item>
                                 <Menu.Item key="userLogout"><a href="/logout" target="_self">{this.props.t('account.logout')}</a></Menu.Item>

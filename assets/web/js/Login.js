@@ -36,9 +36,7 @@ class Login extends Component {
 
     render() {
         return (
-            this.state.redirect ? (
-                <Navigate to={this.state.redirect}/>
-            ) : (
+            this.state.redirect ? <Navigate to={this.state.redirect} replace={true}/> : (
                 <Modal visible={true} closable={false} footer={null}>
                     <Form labelCol={{span: 8 }}
                           wrapperCol={{ span: 16 }}

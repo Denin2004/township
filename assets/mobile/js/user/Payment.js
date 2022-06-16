@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Link, generatePath } from 'react-router-dom';
+import { Link, generatePath, Navigate } from 'react-router-dom';
 import { Toast, Loading, Form, Space, Popup, Button, Selector, Input } from 'antd-mobile';
 import axios from 'axios';
 
@@ -40,7 +40,13 @@ class Payment extends Component {
                     state.loading = false;
                     state.form = res.data.form;
                     if (res.data.form.land_id.type !== 'mfw-hidden') {
-                        state.amount = 0;
+                        res.data.form.land_id.choices.map((choice, index) => {
+                            choice.description = <MfwNumber value={res.data.form.amount.choices[index].label} />;
+                            choice.amount = res.data.form.amount.choices[index].label;
+                            
+                        });
+                        state.amount = res.data.form.amount.choices[0].label;
+                        res.data.form.land_id.value = [res.data.form.land_id.value*1];
                     } else {
                         state.amount = res.data.form.amount.value;
                     }
@@ -75,8 +81,8 @@ class Payment extends Component {
             headers: {'Content-Type': 'application/json','X-Requested-With': 'XMLHttpRequest'}
         }).then(res => {
             if (res.data.success) {
-                this.props.close();
-                
+//                window.location.replace(res.data.redirect);
+
             } else {
                 Toast.show({
                     icon: 'fail',
@@ -84,10 +90,10 @@ class Payment extends Component {
                 });
             }
         }).catch(error => {
-                Toast.show({
-                    icon: 'fail',
-                    content:this.props.t(error.toString())
-                });
+            Toast.show({
+                icon: 'fail',
+                content:this.props.t(error.toString())
+            });
         });
     }
 
@@ -113,7 +119,9 @@ class Payment extends Component {
                     hidden={true} 
                     initialValue={this.state.form.land_id.value}>
                       <Input/>
-                  </Form.Item> : <Selector options={this.state.landOptions} defaultValue={[this.state.form.land_id.value]}/>}
+                      </Form.Item> : <Form.Item name="land_id" initialValue={this.state.form.land_id.value}><Selector options={this.state.form.land_id.choices} 
+                     defaultValue={this.state.form.land_id.value}
+                     onChange={(sel, option)=> {console.log(option.items[0]);this.props.form.setFieldsValue({amount: option.items[0].amount})}}/></Form.Item>}
                 <Form.Item label={this.props.t('finance.sum')} 
                    name="amount" 
                    initialValue={this.state.amount} 
@@ -143,45 +151,6 @@ class Payment extends Component {
     isNumber(rule, value) {
         return isNaN(value/1) ? Promise.reject(new Error(rule.message)) : (value*1 < 0 ? Promise.reject(new Error(rule.message)) : Promise.resolve());
     }
-    
-    renderOld() {
-        console.log(this.state);
-        return (
-        <Popup title={this.props.t('account.password.change')}
-           visible={true}>
-            {this.state.loading ? <Loading/> : <Form 
-                form={this.props.form}
-                layout="horizontal"
-                onFinish={this.pay}
-                footer={<Space justify="between" className="mfw-d-flex">
-                        <Button color='primary' type="submit">{this.props.t('finance.pay')}</Button>
-                        <Button 
-                          color='primary'
-                          type="button"
-                          fill='outline'
-                          onClick={this.props.close}>{this.props.t('modal.cancel')}</Button>
-                    </Space>}>
-                <Form.Header>{this.props.caption}</Form.Header>
-                {this.state.form.land_id.type == 'mfw-hidden' ? <Form.Item name="land_id"
-                    hidden={true} 
-                    initialValue={this.state.form.land_id.value}>
-                      <Input/>
-                  </Form.Item> : <Selector options={this.state.landOptions} defaultValue={[this.state.form.land_id.value]}/>}
-                <Form.Item label={this.props.t('finance.sum')} 
-                   name="amount" 
-                   initialValue={this.state.amount} 
-                   rules={[{ required: true, message: this.props.t('budget.errors.amount')}, {type: 'number', min: 0, max: 10, message: this.props.t('budget.errors.wrong_amount')}]}>
-                      <Input/>
-                  </Form.Item>
-                <Form.Item name="_token"
-                  hidden={true} 
-                  initialValue={this.state.form._token.value}>
-                    <Input/>
-                </Form.Item>
-            </Form>                    
-            }
-        </Popup>)
-    }    
 }
 
 export default withTranslation()(useWithForm(Payment));
