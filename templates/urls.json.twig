@@ -67,7 +67,9 @@
             "chargesByType": "{{ path('userChargesType') }}",
             "payment": {
                 "form": "{{ path('userPaymentForm') }}",
-                "do": "{{ path('userPay') }}"
+                "do": "{{ path('userPay') }}",
+                "success": "{{ path('userPaymentSuccess') }}",
+                "fail": "{{ path('userPaymentFail') }}"
             }
         }
     },

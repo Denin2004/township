@@ -217,6 +217,8 @@ class Pages extends Component {
                 <Route path={window.mfwApp.urls.township.land.debtType+'/:land_id/:charge_type_id'} element={<LandByType/>}/>
                 <Route path={window.mfwApp.urls.finance.invoice.page+'/:id'} element={<Invoice/>}/>
                 <Route path={window.mfwApp.urls.budget.page+'/:id'} element={<Budget/>}/>
+                <Route path={window.mfwApp.urls.township.user.payment.success} element={<Dashboard/>}/>
+                <Route path={window.mfwApp.urls.township.user.payment.fail} element={<Dashboard/>}/>                
             </Routes>
         </React.Fragment>;
     }

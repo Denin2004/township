@@ -175,6 +175,8 @@ class Pages extends Component {
                             <Route path={window.mfwApp.urls.finance.moneyMove.page} element={<FinanceMoneyMove/>}/>
                             <Route path={window.mfwApp.urls.township.land.page} element={<Lands/>}/>
                             <Route path="/error/403" element={<Error403/>}/>
+                            <Route path={window.mfwApp.urls.township.user.payment.success} element={<Dashboard widgets={this.state.widgets}/>}/>
+                            <Route path={window.mfwApp.urls.township.user.payment.fail} element={<Dashboard widgets={this.state.widgets}/>}/>
                         </Routes>
                     </Layout.Content>
                 {this.state.passwordForm != false ? (

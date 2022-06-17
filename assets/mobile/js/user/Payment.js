@@ -81,8 +81,7 @@ class Payment extends Component {
             headers: {'Content-Type': 'application/json','X-Requested-With': 'XMLHttpRequest'}
         }).then(res => {
             if (res.data.success) {
-//                window.location.replace(res.data.redirect);
-
+                window.location.replace(res.data.redirect);
             } else {
                 Toast.show({
                     icon: 'fail',
@@ -98,7 +97,6 @@ class Payment extends Component {
     }
 
     render() {
-        console.log(this.state);
         return (
         <Popup title={this.props.t('account.password.change')}
            visible={true}>
@@ -121,7 +119,7 @@ class Payment extends Component {
                       <Input/>
                       </Form.Item> : <Form.Item name="land_id" initialValue={this.state.form.land_id.value}><Selector options={this.state.form.land_id.choices} 
                      defaultValue={this.state.form.land_id.value}
-                     onChange={(sel, option)=> {console.log(option.items[0]);this.props.form.setFieldsValue({amount: option.items[0].amount})}}/></Form.Item>}
+                     onChange={(sel, option)=> {this.props.form.setFieldsValue({amount: option.items[0].amount});}}/></Form.Item>}
                 <Form.Item label={this.props.t('finance.sum')} 
                    name="amount" 
                    initialValue={this.state.amount} 

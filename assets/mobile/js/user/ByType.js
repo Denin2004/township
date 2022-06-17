@@ -55,7 +55,6 @@ class UserByType extends Component {
     }
 
     render() {
-        console.log(this.state);
         return this.state.loading ? <Loading/> :
             <React.Fragment>
             <List>

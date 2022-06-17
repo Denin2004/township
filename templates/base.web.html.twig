@@ -13,7 +13,8 @@
         <script type="text/javascript">
             window.mfwApp = {
                 locale: "{{ locale }}",
-                numeral: {{ numeral|json_encode|raw }}
+                numeral: {{ numeral|json_encode|raw }},
+                result: {{ result|json_encode|raw }}
             }
         </script>
         {{ encore_entry_script_tags('webApp') }}

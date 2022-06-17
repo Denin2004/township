@@ -9,20 +9,61 @@ use Symfony\Component\Routing\Generator\UrlGenerator;
 
 use App\Entity\User as UserDB;
 use App\Form\User\Payment;
+use App\Services\SiteConfig\SiteConfig;
 
 use Mobile_Detect;
 
 class UserPayment extends AbstractController
 {
-    public function success(SiteConfig $config, UserDB $userDB, $order_id)
+    protected $urlCreatePayment = 'https://3dsec.sberbank.ru/payment/rest/register.do';
+    protected $urlCheckPayment = 'https://3dsec.sberbank.ru/payment/rest/getOrderStatusExtended.do';
+
+    public function success(Request $request, SiteConfig $config, UserDB $userDB)
     {
         $detect = new Mobile_Detect;
         $mode = 'mobile';
         //$mode = $detect->isMobile() ? 'mobile' : 'web';
+        $qry = $request->query->all();
+        $res = $this->sberREST([
+            'url' => $this->urlCheckPayment,
+            'data' => [
+                'orderId' => $qry['orderId']
+            ]
+        ]);
+        $result = null;
+        if ($res['success']) {
+            if ($res['data']['orderStatus'] == 2) {
+                $doPay = $userDB->doPaymentOrder($qry['orderId']);
+                if ($userDB->isError()) {
+                    $result = [
+                        'success' => false,
+                        'error' => $userDB->getError()
+                    ];
+                } else {
+                    if ($doPay[0]['do_payment_order'] == 0) {
+                        $result = [
+                            'success' => true,
+                            'comment' => 'finance.pay_success'
+                        ];
+                    }
+                }
+            } else {
+                $result = [
+                    'success' => false,
+                    'error' => $res['error']
+                ];
+            }
+        } else {
+            $result = [
+                'success' => false,
+                'error' => $res['error']
+            ];
+        }
         return $this->render(
             'base.'.$mode.'.html.twig',
             [
-                'numeral' => $config->get('numeral')
+                'numeral' => $config->get('numeral'),
+                'result' => $result
             ]
         );
     }
@@ -67,70 +108,57 @@ class UserPayment extends AbstractController
         }
         $formData = $form->getData();
         $formData['uniqid'] = uniqid();
-        dump($formData);
-        /*        dump($this->generateUrl('userPaymentSuccess', ['order_id' => $formData['uniqid']], UrlGenerator::ABSOLUTE_URL));
-                $res = $this->sberREST([
-                    'url' => 'https://3dsec.sberbank.ru/payment/rest/register.do',
-                    'data' => [
-                        'orderNumber' => $formData['uniqid'],
-                        'amount' => $formData['amount']*100,
-                        'returnUrl' => $this->generateUrl('userPaymentSuccess', ['order_id' => $formData['uniqid']], UrlGenerator::ABSOLUTE_URL),
-                        'failUrl' => $this->generateUrl('userPaymentFail', ['order_id' => $formData['uniqid']], UrlGenerator::ABSOLUTE_URL)
-                    ]
-                ]);
-                if ($res['success']) {
-                    $formData['sberOrder'] = $res['data']['orderId'];
-                    $userDB->createPaymentOrder($formData);
-                    return new JsonResponse([
-                        'success' => true,
-                        'redirect' => $res['data']['formUrl']
-                    ]);
-                }
-                return new JsonResponse([
-                    'success' => false,
-                    'error' => $res['error']
-                ]);*/
+        $res = $this->sberREST([
+            'url' => $this->urlCreatePayment,
+            'data' => [
+                'orderNumber' => $formData['uniqid'],
+                'amount' => $formData['amount']*100,
+                'returnUrl' => $this->generateUrl('userPaymentSuccess', [], UrlGenerator::ABSOLUTE_URL),
+                'failUrl' => $this->generateUrl('userPaymentFail', [], UrlGenerator::ABSOLUTE_URL)
+            ]
+        ]);
+        if ($res['success']) {
+            $formData['payment_order'] = $res['data']['orderId'];
+            $userDB->createPaymentOrder($formData);
+            return new JsonResponse([
+                'success' => true,
+                'redirect' => $res['data']['formUrl']
+            ]);
+        }
         return new JsonResponse([
             'success' => false,
-            'error' => 'ssss'
+            'error' => $res['error']
         ]);
     }
     
     private function sberREST($params)
     {
-        /*        $data = array_merge(
-                    [
-                        'userName' => 't7802551492-api',
-                        'password' => 'o0BKfPxD'
-                    ],
-                    $params['data']
-                );
-                $ch = curl_init($params['url']);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-                curl_setopt(
-                    $ch,
-                    CURLOPT_HTTPHEADER,
-                    [
-                       'Content-Type: application/x-www-form-urlencoded'
-                    ]
-                );
+        $data = array_merge(
+            [
+                'userName' => 't7802551492-api',
+                'password' => 'o0BKfPxD'
+            ],
+            $params['data']
+        );
+        $ch = curl_init($params['url']);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            [
+               'Content-Type: application/x-www-form-urlencoded'
+            ]
+        );
 
-                $res = json_decode(curl_exec($ch), true);
-                $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                $result = [
-                    'success' => ($code == 200)&&(!isset($res['errorCode'])),
-                    'data' => $res,
-                    'error' => isset($res['errorMessage']) ? $res['errorMessage'] : ''
-                ];*/
-        return [
-                    'success' => true,
-                    'data' => [
-                        'orderId' => '12583b88-59bf-7637-8555-c7582891a039',
-                        'formUrl' => 'https://3dsec.sberbank.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=12583b88-59bf-7637-8555-c7582891a039'
-                    ]
-                ];
+        $res = json_decode(curl_exec($ch), true);
+        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $result = [
+            'success' => ($code == 200)&&((!isset($res['errorCode']))||($res['errorCode'] == 0)),
+            'data' => $res,
+            'error' => isset($res['errorMessage']) ? $res['errorMessage'] : ''
+        ];
         return $result;
     }
 }

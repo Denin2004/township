@@ -146,6 +146,7 @@
         "debt_none": "Задолженности нет",
         "debited": "Списано",
         "summary": "Итого:",
+        "pay_success": "Оплата прошла успешно", 
         "invoice": {
             "num": "Счет",
             "errors": {
@@ -163,7 +164,9 @@
         "out": "Расход",
         "outs": "Расходы",
         "errors": {
-            "money_move_not_found": "Оплата не найдена"
+            "money_move_not_found": "Оплата не найдена",
+            "payment_not_found": "Оплата не найдена",
+            "wrong_data": "Неправильные данные"
         },
         "bank_upload": "Загрузка из банка",
         "correction": {

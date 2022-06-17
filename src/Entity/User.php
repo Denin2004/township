@@ -125,13 +125,18 @@ class User extends Entity
     
     public function createPaymentOrder($params)
     {
-//        $params['charge_type_id'] = $params['charge_type_id'] != -1 ? $params['charge_type_id'] : null;
-//        $params['invoice_id'] = $params['invoice_id'] != -1 ? $params['invoice_id'] : null;
         $this->provider->executeQuery(
-            'insert into balances.payment_orders (id, charge_type_id, land_id, invoice_id, amount)
-                values(:uniqid, :charge_type_id, :land_id, :invoice_id, :amount)',
+            'insert into balances.payment_orders (id, charge_type_id, land_id, invoice_id, amount, payment_order)
+                values(:uniqid, :charge_type_id, :land_id, :invoice_id, :amount, :payment_order)',
             $params
         );
-        dump($this);
+    }
+    
+    public function doPaymentOrder($payment_order)
+    {
+        return $this->provider->fetchAll(
+            'select balances.do_payment_order(:payment_order)',
+            ['payment_order' => $payment_order]
+        );
     }
 }

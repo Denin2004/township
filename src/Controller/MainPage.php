@@ -22,7 +22,8 @@ class MainPage extends AbstractController
         return $this->render(
             'base.'.$mode.'.html.twig',
             [
-                'numeral' => $config->get('numeral')
+                'numeral' => $config->get('numeral'),
+                'result' => null
             ]
         );
     }
