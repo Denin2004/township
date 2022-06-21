@@ -126,8 +126,8 @@ class User extends Entity
     public function createPaymentOrder($params)
     {
         $this->provider->executeQuery(
-            'insert into balances.payment_orders (id, charge_type_id, land_id, invoice_id, amount, payment_order)
-                values(:uniqid, :charge_type_id, :land_id, :invoice_id, :amount, :payment_order)',
+            'insert into balances.payment_orders (id, charge_type_id, land_id, invoice_id, amount, payment_order, tax)
+                values(:uniqid, :charge_type_id, :land_id, :invoice_id, :amount, :payment_order, :tax)',
             $params
         );
     }

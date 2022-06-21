@@ -1,13 +1,14 @@
 import React, {Component} from 'react';
 import { Link, generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import { Card, Spin, Table, message, Typography, Modal, Descriptions, List } from 'antd';
+import { Card, Spin, Table, message, Typography, Modal, Descriptions, List, Button, Space } from 'antd';
 
 import axios from 'axios';
 
 import MfwNumber from '@app/mfw/MfwNumber';
 import Invoice from '@app/web/js/user/Invoice';
 import ChargesByType from '@app/web/js/user/ChargesByType';
+import Payment from'@app/web/js/user/Payment';
 
 class UserWidget extends Component {
     constructor(props){
@@ -21,7 +22,11 @@ class UserWidget extends Component {
             columns: [
                 {
                     title: this.props.t('common.name'),
-                    dataIndex: 'name'
+                    dataIndex: 'name',
+                    render: (text, record) => {
+                        return <Space size="large">{text}<Button size="small"
+                          onClick={(e) => {this.setState({payment: record});}}>{this.props.t('finance.pay.all')}</Button></Space>;
+                    }
                 },
                 {
                     title: this.props.t('finance.sum'),
@@ -36,7 +41,11 @@ class UserWidget extends Component {
                 {
                     title: this.props.t('finance.invoice.num'),
                     dataIndex: 'invoice_num',
-                    ellipsis: true
+                    ellipsis: true,
+                    render: (text, record) => {
+                        return <Space size="large">{text}<Button size="small"
+                          onClick={(e) => {this.setState({paymentBill: record});}}>{this.props.t('finance.pay._')}</Button></Space>;
+                    }
                 },
                 {
                     title: this.props.t('finance.sum'),
@@ -48,7 +57,9 @@ class UserWidget extends Component {
                 }
             ],
             charges: [],
-            viewCharge: null
+            viewCharge: null,
+            payment: null,
+            paymentBill: null
         };
         this.debtSummary = this.debtSummary.bind(this);
         this.debtType = this.debtType.bind(this);
@@ -120,7 +131,7 @@ class UserWidget extends Component {
                 state.loadBills = false;
                 delete state.debtBills[record.id];
                 return state;
-            });            
+            });
             return;
         }
         this.setState({loadBills: true});
@@ -137,7 +148,7 @@ class UserWidget extends Component {
                     state.loadBills = false;
                     state.debtBills[record.id] = res.data.debt;
                     return state;
-                });            
+                });
             } else {
                 message.error(this.props.t(res.data.error));
                 this.setState({
@@ -179,10 +190,20 @@ class UserWidget extends Component {
                             return <List.Item key={charge.id}><a onClick={() => this.setState({viewCharge: charge.id})}>{charge.name}</a></List.Item>
                         })}
                     </List>
-                </React.Fragment>  
+                </React.Fragment>
             )}
-            {this.state.invoiceID != null ? <Invoice id={this.state.invoiceID} close={() => {this.setState({invoiceID: null})}}/> : null}
-            {this.state.viewCharge != null ? <ChargesByType typeID={this.state.viewCharge} close={() => {this.setState({viewCharge: null})}}/> : null}
+            {this.state.invoiceID !== null ? <Invoice id={this.state.invoiceID} close={() => {this.setState({invoiceID: null})}}/> : null}
+            {this.state.viewCharge !== null ? <ChargesByType typeID={this.state.viewCharge} close={() => {this.setState({viewCharge: null})}}/> : null}
+            {this.state.payment !== null ? <Payment
+                chargeTypeID={this.state.payment.id}
+                invoiceID="-1"
+                caption={this.state.payment.name}
+                close={() => this.setState({payment: null})}/> : null}
+            {this.state.paymentBill !== null ? <Payment
+                chargeTypeID="-1"
+                invoiceID={this.state.paymentBill.id}
+                caption={this.state.paymentBill.invoice_num}
+                close={() => this.setState({paymentBill: null})}/> : null}
         </Card>;
     }
 }

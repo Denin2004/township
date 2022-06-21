@@ -125,7 +125,7 @@ class ElectricityBills extends Component {
                     }
                 },
                 {
-                    title: this.props.t('finance.payed'),
+                    title: this.props.t('finance.pay.ed'),
                     align: 'right',
                     dataIndex: 'payed',
                     render: (text, record) => {

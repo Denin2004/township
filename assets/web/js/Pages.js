@@ -28,13 +28,29 @@ class Pages extends Component {
             loading: true,
             userName: '',
             userID: 0,
-            passwordForm: false
-        }
+            passwordForm: false,
+            menu: [
+                {
+                    label: '',
+                    key: 'userMenu',
+                    children: [
+                        {
+                            label: this.props.t('account.password.change'),
+                            key: 'userChangePsw'
+                        },
+                        {
+                            label: <a href="/logout" target="_self">{this.props.t('account.logout')}</a>,
+                            key: 'userLogout'
+                        }
+                    ]
+                }
+            ]
+        };
         this.passwordChangeForm = this.passwordChangeForm.bind(this);
         this.passwordChange = this.passwordChange.bind(this);
-        this.sberTest = this.sberTest.bind(this);
+        this.menuClick = this.menuClick.bind(this);
     }
-    
+
     componentDidMount() {
         axios.get(
             '/config',
@@ -47,11 +63,12 @@ class Pages extends Component {
             if (res.data.success) {
                 window.mfwApp.urls = JSON.parse(res.data.urls);
                 window.mfwApp.user = res.data.user;
-                this.setState({
-                    loading: false,
-                    widgets: res.data.user.widgets,
-                    userName: res.data.user.name,
-                    userID: res.data.user.id
+                this.setState(state => {
+                    state.loading = false;
+                    state.widgets = res.data.user.widgets;
+                    state.menu[0].label = res.data.user.name;
+                    state.userID = res.data.user.id;
+                    return state;
                 });
             } else {
                 message.error(this.props.t(res.data.error));
@@ -64,9 +81,8 @@ class Pages extends Component {
             }
         });
     }
-    
-    passwordChangeForm()
-    {
+
+    passwordChangeForm() {
         axios.get(
             window.mfwApp.urls.accountManager.passwordChangeForm,
             {
@@ -95,7 +111,7 @@ class Pages extends Component {
             }
         });
     }
-    
+
     passwordChange() {
         this.props.form
             .validateFields()
@@ -120,26 +136,12 @@ class Pages extends Component {
                 message.error(this.props.t('common.errors.validate'));
             });
     }
-    
-    sberTest()
-    {
-        axios.get(
-            '/sbertest',
-            {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            }
-        ).then(res => {
-            console.log(res);
-        }).catch(error => {
-            if (error.response && error.response.data) {
-                message.error(this.props.t(error.response.data.error));
-            } else {
-                message.error(error.toString());
-            }
-        });
-    }    
+
+    menuClick(item) {
+        if (item.key === 'userChangePsw') {
+            this.passwordChangeForm();
+        }
+    }
 
     render() {
         return <Layout theme="light" className="min-height-100vh">
@@ -149,13 +151,13 @@ class Pages extends Component {
                 </Layout.Content>
             ) : (
                 <React.Fragment>
-                    <Layout.Header className="mfw-mainmenu"> 
-                        <Menu theme="light" mode="horizontal" className="d-flex justify-content-end" selectedKeys={['userMenu']}>
-                            <Menu.SubMenu key="userMenu" title={this.state.userName}>
-                                <Menu.Item key="userChangePsw" onClick={this.passwordChangeForm}>{this.props.t('account.password.change')}</Menu.Item>
-                                <Menu.Item key="userLogout"><a href="/logout" target="_self">{this.props.t('account.logout')}</a></Menu.Item>
-                            </Menu.SubMenu>
-                        </Menu>
+                    <Layout.Header className="mfw-mainmenu">
+                        <Menu theme="light"
+                           mode="horizontal"
+                           className="d-flex justify-content-end"
+                           selectedKeys={['userMenu']}
+                           items={this.state.menu}
+                           onClick={this.menuClick}/>
                     </Layout.Header>
                     <Layout.Content>
                         <Routes>
@@ -231,14 +233,14 @@ class Pages extends Component {
                                  })
                               ]}>
                                 <Input.Password/>
-                            </Form.Item>                            
+                            </Form.Item>
                             <Form.Item name="id"
-                              hidden={true} 
+                              hidden={true}
                               initialValue={this.state.passwordForm.id.value}>
                                 <Input/>
                             </Form.Item>
                             <Form.Item name="_token"
-                              hidden={true} 
+                              hidden={true}
                               initialValue={this.state.passwordForm._token.value}>
                                 <Input/>
                             </Form.Item>
@@ -251,4 +253,3 @@ class Pages extends Component {
 }
 
 export default useWithForm(withTranslation()(Pages));
-    

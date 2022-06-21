@@ -91,7 +91,7 @@ class Invoice extends Component {
                {this.state.invoice.chargeType == 1 ?
                 <Descriptions>
                     <Descriptions.Item label={this.props.t('finance.sum')}><MfwNumber value={this.state.invoice.amount}/></Descriptions.Item>
-                    <Descriptions.Item label={this.props.t('finance.payed')}><MfwNumber value={this.state.invoice.payed}/></Descriptions.Item>
+                    <Descriptions.Item label={this.props.t('finance.pay.ed')}><MfwNumber value={this.state.invoice.payed}/></Descriptions.Item>
                     <Descriptions.Item label={this.props.t('finance.debt')}><MfwNumber value={this.state.invoice.amount-this.state.invoice.payed}/></Descriptions.Item>
                     <Descriptions.Item label={this.props.t('common.included')} span={3}></Descriptions.Item>
                     <Descriptions.Item label={this.props.t('calendar.day')}><MfwNumber value={this.state.invoice.day}/></Descriptions.Item>
@@ -102,7 +102,7 @@ class Invoice extends Component {
                <React.Fragment>
                     <Descriptions>
                         <Descriptions.Item label={this.props.t('finance.sum')}><MfwNumber value={this.state.invoice.amount}/></Descriptions.Item>
-                        <Descriptions.Item label={this.props.t('finance.payed')}><MfwNumber value={this.state.invoice.payed}/></Descriptions.Item>
+                        <Descriptions.Item label={this.props.t('finance.pay.ed')}><MfwNumber value={this.state.invoice.payed}/></Descriptions.Item>
                         <Descriptions.Item label={this.props.t('finance.debt')}><MfwNumber value={this.state.invoice.amount-this.state.invoice.payed}/></Descriptions.Item>
                         <Descriptions.Item label={this.props.t('land.square')} ><MfwNumber value={this.state.invoice.square}/></Descriptions.Item>
                     </Descriptions>

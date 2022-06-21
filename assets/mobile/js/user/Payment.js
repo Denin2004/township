@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Link, generatePath, Navigate } from 'react-router-dom';
-import { Toast, Loading, Form, Space, Popup, Button, Selector, Input } from 'antd-mobile';
+import { Toast, Loading, Form, Space, Popup, Button, Selector, Input, NoticeBar } from 'antd-mobile';
 import axios from 'axios';
 
 import { withTranslation } from 'react-i18next';
@@ -15,9 +15,12 @@ class Payment extends Component {
             form: [],
             loading: true,
             landOptions: [],
-            amount: 0
+            amount: 0,
+            amountWithTax: 0,
+            tax: 0         
         };
         this.pay = this.pay.bind(this);
+        this.isNumber = this.isNumber.bind(this);
     }
 
     componentDidMount() {
@@ -50,6 +53,8 @@ class Payment extends Component {
                     } else {
                         state.amount = res.data.form.amount.value;
                     }
+                    state.tax = 1+res.data.form.tax.value*1;
+                    state.amountWithTax = state.amount*state.tax;
                     return state;
                 });            
             } else {
@@ -95,59 +100,79 @@ class Payment extends Component {
             });
         });
     }
+    
+    isNumber(rule, value) {
+        if ((isNaN(value/1))||(value*1 < 0)) {
+            this.setState({amountWithTax: 0});
+            return Promise.reject(new Error(rule.message));
+        }
+        this.setState({amountWithTax: value*this.state.tax});
+        return Promise.resolve();
+    }
 
     render() {
         return (
         <Popup title={this.props.t('account.password.change')}
            visible={true}>
-            {this.state.loading ? <Loading/> : <Form 
-                form={this.props.form}
-                layout="horizontal"
-                onFinish={this.pay}
-                footer={<Space justify="between" className="mfw-d-flex">
-                        <Button color='primary' type="submit">{this.props.t('finance.pay')}</Button>
+            {this.state.loading ? <Loading/> : <React.Fragment>
+                <Form 
+                  form={this.props.form}
+                  layout="horizontal"
+                  onFinish={this.pay}
+                  footer={<Space justify="between" className="mfw-d-flex">
+                        <Button color='primary' type="submit">{this.props.t('finance.pay._')}</Button>
                         <Button 
                           color='primary'
                           type="button"
                           fill='outline'
                           onClick={this.props.close}>{this.props.t('modal.cancel')}</Button>
                     </Space>}>
-                <Form.Header>{this.props.caption}</Form.Header>
-                {this.state.form.land_id.type == 'mfw-hidden' ? <Form.Item name="land_id"
-                    hidden={true} 
-                    initialValue={this.state.form.land_id.value}>
-                      <Input/>
-                      </Form.Item> : <Form.Item name="land_id" initialValue={this.state.form.land_id.value}><Selector options={this.state.form.land_id.choices} 
-                     defaultValue={this.state.form.land_id.value}
-                     onChange={(sel, option)=> {this.props.form.setFieldsValue({amount: option.items[0].amount});}}/></Form.Item>}
-                <Form.Item label={this.props.t('finance.sum')} 
-                   name="amount" 
-                   initialValue={this.state.amount} 
-                   rules={[{required: true, message: this.props.t('budget.errors.amount')}, {validator: this.isNumber, message: this.props.t('budget.errors.wrong_amount')}]}>
-                      <Input/>
-                </Form.Item>
-                <Form.Item name="charge_type_id"
-                  hidden={true} 
-                  initialValue={this.state.form.charge_type_id.value}>
-                    <Input/>
-                </Form.Item>
-                <Form.Item name="invoice_id"
-                  hidden={true} 
-                  initialValue={this.state.form.invoice_id.value}>
-                    <Input/>
-                </Form.Item>                
-                <Form.Item name="_token"
-                  hidden={true} 
-                  initialValue={this.state.form._token.value}>
-                    <Input/>
-                </Form.Item>
-            </Form>                    
-            }
+                    <Form.Header>{this.props.caption}</Form.Header>
+                    {this.state.form.land_id.type == 'mfw-hidden' ? <Form.Item name="land_id"
+                        hidden={true} 
+                        initialValue={this.state.form.land_id.value}>
+                          <Input/>
+                          </Form.Item> : <Form.Item name="land_id" initialValue={this.state.form.land_id.value}><Selector options={this.state.form.land_id.choices} 
+                         defaultValue={this.state.form.land_id.value}
+                         onChange={(sel, option)=> {this.props.form.setFieldsValue({amount: option.items[0].amount});}}/></Form.Item>}
+                    <Form.Item label={this.props.t('finance.sum')} 
+                       name="amount" 
+                       initialValue={this.state.amount}
+                       description={this.props.t('finance.pay.tax_warning')}
+                       rules={[{required: true, message: this.props.t('budget.errors.amount')}, {validator: this.isNumber, message: this.props.t('budget.errors.wrong_amount')}]}>
+                          <Input/>
+                    </Form.Item>
+                    <Form.Item name="charge_type_id"
+                      hidden={true} 
+                      initialValue={this.state.form.charge_type_id.value}>
+                        <Input/>
+                    </Form.Item>
+                    <Form.Item name="invoice_id"
+                      hidden={true} 
+                      initialValue={this.state.form.invoice_id.value}>
+                        <Input/>
+                    </Form.Item>                
+                    <Form.Item name="tax"
+                      hidden={true} 
+                      initialValue={this.state.form.tax.value}>
+                        <Input/>
+                    </Form.Item>                
+                    <Form.Item name="_token"
+                      hidden={true} 
+                      initialValue={this.state.form._token.value}>
+                        <Input/>
+                    </Form.Item>
+                {this.state.amountWithTax !== 0 ? <NoticeBar 
+                   color="info"
+                   icon={null}
+                   content={<React.Fragment>{this.props.t('finance.pay.result')}
+                        <b>
+                            <MfwNumber value={this.state.amountWithTax}/>
+                        </b>
+                    </React.Fragment>} type="info" /> : null}
+                </Form>
+            </React.Fragment>}
         </Popup>)
-    }
-    
-    isNumber(rule, value) {
-        return isNaN(value/1) ? Promise.reject(new Error(rule.message)) : (value*1 < 0 ? Promise.reject(new Error(rule.message)) : Promise.resolve());
     }
 }
 

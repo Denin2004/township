@@ -372,7 +372,7 @@ class LandWidget extends Component {
         };
     
         Modal.confirm({
-            title: this.props.t('finance.pay_delete_confirm'),
+            title: this.props.t('finance.pay.delete_confirm'),
             icon: <ExclamationCircleOutlined />,
             okText: this.props.t('modal.yes'),
             cancelText: this.props.t('modal.cancel'),

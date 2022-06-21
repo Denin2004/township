@@ -2,7 +2,7 @@
 namespace App\Services;
 
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\Connection;
 
 use App\Services\SiteConfig\SiteConfig;
 
@@ -55,7 +55,7 @@ class DbProvider
         $res = null;
         try {
             $res = $this->db->executeQuery($sql, $params, $types);
-        } catch (\Doctrine\DBAL\DBALException $ex) {
+        } catch (\Exception $ex) {
             $err = explode('ERROR:', $ex->getPrevious()->getMessage());
             //$this->error = str_replace(' ', '', explode("\n", $err[count($err)-1])[0]);
             $this->error = trim(explode("\n", $err[count($err)-1])[0]);
@@ -67,8 +67,8 @@ class DbProvider
     {
         $this->error = '';
         try {
-            $res = $this->db->fetchAll($sql, $params);
-        } catch (\Doctrine\DBAL\DBALException $ex) {
+            $res = $this->db->fetchAllAssociative($sql, $params);
+        } catch (\Exception $ex) {
             $err = explode('ERROR:', $ex->getPrevious()->getMessage());
             //$this->error = str_replace(' ', '', explode("\n", $err[count($err)-1])[0]);
             $this->error = trim(explode("\n", $err[count($err)-1])[0]);

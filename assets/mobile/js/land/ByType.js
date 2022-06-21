@@ -68,7 +68,7 @@ class LandByType extends Component {
                 {this.state.viewInvoice != null ? <Popup visible={true} onMaskClick={() => this.setState({viewInvoice: null})}>
                     <List>
                         <List.Item key={1} extra={<MfwNumber value={this.state.viewInvoice.amount}/>}>{this.props.t('finance.sum')}</List.Item>
-                        <List.Item key={2} extra={<MfwNumber value={this.state.viewInvoice.payed}/>}>{this.props.t('finance.payed')}</List.Item>
+                        <List.Item key={2} extra={<MfwNumber value={this.state.viewInvoice.payed}/>}>{this.props.t('finance.pay.ed')}</List.Item>
                         <List.Item key={3} extra={<MfwNumber value={this.state.viewInvoice.debt}/>}>{this.props.t('finance.debt')}</List.Item>
                     </List>
                 </Popup> : null}

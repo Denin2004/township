@@ -48,7 +48,7 @@ class LineByType extends Component {
                     }
                 },
                 {
-                    title: this.props.t('finance.payed'),
+                    title: this.props.t('finance.pay.ed'),
                     dataIndex: 'payed',
                     align: 'right',
                     render: (text, record) => {

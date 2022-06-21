@@ -67,7 +67,7 @@ class UserByType extends Component {
                             id: record.id
                         }
                       )}><MfwNumber value={record.debt}/></Link>}
-                       description={<Tag color='primary' fill='outline' onClick={() => this.setState({payment: record})}>{this.props.t('finance.pay')}</Tag>}>{record.invoice_num}</List.Item>
+                       description={<Tag color='primary' fill='outline' onClick={() => this.setState({payment: record})}>{this.props.t('finance.pay._')}</Tag>}>{record.invoice_num}</List.Item>
                 })}
             </List>
             {this.state.payment !== null ? <Payment 

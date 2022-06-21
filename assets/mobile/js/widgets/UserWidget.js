@@ -83,7 +83,7 @@ class UserWidget extends Component {
                                   extra={<MfwNumber value={record.debt}/>}
                                   description={<Tag color='primary' fill='outline' onClick={(e) => {
                                     this.setState({payment: record});
-                                    e.stopPropagation();}}>{this.props.t('finance.pay_all')}</Tag>}>{record.name}</List.Item>}
+                                    e.stopPropagation();}}>{this.props.t('finance.pay.all')}</Tag>}>{record.name}</List.Item>}
                                className="mfw-widget-record">
                                 <UserByType typeID={record.id} />
                             </Collapse.Panel>

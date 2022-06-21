@@ -26,7 +26,8 @@ class Payment extends ReactForm
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('charge_type_id', ReactHiddenType::class)
-            ->add('invoice_id', ReactHiddenType::class);
+            ->add('invoice_id', ReactHiddenType::class)
+            ->add('tax', ReactHiddenType::class);
         if ($options['request'] == true) {
             $builder->add(
                 'land_id',

@@ -8,8 +8,7 @@ class Dashboard extends Component {
     constructor(props){
         super(props);
         this.state = {
-            result: window.mfwApp.result,
-            invoice: null
+            result: window.mfwApp.result
         };        
     }
     

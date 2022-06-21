@@ -17,6 +17,10 @@ class UserPayment extends AbstractController
 {
     protected $urlCreatePayment = 'https://3dsec.sberbank.ru/payment/rest/register.do';
     protected $urlCheckPayment = 'https://3dsec.sberbank.ru/payment/rest/getOrderStatusExtended.do';
+    protected $credentials = [
+        'userName' => 't7802551492-api',
+        'password' => 'o0BKfPxD'
+    ];
 
     public function success(Request $request, SiteConfig $config, UserDB $userDB)
     {
@@ -43,14 +47,14 @@ class UserPayment extends AbstractController
                     if ($doPay[0]['do_payment_order'] == 0) {
                         $result = [
                             'success' => true,
-                            'comment' => 'finance.pay_success'
+                            'comment' => 'finance.pay.success'
                         ];
                     }
                 }
             } else {
                 $result = [
                     'success' => false,
-                    'error' => $res['error']
+                    'error' => $res['data']['actionCodeDescription']
                 ];
             }
         } else {
@@ -68,13 +72,64 @@ class UserPayment extends AbstractController
         );
     }
     
+    public function fail(Request $request, SiteConfig $config, UserDB $userDB)
+    {
+        $detect = new Mobile_Detect;
+        //$mode = 'mobile';
+        $mode = $detect->isMobile() ? 'mobile' : 'web';
+        $qry = $request->query->all();
+        $res = $this->sberREST([
+            'url' => $this->urlCheckPayment,
+            'data' => [
+                'orderId' => $qry['orderId']
+            ]
+        ]);
+        $result = null;
+        if ($res['success']) {
+            if ($res['data']['orderStatus'] == 2) {
+                $doPay = $userDB->doPaymentOrder($qry['orderId']);
+                if ($userDB->isError()) {
+                    $result = [
+                        'success' => false,
+                        'comment' => $userDB->getError()
+                    ];
+                } else {
+                    if ($doPay[0]['do_payment_order'] == 0) {
+                        $result = [
+                            'success' => true,
+                            'comment' => 'finance.pay.success'
+                        ];
+                    }
+                }
+            } else {
+                $result = [
+                    'success' => false,
+                    'comment' => $res['data']['actionCodeDescription']
+                ];
+            }
+        } else {
+            $result = [
+                'success' => false,
+                'comment' => $res['error']
+            ];
+        }
+        return $this->render(
+            'base.'.$mode.'.html.twig',
+            [
+                'numeral' => $config->get('numeral'),
+                'result' => $result
+            ]
+        );
+    }
+    
     public function form($charge_type_id, $invoice_id)
     {
         $form = $this->createForm(
             Payment::class,
             [
                 'charge_type_id' => $charge_type_id == -1 ? null : $charge_type_id,
-                'invoice_id' => $invoice_id == -1 ? null : $invoice_id
+                'invoice_id' => $invoice_id == -1 ? null : $invoice_id,
+                'tax' => $this->getParameter('sber_pay_tax')
             ]
         );
         $view = $form->createView();
@@ -112,7 +167,7 @@ class UserPayment extends AbstractController
             'url' => $this->urlCreatePayment,
             'data' => [
                 'orderNumber' => $formData['uniqid'],
-                'amount' => $formData['amount']*100,
+                'amount' => round($formData['amount']*(1+$formData['tax'])*100),
                 'returnUrl' => $this->generateUrl('userPaymentSuccess', [], UrlGenerator::ABSOLUTE_URL),
                 'failUrl' => $this->generateUrl('userPaymentFail', [], UrlGenerator::ABSOLUTE_URL)
             ]
@@ -133,13 +188,7 @@ class UserPayment extends AbstractController
     
     private function sberREST($params)
     {
-        $data = array_merge(
-            [
-                'userName' => 't7802551492-api',
-                'password' => 'o0BKfPxD'
-            ],
-            $params['data']
-        );
+        $data = array_merge($this->credentials, $params['data']);
         $ch = curl_init($params['url']);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');

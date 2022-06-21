@@ -239,7 +239,7 @@ class Budgets extends Component {
                   dataSource={this.state.budget}
                   scroll={{ x: '100%', y: 600 }}
                   pagination={false}/>
-                {this.state.editItem != null ? <ItemEdit
+                {this.state.editItem !== null ? <ItemEdit
                     id={this.state.editItem} 
                     cancel={() => this.setState({editItem: null})}
                     success={() => this.showBudget(this.state.budgetID)}/> : null}
