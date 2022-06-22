@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Link, generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import { Modal, Spin, message, Descriptions, Table } from 'antd';
+import { Modal, Spin, message, Descriptions, Table, Button, Space } from 'antd';
 
 import axios from 'axios';
 import moment from 'moment-timezone';
@@ -49,7 +49,8 @@ class Invoice extends Component {
 
     componentDidMount() {
         axios.get(
-            window.mfwApp.urls.finance.invoice.data+'/'+this.props.id,
+            generatePath(window.mfwApp.urls.finance.invoice.data+'/:invoice_id', {invoice_id: this.props.id}),
+//            window.mfwApp.urls.finance.invoice.data+'/'+this.props.id,
             {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
@@ -81,6 +82,10 @@ class Invoice extends Component {
             closable={false}
             cancelButtonProps={{className: 'd-none'}}
             okText={this.props.t('modal.close')}
+            footer={((this.state.invoice != undefined) && (this.state.invoice.chargeType == 1)) ? <Space>
+                <Button target="_blank" href={generatePath(window.mfwApp.urls.electricity.excelInvoice+'/:invoice_id', {invoice_id: this.props.id})}>{this.props.t('finance.invoice.excel')}</Button>
+                <Button type="primary" onClick={this.props.close}>{this.props.t('modal.close')}</Button>
+                </Space> : null}
             onOk={this.props.close}>
             {this.state.loading ? (
                 <div className="d-flex justify-content-center align-items-center">

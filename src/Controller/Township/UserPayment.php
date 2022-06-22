@@ -25,8 +25,8 @@ class UserPayment extends AbstractController
     public function success(Request $request, SiteConfig $config, UserDB $userDB)
     {
         $detect = new Mobile_Detect;
-        $mode = 'mobile';
-        //$mode = $detect->isMobile() ? 'mobile' : 'web';
+        //$mode = 'mobile';
+        $mode = $detect->isMobile() ? 'mobile' : 'web';
         $qry = $request->query->all();
         $res = $this->sberREST([
             'url' => $this->urlCheckPayment,

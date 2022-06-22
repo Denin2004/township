@@ -2,24 +2,27 @@
   "entrypoints": {
     "webApp": {
       "js": [
-        "/build/runtime.ac5740c8.js",
-        "/build/372.d9083625.js",
-        "/build/833.bda56310.js",
-        "/build/webApp.7e921385.js"
+        "/build/runtime.js",
+        "/build/vendors-node_modules_babel_runtime_helpers_interopRequireDefault_js-node_modules_babel_runtim-ba3230.js",
+        "/build/vendors-node_modules_ant-design_icons_es_icons_UploadOutlined_js-node_modules_antd_es_alert_E-082647.js",
+        "/build/assets_hooks_useWithParams_js-assets_hooks_withRouter_js-assets_mfw_MfwNumber_js-node_modules-6b9e2f.js",
+        "/build/webApp.js"
       ],
       "css": [
-        "/build/webApp.8745eba1.css"
+        "/build/webApp.css"
       ]
     },
     "mobileApp": {
       "js": [
-        "/build/runtime.ac5740c8.js",
-        "/build/372.d9083625.js",
-        "/build/202.c4579230.js",
-        "/build/mobileApp.1881ae8d.js"
+        "/build/runtime.js",
+        "/build/vendors-node_modules_babel_runtime_helpers_interopRequireDefault_js-node_modules_babel_runtim-ba3230.js",
+        "/build/vendors-node_modules_antd-mobile_es_components_avatar_avatar_js-node_modules_antd-mobile_es_c-b94cac.js",
+        "/build/assets_hooks_useWithParams_js-assets_hooks_withRouter_js-assets_mfw_MfwNumber_js-node_modules-6b9e2f.js",
+        "/build/mobileApp.js"
       ],
       "css": [
-        "/build/mobileApp.0f7f21f1.css"
+        "/build/vendors-node_modules_antd-mobile_es_components_avatar_avatar_js-node_modules_antd-mobile_es_c-b94cac.css",
+        "/build/mobileApp.css"
       ]
     }
   }

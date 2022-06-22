@@ -157,6 +157,7 @@
         "pay_success": "Оплата прошла успешно", 
         "invoice": {
             "num": "Счет",
+            "excel": "Бланк в Excel", 
             "errors": {
                 "wrong_type": "Неправильный тип счета",
                 "not_found": "Счет не найден"

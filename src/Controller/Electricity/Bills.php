@@ -5,6 +5,10 @@ namespace App\Controller\Electricity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpKernel\KernelInterface;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 use App\Form\Electricity\Bills as BillsForm;
 use App\Form\Electricity\AddBill;
@@ -102,5 +106,27 @@ class Bills extends AbstractController
         return new JsonResponse([
             'success' => true
         ]);
+    }
+    
+    public function excelInvoice($invoice_id, KernelInterface $kernel)
+    {
+        $loc = new FileLocator([$kernel->getProjectDir()]);
+        $reader = IOFactory::createReader("Xlsx");
+        $reader->setReadDataOnly(false);
+        $blank = $reader->load($loc->locate('templates/blanks/electricity.xlsx'));
+        $blank->setActiveSheetIndex(0);
+        $sheet = $blank->getActiveSheet();
+        $sheet->setCellValue('C1', 'qqqqqq');
+        
+        $writer = IOFactory::createWriter($blank, 'Xlsx');
+        $response =  new StreamedResponse(
+            function () use ($writer) {
+                $writer->save('php://output');
+            }
+        );
+        $response->headers->set('Content-Type', 'application/vnd.ms-excel');
+        $response->headers->set('Content-Disposition', 'attachment;filename="ExportScan.xlsx"');
+        $response->headers->set('Cache-Control', 'max-age=0');
+        return $response;
     }
 }
