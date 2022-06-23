@@ -9,10 +9,12 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\KernelInterface;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 use App\Form\Electricity\Bills as BillsForm;
 use App\Form\Electricity\AddBill;
 use App\Entity\Charges;
+use App\Entity\Invoice as InvoiceDB;
 
 class Bills extends AbstractController
 {
@@ -108,25 +110,99 @@ class Bills extends AbstractController
         ]);
     }
     
-    public function excelInvoice($invoice_id, KernelInterface $kernel)
+    public function pdfInvoice($invoice_id, KernelInterface $kernel, InvoiceDB $invoiceDB)
     {
+        $invoice = $invoiceDB->data(['id' => $invoice_id]);
+        if (!$invoice) {
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+            $sheet->setCellValue('A1', 'Документ не найден');
+            $writer = IOFactory::createWriter($spreadsheet, 'Mpdf');
+            $response =  new StreamedResponse(
+                function () use ($writer) {
+                    $writer->save('php://output');
+                }
+            );
+            $response->headers->set('Content-Type', 'application/pdf');
+            $response->headers->set('Content-Disposition', 'attachment;filename="electricity.pdf"');
+            $response->headers->set('Cache-Control', 'private');
+            return $response;
+        }
+
         $loc = new FileLocator([$kernel->getProjectDir()]);
         $reader = IOFactory::createReader("Xlsx");
         $reader->setReadDataOnly(false);
         $blank = $reader->load($loc->locate('templates/blanks/electricity.xlsx'));
         $blank->setActiveSheetIndex(0);
         $sheet = $blank->getActiveSheet();
-        $sheet->setCellValue('C1', 'qqqqqq');
         
-        $writer = IOFactory::createWriter($blank, 'Xlsx');
+        $sheet->setCellValue('F2', $invoice['invoiceNum']);
+        $sheet->setCellValue('F15', $invoice['invoiceNum']);
+        
+        $sheet->setCellValue('C9', $invoice['dayStart']);
+        $sheet->setCellValue('C22', $invoice['dayStart']);
+        
+        $sheet->setCellValue('D9', $invoice['dayEnd']);
+        $sheet->setCellValue('D22', $invoice['dayEnd']);
+        
+        $sheet->setCellValue('E9', $invoice['dayEnd']-$invoice['dayStart']);
+        $sheet->setCellValue('E22', $invoice['dayEnd']-$invoice['dayStart']);
+
+        $sheet->setCellValue('F9', $invoice['dayRate']);
+        $sheet->setCellValue('F22', $invoice['dayRate']);
+        
+        $sheet->setCellValue('G9', $invoice['day']);
+        $sheet->setCellValue('G22', $invoice['day']);
+        
+        $sheet->setCellValue('C10', $invoice['nightStart']);
+        $sheet->setCellValue('C23', $invoice['nightStart']);
+        
+        $sheet->setCellValue('D10', $invoice['nightEnd']);
+        $sheet->setCellValue('D23', $invoice['nightEnd']);
+        
+        $sheet->setCellValue('E10', $invoice['nightEnd']-$invoice['nightStart']);
+        $sheet->setCellValue('E23', $invoice['nightEnd']-$invoice['nightStart']);
+
+        $sheet->setCellValue('F10', $invoice['nightRate']);
+        $sheet->setCellValue('F23', $invoice['nightRate']);
+        
+        $sheet->setCellValue('G10', $invoice['night']);
+        $sheet->setCellValue('G23', $invoice['night']);
+        
+        $sheet->setCellValue('F12', $sheet->getCell('F12')->getValue().($invoice['night']+$invoice['day']).' Руб.');
+        $sheet->setCellValue('F25', $sheet->getCell('F25')->getValue().($invoice['night']+$invoice['day']).' Руб.');
+        
+        $dt = new \DateTime();
+        $dt->setDate($invoice['year'], $invoice['month'], 1);
+        
+        $sheet->setCellValue('C8', $sheet->getCell('C8')->getValue().' '.$dt->format('d.m.Y').' 00:00 кВт.ч');
+        $sheet->setCellValue('C21', $sheet->getCell('C21')->getValue().' '.$dt->format('d.m.Y').' 00:00 кВт.ч');
+        
+        $dt->add(new \DateInterval('P1M'));
+
+        $sheet->setCellValue('D8', $sheet->getCell('D8')->getValue().' '.$dt->format('d.m.Y').' 00:00 кВт.ч');
+        $sheet->setCellValue('D21', $sheet->getCell('D21')->getValue().' '.$dt->format('d.m.Y').' 00:00 кВт.ч');
+
+        $sheet->setCellValue('A6', $sheet->getCell('A6')->getValue().' '.$invoice['owner']);
+        $sheet->setCellValue('A19', $sheet->getCell('A19')->getValue().' '.$invoice['owner']);
+
+        $sheet->setCellValue('A5', $sheet->getCell('A5')->getValue().' '.$invoice['land']);
+        $sheet->setCellValue('A18', $sheet->getCell('A18')->getValue().' '.$invoice['land']);
+        
+        $dt->add(new \DateInterval('P9D'));
+
+        $sheet->setCellValue('F13', $sheet->getCell('F13')->getValue().' '.$dt->format('d.m.Y'));
+        $sheet->setCellValue('F26', $sheet->getCell('F26')->getValue().' '.$dt->format('d.m.Y'));
+        
+        $writer = IOFactory::createWriter($blank, 'Mpdf');
         $response =  new StreamedResponse(
             function () use ($writer) {
                 $writer->save('php://output');
             }
         );
-        $response->headers->set('Content-Type', 'application/vnd.ms-excel');
-        $response->headers->set('Content-Disposition', 'attachment;filename="ExportScan.xlsx"');
-        $response->headers->set('Cache-Control', 'max-age=0');
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'attachment;filename="electricity_'.$invoice['month'].'_'.$invoice['year'].'.pdf"');
+        $response->headers->set('Cache-Control', 'private');
         return $response;
     }
 }

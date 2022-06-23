@@ -83,7 +83,7 @@ class Invoice extends Component {
             cancelButtonProps={{className: 'd-none'}}
             okText={this.props.t('modal.close')}
             footer={((this.state.invoice != undefined) && (this.state.invoice.chargeType == 1)) ? <Space>
-                <Button target="_blank" href={generatePath(window.mfwApp.urls.electricity.excelInvoice+'/:invoice_id', {invoice_id: this.props.id})}>{this.props.t('finance.invoice.excel')}</Button>
+                <Button target="_blank" href={generatePath(window.mfwApp.urls.electricity.pdfInvoice+'/:invoice_id', {invoice_id: this.props.id})}>{this.props.t('finance.invoice.pdf')}</Button>
                 <Button type="primary" onClick={this.props.close}>{this.props.t('modal.close')}</Button>
                 </Space> : null}
             onOk={this.props.close}>
