@@ -63,3 +63,9 @@ userPaymentFail:
     path: /payment/fail
     controller: App\Controller\Township\UserPayment::fail
     methods: [GET]    
+    
+userPayRules:
+    path: /pay/rules
+    controller: App\Controller\Application::index
+    methods: [GET]
+    

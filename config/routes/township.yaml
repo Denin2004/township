@@ -11,3 +11,9 @@ townshipDebtByLines:
         type: \d+
     defaults: 
         type: -1
+
+townshipContacts:
+    path: /contacts
+    controller: App\Controller\Application::index
+    methods: [GET]
+    

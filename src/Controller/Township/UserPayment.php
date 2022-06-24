@@ -27,6 +27,19 @@ class UserPayment extends AbstractController
         $detect = new Mobile_Detect;
         //$mode = 'mobile';
         $mode = $detect->isMobile() ? 'mobile' : 'web';
+        
+        return $this->render(
+            'base.'.$mode.'.html.twig',
+            [
+                'numeral' => $config->get('numeral'),
+                'result' => [
+                    'success' => false,
+                    'error' => 'Не разрешено до проверки сайта сбербанком!!!'
+                ]
+            ]
+        );
+        
+        
         $qry = $request->query->all();
         $res = $this->sberREST([
             'url' => $this->urlCheckPayment,
@@ -77,6 +90,19 @@ class UserPayment extends AbstractController
         $detect = new Mobile_Detect;
         //$mode = 'mobile';
         $mode = $detect->isMobile() ? 'mobile' : 'web';
+        
+        return $this->render(
+            'base.'.$mode.'.html.twig',
+            [
+                'numeral' => $config->get('numeral'),
+                'result' => [
+                    'success' => false,
+                    'error' => 'Не разрешено до проверки сайта сбербанком!!!'
+                ]
+            ]
+        );
+        
+        
         $qry = $request->query->all();
         $res = $this->sberREST([
             'url' => $this->urlCheckPayment,
@@ -141,6 +167,11 @@ class UserPayment extends AbstractController
 
     public function pay(Request $request, UserDB $userDB)
     {
+        return new JsonResponse([
+                'success' => false,
+                'error' => 'Не разрешено до проверки сайта сбербанком!!!'
+            ]);
+        
         $formRequest = json_decode($request->getContent(), true);
         if ($formRequest == null) {
             return new JsonResponse([

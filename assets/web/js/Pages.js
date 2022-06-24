@@ -20,6 +20,7 @@ import Error403 from '@app/web/js/Error403';
 import FinanceMoneyMove from '@app/web/js/finance/moneyMove/Main';
 import Lands from '@app/web/js/land/Main';
 import LandMoneyMove from '@app/web/js/land/MoneyMove';
+import InfoPage from '@app/web/js/InfoPage';
 
 class Pages extends Component {
     constructor(props){
@@ -30,6 +31,18 @@ class Pages extends Component {
             userID: 0,
             passwordForm: false,
             menu: [
+                {
+                    label: <a href="/" target="_self">{this.props.t('user.cabinet')}</a>,
+                    key: 'main'
+                },
+                {
+                    label: this.props.t('township.details'),
+                    key: 'contacts'
+                },
+                {
+                    label: this.props.t('finance.pay.rules'),
+                    key: 'payRules'
+                },
                 {
                     label: '',
                     key: 'userMenu',
@@ -43,8 +56,9 @@ class Pages extends Component {
                             key: 'userLogout'
                         }
                     ]
-                }
-            ]
+                }                
+            ],
+            selectedKeys: ['main']
         };
         this.passwordChangeForm = this.passwordChangeForm.bind(this);
         this.passwordChange = this.passwordChange.bind(this);
@@ -66,8 +80,13 @@ class Pages extends Component {
                 this.setState(state => {
                     state.loading = false;
                     state.widgets = res.data.user.widgets;
-                    state.menu[0].label = res.data.user.name;
+                    state.menu[3].label = res.data.user.name;
+                    state.menu[1].label = <a href={window.mfwApp.urls.township.contacts} target="_self">{this.props.t('township.contacts')}</a>;
+                    state.menu[2].label = <a href={window.mfwApp.urls.township.user.payment.rules} target="_self">{this.props.t('finance.pay.types')}</a>;
                     state.userID = res.data.user.id;
+                    state.selectedKeys = window.location.pathname == window.mfwApp.urls.township.contacts ? ['contacts'] :
+                            (window.location.pathname == window.mfwApp.urls.township.user.payment.rules ? ['payRules'] : state.selectedKeys);
+                    console.log(window.location.pathname, window.mfwApp.urls.township.user.payment.rules);
                     return state;
                 });
             } else {
@@ -155,7 +174,7 @@ class Pages extends Component {
                         <Menu theme="light"
                            mode="horizontal"
                            className="d-flex justify-content-end"
-                           selectedKeys={['userMenu']}
+                           selectedKeys={this.state.selectedKeys}
                            items={this.state.menu}
                            onClick={this.menuClick}/>
                     </Layout.Header>
@@ -179,6 +198,8 @@ class Pages extends Component {
                             <Route path="/error/403" element={<Error403/>}/>
                             <Route path={window.mfwApp.urls.township.user.payment.success} element={<Dashboard widgets={this.state.widgets}/>}/>
                             <Route path={window.mfwApp.urls.township.user.payment.fail} element={<Dashboard widgets={this.state.widgets}/>}/>
+                            <Route path={window.mfwApp.urls.township.contacts} element={<InfoPage info="contacts"/>}/>
+                            <Route path={window.mfwApp.urls.township.user.payment.rules} element={<InfoPage info="payRules"/>}/>
                         </Routes>
                     </Layout.Content>
                 {this.state.passwordForm != false ? (
