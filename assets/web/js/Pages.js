@@ -44,6 +44,10 @@ class Pages extends Component {
                     key: 'payRules'
                 },
                 {
+                    label: this.props.t('township.privacyPolicy'),
+                    key: 'privacyPolicy'
+                },
+                {
                     label: '',
                     key: 'userMenu',
                     children: [
@@ -80,12 +84,14 @@ class Pages extends Component {
                 this.setState(state => {
                     state.loading = false;
                     state.widgets = res.data.user.widgets;
-                    state.menu[3].label = res.data.user.name;
+                    state.menu[4].label = res.data.user.name;
                     state.menu[1].label = <a href={window.mfwApp.urls.township.contacts} target="_self">{this.props.t('township.contacts')}</a>;
                     state.menu[2].label = <a href={window.mfwApp.urls.township.user.payment.rules} target="_self">{this.props.t('finance.pay.types')}</a>;
+                    state.menu[3].label = <a href={window.mfwApp.urls.township.privacyPolicy} target="_self">{this.props.t('township.privacyPolicy')}</a>;
                     state.userID = res.data.user.id;
                     state.selectedKeys = window.location.pathname == window.mfwApp.urls.township.contacts ? ['contacts'] :
-                            (window.location.pathname == window.mfwApp.urls.township.user.payment.rules ? ['payRules'] : state.selectedKeys);
+                            (window.location.pathname == window.mfwApp.urls.township.privacyPolicy ? ['privacyPolicy'] :
+                            (window.location.pathname == window.mfwApp.urls.township.user.payment.rules ? ['payRules'] : state.selectedKeys));
                     console.log(window.location.pathname, window.mfwApp.urls.township.user.payment.rules);
                     return state;
                 });
@@ -200,6 +206,7 @@ class Pages extends Component {
                             <Route path={window.mfwApp.urls.township.user.payment.fail} element={<Dashboard widgets={this.state.widgets}/>}/>
                             <Route path={window.mfwApp.urls.township.contacts} element={<InfoPage info="contacts"/>}/>
                             <Route path={window.mfwApp.urls.township.user.payment.rules} element={<InfoPage info="payRules"/>}/>
+                            <Route path={window.mfwApp.urls.township.privacyPolicy} element={<InfoPage info="privacyPolicy"/>}/>
                         </Routes>
                     </Layout.Content>
                 {this.state.passwordForm != false ? (

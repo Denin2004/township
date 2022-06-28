@@ -16,4 +16,8 @@ townshipContacts:
     path: /contacts
     controller: App\Controller\Application::index
     methods: [GET]
-    
+
+townshipPrivacyPolicy:
+    path: /privacypolicy
+    controller: App\Controller\Application::index
+    methods: [GET]
