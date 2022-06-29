@@ -15,10 +15,10 @@ use Mobile_Detect;
 
 class UserPayment extends AbstractController
 {
-    protected $urlCreatePayment = 'https://3dsec.sberbank.ru/payment/rest/register.do';
-    protected $urlCheckPayment = 'https://3dsec.sberbank.ru/payment/rest/getOrderStatusExtended.do';
+    protected $urlCreatePayment = 'https://securepayments.sberbank.ru/payment/rest/register.do';
+    protected $urlCheckPayment = 'https://securepayments.sberbank.ru/payment/rest/getOrderStatusExtended.do';
     protected $credentials = [
-        'userName' => 't7802551492-api',
+        'userName' => 'p7802551492-api',
         'password' => 'o0BKfPxD'
     ];
 
@@ -28,18 +28,18 @@ class UserPayment extends AbstractController
         //$mode = 'mobile';
         $mode = $detect->isMobile() ? 'mobile' : 'web';
         
-        return $this->render(
-            'base.'.$mode.'.html.twig',
-            [
-                'numeral' => $config->get('numeral'),
-                'result' => [
-                    'success' => false,
-                    'error' => 'Не разрешено до проверки сайта сбербанком!!!'
-                ]
-            ]
-        );
+        /*        return $this->render(
+                    'base.'.$mode.'.html.twig',
+                    [
+                        'numeral' => $config->get('numeral'),
+                        'result' => [
+                            'success' => false,
+                            'error' => 'Не разрешено до проверки сайта сбербанком!!!'
+                        ]
+                    ]
+                );*/
         
-        
+        dump('!!!');
         $qry = $request->query->all();
         $res = $this->sberREST([
             'url' => $this->urlCheckPayment,
@@ -48,6 +48,7 @@ class UserPayment extends AbstractController
             ]
         ]);
         $result = null;
+        dump($res);
         if ($res['success']) {
             if ($res['data']['orderStatus'] == 2) {
                 $doPay = $userDB->doPaymentOrder($qry['orderId']);
@@ -99,51 +100,6 @@ class UserPayment extends AbstractController
                     'success' => false,
                     'error' => 'Не разрешено до проверки сайта сбербанком!!!'
                 ]
-            ]
-        );
-        
-        
-        $qry = $request->query->all();
-        $res = $this->sberREST([
-            'url' => $this->urlCheckPayment,
-            'data' => [
-                'orderId' => $qry['orderId']
-            ]
-        ]);
-        $result = null;
-        if ($res['success']) {
-            if ($res['data']['orderStatus'] == 2) {
-                $doPay = $userDB->doPaymentOrder($qry['orderId']);
-                if ($userDB->isError()) {
-                    $result = [
-                        'success' => false,
-                        'comment' => $userDB->getError()
-                    ];
-                } else {
-                    if ($doPay[0]['do_payment_order'] == 0) {
-                        $result = [
-                            'success' => true,
-                            'comment' => 'finance.pay.success'
-                        ];
-                    }
-                }
-            } else {
-                $result = [
-                    'success' => false,
-                    'comment' => $res['data']['actionCodeDescription']
-                ];
-            }
-        } else {
-            $result = [
-                'success' => false,
-                'comment' => $res['error']
-            ];
-        }
-        return $this->render(
-            'base.'.$mode.'.html.twig',
-            [
-                'numeral' => $config->get('numeral'),
-                'result' => $result
             ]
         );
     }

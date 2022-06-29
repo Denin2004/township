@@ -29,7 +29,7 @@ class Dashboard extends Component {
             footer={null}
             onCancel={() => this.setState({result: null})}>
                 <Result status={this.state.result.success ? 'success' : 'error'}
-                title={this.props.t(this.state.result.comment)}
+                title={this.state.result.success ? this.props.t(this.state.result.comment): this.state.result.error}
                 extra={[<Button key="close" type='primary' onClick={() => this.setState({result: null})}>{this.props.t('modal.close')}</Button>]}/>
             </Modal> : null}
         </React.Fragment>
