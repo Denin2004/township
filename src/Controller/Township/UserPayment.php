@@ -141,11 +141,6 @@ class UserPayment extends AbstractController
 
     public function pay(Request $request, UserDB $userDB)
     {
-        return new JsonResponse([
-                'success' => false,
-                'error' => 'Не разрешено до проверки сайта сбербанком!!!'
-            ]);
-        
         $formRequest = json_decode($request->getContent(), true);
         if ($formRequest == null) {
             return new JsonResponse([
