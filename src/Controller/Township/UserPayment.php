@@ -41,7 +41,7 @@ class UserPayment extends AbstractController
                 if ($userDB->isError()) {
                     $result = [
                         'success' => false,
-                        'error' => $userDB->getError()
+                        'comment' => $userDB->getError()
                     ];
                 } else {
                     if ($doPay[0]['do_payment_order'] == 0) {
@@ -54,13 +54,13 @@ class UserPayment extends AbstractController
             } else {
                 $result = [
                     'success' => false,
-                    'error' => $res['data']['actionCodeDescription']
+                    'comment' => $res['data']['actionCodeDescription']
                 ];
             }
         } else {
             $result = [
                 'success' => false,
-                'error' => $res['error']
+                'comment' => $res['error']
             ];
         }
         return $this->render(
