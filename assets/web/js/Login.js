@@ -53,7 +53,7 @@ class Login extends Component {
                             <Input.Password />
                         </Form.Item>
                         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                            <Button type="primary" htmlType="submit">{this.props.t('account.login')}</Button>
+                            <Button type="primary" htmlType="submit">{this.props.t('account.enter')}</Button>
                         </Form.Item>
                     </Form>
                 </Modal>

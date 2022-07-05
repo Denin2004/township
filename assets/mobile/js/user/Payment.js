@@ -167,7 +167,7 @@ class Payment extends Component {
                    icon={null}
                    content={<React.Fragment>{this.props.t('finance.pay.result')}
                         <b>
-                            <MfwNumber value={this.state.amountWithTax}/>
+                            <MfwNumber className="mfw-ml-1" value={this.state.amountWithTax}/>
                         </b>
                     </React.Fragment>} type="info" /> : null}
                 </Form>

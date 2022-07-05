@@ -92,7 +92,6 @@ class Pages extends Component {
                     state.selectedKeys = window.location.pathname == window.mfwApp.urls.township.contacts ? ['contacts'] :
                             (window.location.pathname == window.mfwApp.urls.township.privacyPolicy ? ['privacyPolicy'] :
                             (window.location.pathname == window.mfwApp.urls.township.user.payment.rules ? ['payRules'] : state.selectedKeys));
-                    console.log(window.location.pathname, window.mfwApp.urls.township.user.payment.rules);
                     return state;
                 });
             } else {

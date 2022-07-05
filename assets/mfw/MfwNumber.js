@@ -12,6 +12,7 @@ class MfwNumber extends Component {
                 decimalSeparator={window.mfwApp.numeral.decimalSeparator}
                 decimalScale={this.props.decimals ? this.props.decimals : window.mfwApp.numeral.decimals}
                 fixedDecimalScale={true}
+                className={this.props.className}
                 displayType={this.props.displayType ? this.props.displayType: 'text'}/>
         )
     }

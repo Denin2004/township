@@ -152,7 +152,7 @@ class Payment extends Component {
                     {this.state.amountWithTax !== 0 ? <Alert 
                        message={<React.Fragment>{this.props.t('finance.pay.result')}
                             <Typography.Text strong>
-                                <MfwNumber value={this.state.amountWithTax}/>
+                                <MfwNumber className="mfw-ml-1" value={this.state.amountWithTax}/>
                             </Typography.Text>
                         </React.Fragment>} type="info" /> : null}
                 </React.Fragment>
