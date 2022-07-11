@@ -69,3 +69,18 @@ financeMoneyMoveDelete:
     defaults: 
         id: -1    
         table: ""
+        
+financeSitePaysPage:
+    path: /sitepays/page
+    controller: App\Controller\Application::index
+    methods: [GET]
+
+financeSitePaysForm:
+    path: /sitepays/form
+    controller: App\Controller\Finance\SitePays::getForm
+    methods: [GET]    
+
+financeSitePaysData:
+    path: /sitepays/data
+    controller: App\Controller\Finance\SitePays::data
+    methods: [POST]    

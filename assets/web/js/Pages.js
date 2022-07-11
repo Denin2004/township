@@ -21,6 +21,7 @@ import FinanceMoneyMove from '@app/web/js/finance/moneyMove/Main';
 import Lands from '@app/web/js/land/Main';
 import LandMoneyMove from '@app/web/js/land/MoneyMove';
 import InfoPage from '@app/web/js/InfoPage';
+import SitePays from '@app/web/js/finance/SitePays';
 
 class Pages extends Component {
     constructor(props){
@@ -206,6 +207,7 @@ class Pages extends Component {
                             <Route path={window.mfwApp.urls.township.contacts} element={<InfoPage info="contacts"/>}/>
                             <Route path={window.mfwApp.urls.township.user.payment.rules} element={<InfoPage info="payRules"/>}/>
                             <Route path={window.mfwApp.urls.township.privacyPolicy} element={<InfoPage info="privacyPolicy"/>}/>
+                            <Route path={window.mfwApp.urls.finance.sitePays.page} element={<SitePays/>}/>
                         </Routes>
                     </Layout.Content>
                 {this.state.passwordForm != false ? (

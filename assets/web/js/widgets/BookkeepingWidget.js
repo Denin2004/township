@@ -142,6 +142,9 @@ class BookkeepingWidgets extends Component {
                     <List.Item>
                         <a target="_blank" href={window.mfwApp.urls.finance.moneyMove.page}>{this.props.t('finance.money_move')}</a>
                     </List.Item>
+                    <List.Item>
+                        <a target="_blank" href={window.mfwApp.urls.finance.sitePays.page}>{this.props.t('finance.sitePays')}</a>
+                    </List.Item>
                 </List>
             </Card>
             {this.state.electricity.state != 0 ? (

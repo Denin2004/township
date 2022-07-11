@@ -122,4 +122,26 @@ class MoneyMove extends Entity
             );
         }
     }
+    
+    public function sitePays($params)
+    {
+        $params['format'] = $this->provider->dateFormat();
+        $params['date_from'] = $params['date_range'][0];
+        $params['date_to'] = $params['date_range'][1];
+        return $this->provider->fetchAll(
+            'select b_p.id, b_p.dt, to_char(b_p.dt, :format) as dt_frmt,
+                  b_p.amount,
+                  b_p.amount*(1+b_p.tax) as summary,
+                  b_p.tax*b_p.amount as tax,
+                c_t.name type_name, l_l.num,
+                balances.pay_invoices(b_p.id) as comment,
+                \'pays\' as table
+                from balances.pays b_p
+                  left join charges.types c_t on (c_t.id=b_p.charge_type_id)
+                  left join lands.lands l_l on (l_l.id=b_p.land_id)
+                where (b_p.dt between to_date(:date_from, :format) and to_date(:date_to, :format))and(b_p.tax<>0)
+                order by b_p.dt',
+            $params
+        );
+    }
 }
