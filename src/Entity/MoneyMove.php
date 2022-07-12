@@ -140,7 +140,7 @@ class MoneyMove extends Entity
                   left join charges.types c_t on (c_t.id=b_p.charge_type_id)
                   left join lands.lands l_l on (l_l.id=b_p.land_id)
                 where (b_p.dt between to_date(:date_from, :format) and to_date(:date_to, :format))and(b_p.tax<>0)
-                order by b_p.dt',
+                order by b_p.dt desc',
             $params
         );
     }
