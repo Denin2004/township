@@ -14,7 +14,6 @@ class BudgetWidget extends Component {
         this.state = {
             loading: true,
             addSpending: false,
-            budgetIndex: null,
             info: null,
             columns: [
                 {
@@ -26,7 +25,7 @@ class BudgetWidget extends Component {
                     dataIndex: 'amount',
                     align: 'right',
                     render: (text, record) => {
-                        return <Link to={generatePath(window.mfwApp.urls.budget.page+'/:id', {id: this.state.info[this.state.budgetIndex].id})} target="_blank">
+                        return <Link to={generatePath(window.mfwApp.urls.budget.page+'/:id', {id: record.id})} target="_blank">
                                <MfwNumber value={record.amount}/>
                             </Link>
                     }
@@ -54,7 +53,6 @@ class BudgetWidget extends Component {
                 this.setState(state => {
                     state.loading = false;
                     state.info = res.data.info;
-                    state.budgetIndex = state.budgetIndex != null ? state.budgetIndex : (res.data.info.length > 0 ? 0 : null);
                     return state;
                 });
             } else {
