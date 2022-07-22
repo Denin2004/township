@@ -50,7 +50,6 @@ class Invoice extends Component {
     componentDidMount() {
         axios.get(
             generatePath(window.mfwApp.urls.finance.invoice.data+'/:invoice_id', {invoice_id: this.props.id}),
-//            window.mfwApp.urls.finance.invoice.data+'/'+this.props.id,
             {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
@@ -82,8 +81,12 @@ class Invoice extends Component {
             closable={false}
             cancelButtonProps={{className: 'd-none'}}
             okText={this.props.t('modal.close')}
-            footer={((this.state.invoice != undefined) && (this.state.invoice.chargeType == 1)) ? <Space>
-                <Button target="_blank" href={generatePath(window.mfwApp.urls.electricity.pdfInvoice+'/:invoice_id', {invoice_id: this.props.id})}>{this.props.t('finance.invoice.pdf')}</Button>
+            footer={(this.state.invoice != undefined) ? <Space>
+                <Button target="_blank" href={generatePath(
+                    window.mfwApp.urls.finance.invoice.pdf+'/:invoice_id',
+                    {
+                        invoice_id: this.props.id
+                    })}>{this.props.t('finance.invoice.pdf')}</Button>
                 <Button type="primary" onClick={this.props.close}>{this.props.t('modal.close')}</Button>
                 </Space> : null}
             onOk={this.props.close}>

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Link, generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import { Card, Spin, Table, message, Typography, Modal, Descriptions, List, Form, Input, Select } from 'antd';
+import { Card, Spin, Table, message, Typography, Modal, Descriptions, List, Form, Input, Select, Space } from 'antd';
 import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
@@ -43,7 +43,14 @@ class LandWidget extends Component {
                     {
                         title: this.props.t('finance.invoice.num'),
                         dataIndex: 'invoice_num',
-                        ellipsis: true
+                        ellipsis: true,
+                        render: (text, record) => {
+                            return <Space>{text}<a href={generatePath(
+                                window.mfwApp.urls.finance.invoice.pdf+'/:invoice_id',
+                                {
+                                    invoice_id: record.id
+                                })}>{this.props.t('common.pdf')}</a></Space>
+                        }
                     },
                     {
                         title: this.props.t('finance.sum'),

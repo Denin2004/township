@@ -84,3 +84,12 @@ financeSitePaysData:
     path: /sitepays/data
     controller: App\Controller\Finance\SitePays::data
     methods: [POST]    
+    
+financeInvoicePDF:
+    path: /invoice/pdf/{invoice_id}
+    controller: App\Controller\Finance\Invoice::pdf
+    methods: [GET]
+    defaults:
+        invoice_id: 0
+    requirements:
+        invoice_id: \d+

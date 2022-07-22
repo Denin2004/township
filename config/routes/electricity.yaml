@@ -44,12 +44,3 @@ electricityBillAdd:
     path: /bills/add
     controller: App\Controller\Electricity\Bills::add
     methods: [POST]
-
-electricityPdfInvoice:
-    path: /bills/pdf/invoice/{invoice_id}
-    controller: App\Controller\Electricity\Bills::pdfInvoice
-    methods: [GET]
-    defaults:
-        invoice_id: 0
-    requirements:
-        invoice_id: \d+
